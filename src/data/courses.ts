@@ -11,7 +11,7 @@ export const COURSES: Course[] = [
     duration_hours: 40,
     category: 'Ratings',
     image_url: 'https://images.pexels.com/photos/28247165/pexels-photo-28247165.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 450,
   },
   {
     id: '978e8ca1-642c-4309-9185-c4da6fb9f04e',
@@ -21,7 +21,7 @@ export const COURSES: Course[] = [
     duration_hours: 40,
     category: 'Ratings',
     image_url: 'https://images.pexels.com/photos/39043583/pexels-photo-39043583.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 450,
   },
   {
     id: '81941b7d-8ebd-489d-ab5d-eb039dea9054',
