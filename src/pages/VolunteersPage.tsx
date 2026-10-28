@@ -206,7 +206,7 @@ export default function VolunteersPage() {
                           value={form.phone}
                           onChange={(e) => update('phone', e.target.value)}
                           className="input-field pl-10"
-                          placeholder="+33 6 00 00 00 00"
+                          placeholder="+507 6000-0000"
                         />
                       </div>
                     </div>

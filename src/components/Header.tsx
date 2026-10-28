@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Anchor, Menu, X, ShoppingCart } from 'lucide-react';
+import { Anchor, Menu, X, GraduationCap } from 'lucide-react';
 
 const links = [
   { to: '/', label: 'Accueil' },
@@ -42,7 +42,7 @@ export default function Header() {
           </div>
           <div className="flex flex-col leading-tight">
             <span className="font-semibold text-sm text-white leading-tight">
-              Maritime<br />Training Services
+              Panama Maritime<br />Training Services
             </span>
           </div>
         </Link>
@@ -66,8 +66,8 @@ export default function Header() {
           })}
         </nav>
 
-        <Link to="/volontaires" className="hidden md:inline-flex items-center gap-2 px-5 py-2.5 rounded-sm bg-[#e1b936] text-[#08182d] text-sm font-bold hover:bg-[#f0cc58] transition-colors">
-          <ShoppingCart className="w-4 h-4" />
+        <Link to="/inscription" className="hidden md:inline-flex items-center gap-2 px-5 py-2.5 rounded-sm bg-[#e1b936] text-[#08182d] text-sm font-bold hover:bg-[#f0cc58] transition-colors">
+          <GraduationCap className="w-4 h-4" />
           S'inscrire
         </Link>
 
@@ -93,6 +93,14 @@ export default function Header() {
                 {l.label}
               </Link>
             ))}
+            <Link
+              to="/inscription"
+              onClick={() => setOpen(false)}
+              className="btn-primary mt-2"
+            >
+              <GraduationCap className="w-4 h-4" />
+              S'inscrire
+            </Link>
           </nav>
         </div>
       )}

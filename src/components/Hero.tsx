@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ShieldCheck, Award, Users, Waves } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Award, Users, Waves, BookOpen } from 'lucide-react';
+import { SITE } from '@/config/site';
 
 export default function Hero() {
   return (
@@ -27,7 +28,7 @@ export default function Hero() {
         <div className="max-w-3xl">
           <div className="flex items-center gap-3 text-[#e1b936] text-xs font-bold uppercase tracking-[0.18em] mb-6">
             <span className="gold-rule" />
-            Maritime Training Services
+            {SITE.name}
           </div>
 
           <h1 className="text-5xl sm:text-6xl lg:text-8xl font-semibold text-white leading-[0.98] tracking-tight max-w-4xl">
@@ -36,21 +37,22 @@ export default function Hero() {
           </h1>
 
           <p className="mt-7 text-lg sm:text-xl text-slate-300 leading-relaxed max-w-2xl">
-            Programmes de formation conformes aux standards IMO pour officiers de la
-            marine marchande, cadets et gens de mer — à distance et en présentiel.
+            École de formation maritime du Panama : programmes conformes aux standards
+            IMO pour officiers de la marine marchande, cadets et gens de mer — à
+            distance et en présentiel.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">
-            <Link to="/formations" className="btn-primary">
-              Parcourir les formations
+            <Link to="/inscription" className="btn-primary">
+              S’inscrire en ligne
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
-              to="/verification"
+              to="/formations"
               className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-white/10 backdrop-blur text-white font-semibold border border-white/20 transition-all hover:bg-white/15 active:scale-[0.98]"
             >
-              <ShieldCheck className="w-4 h-4" />
-              Vérifier un certificat
+              <BookOpen className="w-4 h-4" />
+              Parcourir les formations
             </Link>
           </div>
 

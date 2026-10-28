@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Anchor, Ship, Waves, Mail, MapPin, Phone } from 'lucide-react';
+import { SITE } from '@/config/site';
 
 export default function Footer() {
   return (
@@ -10,10 +11,10 @@ export default function Footer() {
             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-[#e1b936] text-[#e1b936]">
               <Anchor className="w-5 h-5" />
             </div>
-            <span className="font-semibold text-sm text-white leading-tight">Maritime<br />Training Services</span>
+            <span className="font-semibold text-sm text-white leading-tight">Panama Maritime<br />Training Services</span>
           </div>
           <p className="text-sm text-slate-400 leading-relaxed">
-            Centre de formation maritime certifié. Formations conformes aux standards
+            Centre de formation maritime du Panama. Formations conformes aux standards
             internationaux STCW et MLC.
           </p>
         </div>
@@ -25,6 +26,7 @@ export default function Footer() {
           <ul className="space-y-2 text-sm">
             <li><Link to="/" className="hover:text-[#e1b936] transition-colors">Accueil</Link></li>
             <li><Link to="/formations" className="hover:text-[#e1b936] transition-colors">Formations</Link></li>
+            <li><Link to="/inscription" className="hover:text-[#e1b936] transition-colors">Inscription</Link></li>
             <li><Link to="/verification" className="hover:text-[#e1b936] transition-colors">Vérification</Link></li>
             <li><Link to="/volontaires" className="hover:text-[#e1b936] transition-colors">Volontaires</Link></li>
           </ul>
@@ -47,23 +49,27 @@ export default function Footer() {
           <ul className="space-y-3 text-sm text-slate-400">
             <li className="flex items-start gap-2">
               <MapPin className="w-4 h-4 text-[#e1b936] mt-0.5 shrink-0" />
-              <span>Port Maritime, Quai 12, Marseille, France</span>
+              <span>{SITE.address ? `${SITE.address}, ${SITE.country}` : SITE.country}</span>
             </li>
-            <li className="flex items-center gap-2">
-              <Phone className="w-4 h-4 text-[#e1b936] shrink-0" />
-              <span>+33 4 91 00 00 00</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <Mail className="w-4 h-4 text-[#e1b936] shrink-0" />
-              <span>contact@maritime-academy.fr</span>
-            </li>
+            {SITE.phone && (
+              <li className="flex items-center gap-2">
+                <Phone className="w-4 h-4 text-[#e1b936] shrink-0" />
+                <span>{SITE.phone}</span>
+              </li>
+            )}
+            {SITE.email && (
+              <li className="flex items-center gap-2">
+                <Mail className="w-4 h-4 text-[#e1b936] shrink-0" />
+                <span>{SITE.email}</span>
+              </li>
+            )}
           </ul>
         </div>
       </div>
 
       <div className="border-t border-[#294769]">
         <div className="container-app py-6 text-center text-sm text-slate-400">
-          © {new Date().getFullYear()} MaritimeAcademy. Tous droits réservés.
+          © {new Date().getFullYear()} {SITE.name}. Tous droits réservés.
         </div>
       </div>
     </footer>
