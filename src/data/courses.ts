@@ -31,7 +31,7 @@ export const COURSES: Course[] = [
     duration_hours: 60,
     category: 'Tanker',
     image_url: 'https://images.pexels.com/photos/27275198/pexels-photo-27275198.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 500,
   },
   {
     id: '7a0542a2-3150-4269-8ea4-e028fe1696ff',
@@ -41,7 +41,7 @@ export const COURSES: Course[] = [
     duration_hours: 60,
     category: 'Tanker',
     image_url: 'https://images.pexels.com/photos/35860170/pexels-photo-35860170.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 500,
   },
   {
     id: 'cc9235d6-24fb-46d6-9d51-27b03e8d59e4',
@@ -51,7 +51,7 @@ export const COURSES: Course[] = [
     duration_hours: 60,
     category: 'Tanker',
     image_url: 'https://images.pexels.com/photos/36563588/pexels-photo-36563588.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 500,
   },
   {
     id: '13fb283b-a05a-49c8-837a-64517b1d9ba6',
@@ -61,7 +61,7 @@ export const COURSES: Course[] = [
     duration_hours: 29,
     category: 'Fire Fighting',
     image_url: 'https://images.pexels.com/photos/37596892/pexels-photo-37596892.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 350,
   },
   {
     id: 'cd93076c-2664-445e-b7c8-9597df256cf8',
@@ -71,7 +71,7 @@ export const COURSES: Course[] = [
     duration_hours: 10,
     category: 'Navigation',
     image_url: 'https://images.pexels.com/photos/11763854/pexels-photo-11763854.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 200,
   },
   {
     id: '895ef950-5efa-4321-99cf-81d03a21ee35',
@@ -81,7 +81,7 @@ export const COURSES: Course[] = [
     duration_hours: 33,
     category: 'Tanker',
     image_url: 'https://images.pexels.com/photos/35757999/pexels-photo-35757999.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 350,
   },
   {
     id: '858c8023-5ebc-4030-9acb-4ecadb702df1',
@@ -91,7 +91,7 @@ export const COURSES: Course[] = [
     duration_hours: 47,
     category: 'Tanker',
     image_url: 'https://images.pexels.com/photos/38602132/pexels-photo-38602132.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 350,
   },
   {
     id: 'f60fcffc-e403-4343-80cb-ee44be9b9ff4',
@@ -101,7 +101,7 @@ export const COURSES: Course[] = [
     duration_hours: 40,
     category: 'Resource Management',
     image_url: 'https://images.pexels.com/photos/18442732/pexels-photo-18442732.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 450,
   },
   {
     id: 'b5a600f0-7c42-4669-b9bb-66b3e120ceb3',
@@ -111,7 +111,7 @@ export const COURSES: Course[] = [
     duration_hours: 18,
     category: 'Security',
     image_url: 'https://images.pexels.com/photos/39043586/pexels-photo-39043586.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 300,
   },
   {
     id: '5aeb01d7-0a3b-4e59-9b12-65a491a5a861',
@@ -121,7 +121,7 @@ export const COURSES: Course[] = [
     duration_hours: 8,
     category: 'Crowd & Crisis',
     image_url: 'https://images.pexels.com/photos/11329863/pexels-photo-11329863.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 150,
   },
   {
     id: 'ae6c9a18-6cf0-42be-8b3c-2aff2a8336aa',
@@ -131,7 +131,7 @@ export const COURSES: Course[] = [
     duration_hours: 31.25,
     category: 'Cargo',
     image_url: 'https://images.pexels.com/photos/262353/pexels-photo-262353.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 300,
   },
   {
     id: '2dacd0c1-0e5e-4b8d-ba76-3fbbfd24b942',
@@ -141,7 +141,7 @@ export const COURSES: Course[] = [
     duration_hours: 15,
     category: 'Basic Safety',
     image_url: 'https://images.pexels.com/photos/34104787/pexels-photo-34104787.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 100,
   },
   {
     id: '19a5f743-a4b4-4392-ae88-49c3a5e515d0',
@@ -151,7 +151,7 @@ export const COURSES: Course[] = [
     duration_hours: 40,
     category: 'Resource Management',
     image_url: 'https://images.pexels.com/photos/10290624/pexels-photo-10290624.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 450,
   },
   {
     id: 'cacf5326-11a4-4a9a-9350-41f2adade15c',
@@ -161,7 +161,7 @@ export const COURSES: Course[] = [
     duration_hours: 80,
     category: 'Simulator',
     image_url: 'https://images.pexels.com/photos/6499021/pexels-photo-6499021.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 600,
   },
   {
     id: 'a6d1ab3b-3f0a-47c1-9733-f4deff52c7bc',
@@ -171,7 +171,7 @@ export const COURSES: Course[] = [
     duration_hours: 15,
     category: 'Basic Safety',
     image_url: 'https://images.pexels.com/photos/18340568/pexels-photo-18340568.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 120,
   },
   {
     id: '1a1ee458-fb6e-4d63-9947-6479d1ba3c89',
@@ -181,7 +181,7 @@ export const COURSES: Course[] = [
     duration_hours: 132,
     category: 'Communications',
     image_url: 'https://images.pexels.com/photos/4911062/pexels-photo-4911062.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 1200,
   },
   {
     id: '1328ed45-358b-4db2-b617-ba5ed0fe911a',
@@ -191,7 +191,7 @@ export const COURSES: Course[] = [
     duration_hours: 20,
     category: 'Leadership',
     image_url: 'https://images.pexels.com/photos/1181738/pexels-photo-1181738.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 250,
   },
   {
     id: '13c3b03e-f4e8-442e-9885-b120ebba1689',
@@ -201,7 +201,7 @@ export const COURSES: Course[] = [
     duration_hours: 12,
     category: 'Environment',
     image_url: 'https://images.pexels.com/photos/9034675/pexels-photo-9034675.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 150,
   },
   {
     id: '5748cbf1-b12f-4508-81ee-892ee8ddf9fa',
@@ -211,7 +211,7 @@ export const COURSES: Course[] = [
     duration_hours: 45.5,
     category: 'Medical',
     image_url: 'https://images.pexels.com/photos/34104789/pexels-photo-34104789.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 450,
   },
   {
     id: 'ab648ce9-4559-409c-b48b-9049482586e4',
@@ -221,7 +221,7 @@ export const COURSES: Course[] = [
     duration_hours: 30,
     category: 'Medical',
     image_url: 'https://images.pexels.com/photos/33862096/pexels-photo-33862096.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 250,
   },
   {
     id: '93a83fd3-d053-4e6a-8271-0bebeb693ef1',
@@ -231,7 +231,7 @@ export const COURSES: Course[] = [
     duration_hours: 120,
     category: 'Ratings',
     image_url: 'https://images.pexels.com/photos/5416412/pexels-photo-5416412.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 305,
   },
   {
     id: 'dba61102-d2f7-4365-ac5c-d31478616373',
@@ -241,7 +241,7 @@ export const COURSES: Course[] = [
     duration_hours: 14,
     category: 'Basic Safety',
     image_url: 'https://images.pexels.com/photos/36055592/pexels-photo-36055592.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 100,
   },
   {
     id: 'c296411c-a883-4c15-addf-6641fe92d3ab',
@@ -251,7 +251,7 @@ export const COURSES: Course[] = [
     duration_hours: 13.25,
     category: 'Basic Safety',
     image_url: 'https://images.pexels.com/photos/28282296/pexels-photo-28282296.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 120,
   },
   {
     id: 'ae4b62da-ca0c-4c62-8d65-065985e0e8ef',
@@ -261,7 +261,7 @@ export const COURSES: Course[] = [
     duration_hours: 120,
     category: 'Yacht',
     image_url: 'https://images.pexels.com/photos/37900340/pexels-photo-37900340.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 305,
   },
   {
     id: '9129fc0d-3d49-40ec-9a1e-11bac4b1d11a',
@@ -271,7 +271,7 @@ export const COURSES: Course[] = [
     duration_hours: 18,
     category: 'Security',
     image_url: 'https://images.pexels.com/photos/19899487/pexels-photo-19899487.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 300,
   },
   {
     id: '4b2eaa55-6b6c-4a96-8424-9c97bb7723a5',
@@ -281,7 +281,7 @@ export const COURSES: Course[] = [
     duration_hours: 14,
     category: 'Crowd & Crisis',
     image_url: 'https://images.pexels.com/photos/20733081/pexels-photo-20733081.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 200,
   },
   {
     id: '3777669d-ac9d-4fdd-b74c-8e5b90483edf',
@@ -291,7 +291,7 @@ export const COURSES: Course[] = [
     duration_hours: 24,
     category: 'Survival',
     image_url: 'https://images.pexels.com/photos/28282279/pexels-photo-28282279.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 400,
   },
   {
     id: 'be475d3b-e8fd-4a11-9b65-68e10e61afc7',
@@ -301,7 +301,7 @@ export const COURSES: Course[] = [
     duration_hours: 32,
     category: 'Survival',
     image_url: 'https://images.pexels.com/photos/28282301/pexels-photo-28282301.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 350,
   },
   {
     id: 'e62d1d72-6d77-4a12-a435-837b720e38af',
@@ -311,7 +311,7 @@ export const COURSES: Course[] = [
     duration_hours: 66.5,
     category: 'Navigation',
     image_url: 'https://images.pexels.com/photos/3582597/pexels-photo-3582597.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 500,
   },
   {
     id: 'c95f9956-31be-49be-a2d9-6657de0975aa',
@@ -321,7 +321,7 @@ export const COURSES: Course[] = [
     duration_hours: 38,
     category: 'Navigation',
     image_url: 'https://images.pexels.com/photos/38253336/pexels-photo-38253336.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 450,
   },
   {
     id: '15461d8c-5c4e-421e-8f6c-2a6e56478365',
@@ -331,7 +331,7 @@ export const COURSES: Course[] = [
     duration_hours: 40,
     category: 'Ratings',
     image_url: 'https://images.pexels.com/photos/35676596/pexels-photo-35676596.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 450,
   },
   {
     id: '936de1e0-88a8-427f-ab56-9c9996e28949',
@@ -341,7 +341,7 @@ export const COURSES: Course[] = [
     duration_hours: 40,
     category: 'Ratings',
     image_url: 'https://images.pexels.com/photos/39174644/pexels-photo-39174644.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 450,
   },
   {
     id: '7aa3d9b0-64a0-4b64-88c1-b5d1ade97447',
@@ -351,7 +351,7 @@ export const COURSES: Course[] = [
     duration_hours: 40,
     category: 'Ratings',
     image_url: 'https://images.pexels.com/photos/10855020/pexels-photo-10855020.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 350,
   },
   {
     id: '98b5f606-abfb-45bb-bf25-a13704ba1cd4',
@@ -361,7 +361,7 @@ export const COURSES: Course[] = [
     duration_hours: 40,
     category: 'Ratings',
     image_url: 'https://images.pexels.com/photos/12574184/pexels-photo-12574184.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 350,
   },
   {
     id: 'a7cfe131-027f-4b81-9aa5-a8c30d21f60f',
@@ -371,7 +371,7 @@ export const COURSES: Course[] = [
     duration_hours: 4,
     category: 'Security',
     image_url: 'https://images.pexels.com/photos/11890189/pexels-photo-11890189.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 80,
   },
   {
     id: '0dc953f1-e083-400f-a983-af4567264cc8',
@@ -381,7 +381,7 @@ export const COURSES: Course[] = [
     duration_hours: 4,
     category: 'Security',
     image_url: 'https://images.pexels.com/photos/11890383/pexels-photo-11890383.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 80,
   },
   {
     id: 'eea29f12-c267-476b-a2b1-b43cdc9421f7',
@@ -391,7 +391,7 @@ export const COURSES: Course[] = [
     duration_hours: 9,
     category: 'Security',
     image_url: 'https://images.pexels.com/photos/11885299/pexels-photo-11885299.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 120,
   },
   {
     id: '8705ad60-be9f-4081-9f59-7c0d07300d7b',
@@ -401,7 +401,7 @@ export const COURSES: Course[] = [
     duration_hours: 10.5,
     category: 'Security',
     image_url: 'https://images.pexels.com/photos/32399532/pexels-photo-32399532.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 150,
   },
   {
     id: '607deefa-4ad4-4905-b9d8-508d2c7c5a57',
@@ -411,7 +411,7 @@ export const COURSES: Course[] = [
     duration_hours: 16,
     category: 'Security',
     image_url: 'https://images.pexels.com/photos/14559760/pexels-photo-14559760.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 250,
   },
   {
     id: 'a1ec9243-dec5-46ba-98af-2845fa550d01',
@@ -421,7 +421,7 @@ export const COURSES: Course[] = [
     duration_hours: 40,
     category: 'Navigation',
     image_url: 'https://images.pexels.com/photos/3862634/pexels-photo-3862634.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 500,
   },
   {
     id: '449ac290-fb0a-4348-9b50-7e4b2c5387a5',
@@ -431,7 +431,7 @@ export const COURSES: Course[] = [
     duration_hours: 40,
     category: 'Catering',
     image_url: 'https://images.pexels.com/photos/16237426/pexels-photo-16237426.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 400,
   },
   {
     id: '7b9078c3-457e-49d9-bee5-2e20a811741f',
@@ -441,7 +441,7 @@ export const COURSES: Course[] = [
     duration_hours: 40,
     category: 'Navigation',
     image_url: 'https://images.pexels.com/photos/36741465/pexels-photo-36741465.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 450,
   },
   {
     id: '91bff865-f2a5-4c8b-9f83-3950b34e5e3f',
@@ -451,7 +451,7 @@ export const COURSES: Course[] = [
     duration_hours: 30,
     category: 'Instructor',
     image_url: 'https://images.pexels.com/photos/3099035/pexels-photo-3099035.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 400,
   },
   {
     id: 'b1e14bb8-939d-4f9f-9fd6-4a31f92bb9c5',
@@ -461,7 +461,7 @@ export const COURSES: Course[] = [
     duration_hours: 60,
     category: 'Instructor',
     image_url: 'https://images.pexels.com/photos/8761328/pexels-photo-8761328.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 500,
   },
   {
     id: 'a39c11ef-78d1-4252-8e4a-03927dbe26bb',
@@ -471,7 +471,7 @@ export const COURSES: Course[] = [
     duration_hours: 834,
     category: 'Officer Upgrading',
     image_url: 'https://images.pexels.com/photos/28656388/pexels-photo-28656388.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 3000,
   },
   {
     id: '76ced9af-6cba-46aa-a099-a6703451498d',
@@ -481,7 +481,7 @@ export const COURSES: Course[] = [
     duration_hours: 1569,
     category: 'Officer Upgrading',
     image_url: 'https://images.pexels.com/photos/19436836/pexels-photo-19436836.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 4000,
   },
   {
     id: 'bfbc98dd-a9d4-43b8-9ca9-677412ab810e',
@@ -491,7 +491,7 @@ export const COURSES: Course[] = [
     duration_hours: 874,
     category: 'Officer Upgrading',
     image_url: 'https://images.pexels.com/photos/3660828/pexels-photo-3660828.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 3000,
   },
   {
     id: '01f065b2-8861-4f09-8462-e53740367591',
@@ -501,7 +501,7 @@ export const COURSES: Course[] = [
     duration_hours: 978,
     category: 'Officer Upgrading',
     image_url: 'https://images.pexels.com/photos/19436838/pexels-photo-19436838.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 3500,
   },
   {
     id: 'a165ae8b-a09e-45e0-a166-92db16b6ea85',
@@ -511,6 +511,6 @@ export const COURSES: Course[] = [
     duration_hours: 120,
     category: 'Ratings',
     image_url: 'https://images.pexels.com/photos/36207220/pexels-photo-36207220.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    price_usd: null,
+    price_usd: 305,
   },
 ];

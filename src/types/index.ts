@@ -54,6 +54,7 @@ export interface Quote {
   total: number | null;
   deposit: number | null;
   balance: number | null;
+  discount: number;
 }
 
 export type IdType = 'national_id' | 'passport';
@@ -66,7 +67,7 @@ export interface RegistrationInput {
   id_type: IdType;
   id_number: string;
   photo_data_url: string;
-  courses: Pick<Course, 'id' | 'name' | 'price_usd'>[];
+  courses: Pick<Course, 'id' | 'name' | 'imo_number' | 'price_usd'>[];
 }
 
 export interface RegistrationReceipt {

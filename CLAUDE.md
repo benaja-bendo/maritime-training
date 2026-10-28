@@ -36,7 +36,7 @@ le site fonctionne mais l'inscription répond « pas encore disponible ».
 - `src/pages/` : une page par route. `src/components/` : Header, Footer, Hero, Layout, ScrollToTop. Le contenu de `AboutPage` et `ContactPage` (textes du client) est en tête de fichier, sous forme de tableaux.
 - `src/config/site.ts` : **nom, pays, slogan, adresse, horaires, téléphone, WhatsApp, e-mail, instructions de paiement**. Un champ à `null` n'est pas affiché (en-tête de page Contact, pied de page).
 - `src/lib/data.ts` : **seul point d'accès aux données**. Les pages n'importent rien d'autre pour lire ou écrire.
-- `src/lib/pricing.ts` : taux d'avance (`DEPOSIT_RATE`), calcul en centimes, format USD.
+- `src/lib/pricing.ts` : taux d'avance (`DEPOSIT_RATE`), pack BST (`BST_PACK`), calcul en centimes, format USD.
 - `src/lib/format.ts` : durées en français (virgule décimale, « 0,5 jour », « 13,25 h »). À utiliser pour tout affichage de durée.
 - `src/lib/image.ts` : traitement de la photo d'identité. `src/lib/countries.ts` : liste des pays (français, Panama en tête).
 - `src/lib/firebase.ts` : initialisation Firebase, chargée à la demande (import dynamique) pour ne pas alourdir les autres pages.
@@ -58,7 +58,8 @@ le site fonctionne mais l'inscription répond « pas encore disponible ».
 Parcours voulu par le client : le candidat remplit le formulaire (nom, prénoms, e-mail, nationalité, CNI **ou** passeport + numéro, photo d'identité, choix des formations). Le prix de chaque formation s'affiche à la sélection, avec le total, l'**avance** (`DEPOSIT_RATE`) et le **solde**. L'inscription n'est finalisée qu'après paiement de l'avance ; le solde est payé après la formation, pour recevoir les documents.
 
 - `submitRegistration` crée un document `registrations/PMTS-XXXXXXXX` (référence aléatoire, affichée au candidat) avec `status: 'pending_deposit'`.
-- Les montants stockés (`quote_*`) sont **indicatifs** : le personnel recalcule à partir des tarifs en vigueur.
+- Les montants stockés (`quote_total_usd`, `quote_deposit_usd`, `quote_discount_usd`) sont **indicatifs** : le personnel recalcule à partir des tarifs en vigueur. `quote_discount_usd` est optionnel dans les règles (compatibilité avec les anciennes pages ouvertes).
+- **Tarifs** : liste fournie par le client le 2026-10-28, appliquée à 49 formations (`price_usd` dans `src/data/courses.ts`). **Pack complet BST** à 395 USD (1.13 + 1.19 + 1.20 + 1.21, soit 440 USD à l'unité) : remise automatique quand les quatre sont cochées, bouton « Ajouter le pack » sur la page Inscription. Le pack n'est pas une formation du catalogue.
 - **Photo** : recadrée en 420×540 (35×45 mm) et compressée en JPEG dans le navigateur, stockée en base64 dans le document (champ `photo_data_url`). Choix fait pour rester sur la formule gratuite, car Cloud Storage exige la formule Blaze. À revoir si le volume augmente.
 - **Sécurité** (`firestore.rules`) : le public peut **créer** un dossier (forme et tailles validées), jamais le lire, le modifier ni le supprimer. Tout le reste est fermé. Vérifié depuis l'extérieur : lecture, liste, modification, suppression et écriture hors schéma renvoient 403.
 - Le personnel ne voit les dossiers que dans la console Firebase (Firestore > `registrations`). Il n'existe pas encore d'espace administrateur ni de notification par e-mail.
@@ -90,10 +91,10 @@ Le CLI Firebase est installé et connecté sur le poste du développeur. `fireba
 
 ## À confirmer avec le client
 
-- **Tarifs** : `price_usd` vaut `null` pour les 51 formations (affiché « Prix à confirmer »). Dès réception de la liste, les renseigner dans `src/data/courses.ts`.
+- **Deux formations sans prix** : « Able Seafare Deck » et « Able Seafarer Engine » (`price_usd: null`, affichées « Prix à confirmer ») ne figurent pas dans la liste de prix du client : ce sont très probablement les doublons de « Rating as Able Seafarer for Deck / Engine » (450 USD). À retirer du catalogue si le client confirme. Attention : les textes « plus de 50 formations » (accueil, catalogue, À propos) deviendraient faux avec 49 formations.
 - **Taux d'avance** : le client a dit « 45, voire 50 % ». `DEPOSIT_RATE` est à 0,5 dans `src/lib/pricing.ts`.
 - **Liste des formations** : le fichier « heure STCW.txt » fourni par le client (51 lignes : n° IMO, nom, jours, heures) a été comparé au catalogue le 2026-10-28 : il est identique (seule différence : apostrophes `'` / `’`, alignées sur le client). Points laissés tels quels, à lui faire confirmer :
-  - **Doublons probables** : « Rating as Able Seafarer for Deck / Engine » et « Able Seafare Deck / Able Seafarer Engine » ont la même durée (5 jours, 40 h). Deux cours identiques côté candidat, avec deux tarifs à fixer.
+  - **Doublons probables** : « Rating as Able Seafarer for Deck / Engine » et « Able Seafare Deck / Able Seafarer Engine » ont la même durée (5 jours, 40 h) et la liste de prix du client ne reprend que les deux premiers (voir plus haut).
   - **Fautes dans les noms** : « Seafare » (Able Seafare Deck), « Seafares » (Security Training For Seafares…), « Assesor » (Train The Simulator And Assesor).
   - **Intitulés incohérents** : « Updating » (7.01, 7.03, 7.04) et « Upgrading » (7.02) pour des cours de la même série. Durées très longues (105 à 196 jours) pour ces cours, à vérifier.
 - **Mode de paiement** de l'avance et du solde (virement, mobile money, carte...).

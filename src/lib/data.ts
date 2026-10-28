@@ -95,10 +95,12 @@ export async function submitRegistration(
       courses: input.courses.map((c) => ({
         id: c.id,
         name: c.name,
+        imo_number: c.imo_number,
         price_usd: c.price_usd,
       })),
       quote_total_usd: quote.total,
       quote_deposit_usd: quote.deposit,
+      quote_discount_usd: quote.discount,
       deposit_rate: DEPOSIT_RATE,
       status: 'pending_deposit',
       consent_at: serverTimestamp(),

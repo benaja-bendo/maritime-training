@@ -6,7 +6,7 @@ import {
   submitRegistration,
   ServiceUnavailableError,
 } from '@/lib/data';
-import { computeQuote, depositLabel, formatUsd } from '@/lib/pricing';
+import { BST_PACK, computeQuote, depositLabel, findBstPack, formatUsd } from '@/lib/pricing';
 import { formatDays } from '@/lib/format';
 import { prepareIdPhoto, PhotoError } from '@/lib/image';
 import { getCountries } from '@/lib/countries';
@@ -156,12 +156,17 @@ export default function RegistrationPage() {
     [selected, courses],
   );
   const quote = useMemo(() => computeQuote(chosen), [chosen]);
+  const pack = useMemo(() => findBstPack(courses), [courses]);
 
   const update = (k: keyof typeof EMPTY_FORM, v: string) =>
     setForm((f) => ({ ...f, [k]: v }));
 
   const toggle = (id: string) =>
     setSelected((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
+
+  const addPack = () => {
+    if (pack) setSelected((s) => [...s, ...pack.ids.filter((id) => !s.includes(id))]);
+  };
 
   const onPhoto = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -194,7 +199,12 @@ export default function RegistrationPage() {
       const receipt = await submitRegistration({
         ...form,
         photo_data_url: photo,
-        courses: chosen.map(({ id, name, price_usd }) => ({ id, name, price_usd })),
+        courses: chosen.map(({ id, name, imo_number, price_usd }) => ({
+          id,
+          name,
+          imo_number,
+          price_usd,
+        })),
       });
       setDone({ receipt, email: form.email.trim(), chosen });
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -256,6 +266,12 @@ export default function RegistrationPage() {
 
               {done.receipt.quote.total != null ? (
                 <dl className="mt-5 space-y-2 text-sm">
+                  {done.receipt.quote.discount > 0 && (
+                    <div className="flex justify-between text-emerald-300">
+                      <dt>Remise {BST_PACK.label}</dt>
+                      <dd>−{formatUsd(done.receipt.quote.discount)}</dd>
+                    </div>
+                  )}
                   <div className="flex justify-between text-slate-300">
                     <dt>Total</dt>
                     <dd>{formatUsd(done.receipt.quote.total)}</dd>
@@ -469,6 +485,23 @@ export default function RegistrationPage() {
                   {/* 3. Formations */}
                   <div className="card p-6 sm:p-8">
                     <SectionTitle n={3} title="Choisissez vos formations" />
+                    {pack && (
+                      <div className="mb-4 flex flex-col sm:flex-row sm:items-center gap-3 justify-between rounded-sm border border-[#e1b936]/40 bg-[#e1b936]/5 p-4">
+                        <p className="text-sm text-slate-200">
+                          <strong className="text-[#e1b936]">{BST_PACK.label}</strong> :
+                          formations {BST_PACK.imoNumbers.join(', ')} pour{' '}
+                          <strong>{formatUsd(BST_PACK.price)}</strong> au lieu de{' '}
+                          {formatUsd(pack.regular)}.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={addPack}
+                          className="btn-secondary whitespace-nowrap"
+                        >
+                          Ajouter le pack
+                        </button>
+                      </div>
+                    )}
                     <div className="relative mb-4">
                       <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                       <input
@@ -552,6 +585,12 @@ export default function RegistrationPage() {
                     <div className="mt-5 pt-5 border-t border-[#294769] space-y-2 text-sm">
                       {quote.total != null ? (
                         <>
+                          {quote.discount > 0 && (
+                            <div className="flex justify-between text-emerald-300">
+                              <span>Remise {BST_PACK.label}</span>
+                              <span>−{formatUsd(quote.discount)}</span>
+                            </div>
+                          )}
                           <div className="flex justify-between text-slate-300">
                             <span>Total</span>
                             <span>{formatUsd(quote.total)}</span>
