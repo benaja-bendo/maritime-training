@@ -1,6 +1,0 @@
-student_code,full_name,national_id,passport,course_name,imo_number,certificate_number,completed_on,valid_until
-STU-EXEMPLE1,Jean Exemple,0-000-0001,,,1.13,EX-0001,2024-03-15,2029-03-15
-STU-EXEMPLE1,Jean Exemple,0-000-0001,,,1.19,EX-0002,2019-06-10,2024-06-10
-STU-EXEMPLE2,Maria Exemple,,X0000002,,1.14,EX-0003,2025-01-20,
-,Paul Exemple,0-000-0003,X0000003,,1.07,EX-0004,2021-10-29,2026-10-29
-,Paul Exemple,0-000-0003,X0000003,Bridge Resources Management,,EX-0005,2026-10-01,2031-10-01

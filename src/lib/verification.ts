@@ -1,14 +1,14 @@
-// Logique partagée entre le site et le script d'import (scripts/import-certificates.mjs).
-// Syntaxe TypeScript « effaçable » uniquement (pas d'enum) : Node doit pouvoir l'exécuter tel quel.
+// Logique partagée entre le site public et l'espace d'administration.
+// Syntaxe TypeScript « effaçable » uniquement (pas d'enum), pour pouvoir l'exécuter aussi avec Node.
 
 export type VerificationMethod = 'student_code' | 'national_id' | 'passport';
-export type CertificateStatus = 'valid' | 'expired';
+export type CertificateStatus = 'valid' | 'expired' | 'revoked';
 
 // Majuscules, sans accents, sans espaces ni tirets : « 8-123-456 » et « 8123456 » donnent la même clé.
 export function normalizeIdentifier(raw: string): string {
   return raw
     .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
+    .replace(/\p{M}/gu, '')
     .toUpperCase()
     .replace(/[^A-Z0-9]/g, '');
 }
@@ -26,11 +26,13 @@ export function todayInPanama(now: Date = new Date()): string {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Panama' }).format(now);
 }
 
-// Un certificat reste valide pendant toute la journée de sa date d'échéance.
-// Sans date d'échéance, il n'expire pas.
+// Un certificat révoqué n'est jamais valide. Sinon, il reste valide pendant toute la journée
+// de sa date d'échéance ; sans date d'échéance, il n'expire pas.
 export function certificateStatus(
   validUntil: string | null,
   today: string = todayInPanama(),
+  revoked = false,
 ): CertificateStatus {
+  if (revoked) return 'revoked';
   return validUntil !== null && validUntil < today ? 'expired' : 'valid';
 }

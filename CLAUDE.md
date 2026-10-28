@@ -21,7 +21,6 @@ npm run typecheck   # tsc sans émission
 npm run lint        # ESLint
 npm run build       # build de production dans dist/
 npm run deploy      # build + firebase deploy --only hosting
-npm run certificates:import -- fichier.csv   # contrôle un CSV de certificats (voir « Vérification »)
 firebase deploy --only firestore:rules   # publier firestore.rules
 ```
 
@@ -39,8 +38,9 @@ le site fonctionne mais l'inscription répond « pas encore disponible ».
 - `src/lib/data.ts` : **seul point d'accès aux données**. Les pages n'importent rien d'autre pour lire ou écrire.
 - `src/lib/pricing.ts` : taux d'avance (`DEPOSIT_RATE`), pack BST (`BST_PACK`), calcul en centimes, format USD.
 - `src/lib/format.ts` : durées en français (virgule décimale, « 0,5 jour », « 13,25 h »). À utiliser pour tout affichage de durée.
-- `src/lib/verification.ts` : normalisation des numéros, clé de recherche (SHA-256), statut d'un certificat. Partagé avec le script d'import : syntaxe TypeScript sans enum.
-- `scripts/import-certificates.mjs` + `scripts/example-certificats.csv` : import des certificats dans Firestore.
+- `src/lib/verification.ts` : normalisation des numéros, clé de recherche (SHA-256), statut d'un certificat (valide / expiré / révoqué).
+- `src/lib/certificates.ts` (règles de publication, sans Firebase), `src/lib/csv-import.ts` (lecture et contrôle d'un CSV), `src/lib/admin-data.ts` et `src/lib/auth.ts` (accès Firestore et connexion de l'administration).
+- `src/pages/admin/` : espace d'administration, chargé à part (`/admin`). `public/modele-certificats.csv` : modèle d'import.
 - `src/lib/image.ts` : traitement de la photo d'identité. `src/lib/countries.ts` : liste des pays (français, Panama en tête).
 - `src/lib/firebase.ts` : initialisation Firebase, chargée à la demande (import dynamique) pour ne pas alourdir les autres pages.
 - `src/data/courses.ts` : catalogue de 51 formations.
@@ -71,26 +71,38 @@ Parcours voulu par le client : le candidat remplit le formulaire (nom, prénoms,
 
 ## Vérification des certificats (`/verification`)
 
-Trois méthodes de recherche : identifiant étudiant, numéro de carte d'identité, numéro de passeport. Le résultat affiche le nom, l'identifiant et les formations suivies, chacune avec son statut : **Valide** (« en cours de validité », jusqu'à sa date d'échéance incluse, ou sans échéance) ou **Expiré** (échéance dépassée, calculée à la date du jour au Panama). Ni photo, ni date de naissance, ni nationalité, ni numéro de pièce ne sont affichés.
+Trois méthodes de recherche : identifiant étudiant, numéro de carte d'identité, numéro de passeport. Le résultat affiche le nom, l'identifiant et les formations suivies, chacune avec son statut : **Valide** (« en cours de validité », jusqu'à sa date d'échéance incluse, ou sans échéance), **Expiré** (échéance dépassée, à la date du jour au Panama) ou **Révoqué**. Ni photo, ni date de naissance, ni nationalité, ni numéro de pièce ne sont affichés.
 
-**Modèle Firestore** (écriture réservée au personnel via le SDK admin ; le public ne peut que lire UN document précis, jamais lister) :
-- `certificate_keys/{sha256}` → `{ student_id }`. La clé est l'empreinte de `méthode:numéro normalisé` (majuscules, sans accents, espaces ni tirets : « 8-123-456 » = « 8123456 »). Aucun numéro en clair en base.
-- `students/{id aléatoire}` → `{ student_code, full_name, certificates[] }`, chaque certificat : `course_name, imo_number, certificate_number, completed_on, valid_until` (dates AAAA-MM-JJ, `valid_until` vide = pas d'expiration).
-- `site_status/verification` → `{ open: true }`, écrit par le premier import. **Tant qu'il est absent, la page affiche « Ouverture prochaine »** : une base vide répondrait « aucun dossier » à de vrais diplômés, ce qui serait trompeur.
+**Modèle Firestore** : le public ne peut lire qu'UN document précis, jamais lister ; l'écriture est réservée au personnel (voir ci-dessous).
+- `certificate_keys/{sha256}` → `{ student_id, audit_id }`. La clé est l'empreinte de `méthode:numéro normalisé` (majuscules, sans accents, espaces ni tirets : « 8-123-456 » = « 8123456 »). Aucun numéro en clair.
+- `students/{id aléatoire}` → version **publique** : `student_code, full_name, certificates[]` (certificats publiés ou révoqués seulement).
+- `admin_students/{id}` → dossier de **travail** du personnel : brouillons, numéros de pièce, notes. Jamais public.
+- `site_status/verification` → `{ open: true }`, écrit à la première publication. **Tant qu'il est absent, la page affiche « Ouverture prochaine »** : une base vide répondrait « aucun dossier » à de vrais diplômés.
 
-**Saisie des données** : pas d'interface d'administration. Le personnel remplit un CSV (modèle : `scripts/example-certificats.csv`, une ligne par certificat, dates AAAA-MM-JJ ou JJ/MM/AAAA, séparateur virgule ou point-virgule d'Excel), enregistré dans `data/` (ignoré par git : données personnelles). Le script contrôle tout avant d'écrire (formation inconnue, date invalide, doublon, noms incohérents...), regroupe les lignes d'une même personne, génère un identifiant `STU-XXXXXXXX` si absent et peut être relancé sans créer de doublons.
+**Limites connues** : un numéro de pièce ou un identifiant fonctionne comme un mot de passe faible. Sans serveur, rien ne limite le nombre d'essais. Les identifiants générés (`STU-` + 8 caractères aléatoires) résistent, pas des numéros de carte prévisibles. À renforcer avec **App Check** avant une large diffusion. Les données élèves de l'ancien prototype ne sont pas migrées.
 
-```bash
-npm run certificates:import -- data/certificats.csv                       # contrôle seulement
-FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 npm run certificates:import -- data/certificats.csv --write   # émulateur local
-GOOGLE_APPLICATION_CREDENTIALS=/chemin/cle.json npm run certificates:import -- data/certificats.csv --write --production
-```
+## Espace d'administration (`/admin`)
 
-La clé de compte de service (console Firebase > Paramètres du projet > Comptes de service) donne un accès total : la garder hors du dépôt. Pas de suppression via le script : supprimer un dossier et ses clés dans la console.
+Page interne (non liée depuis le site, `noindex`), chargée à part. Onglets : **Certificats**, **Inscriptions**, **Messages**, **Journal**.
 
-**Tester sans toucher à la production** (Java requis) : `firebase emulators:start --only firestore`, importer dans l'émulateur comme ci-dessus, puis `VITE_FIRESTORE_EMULATOR=127.0.0.1:8080 npm run dev`. Le dev server charge lentement dans certains Chrome (milliers de fichiers d'icônes) ; le navigateur intégré s'en sort.
+**Accès** : connexion Google. Un compte n'entre que si son e-mail (vérifié, en minuscules) est l'identifiant d'un document de la collection `admins`, créé **à la main** dans la console Firebase (Firestore > `admins` > nouveau document, ID = e-mail). Les règles Firestore font foi (fonction `isAdmin`), pas l'interface.
 
-**Limites connues** : un numéro de pièce ou un identifiant fonctionne comme un mot de passe faible. Sans serveur, rien ne limite le nombre d'essais : quelqu'un de patient pourrait tenter des numéros à la chaîne. Les identifiants générés (`STU-` + 8 caractères aléatoires) résistent, pas des numéros de carte prévisibles. À renforcer avec **App Check** avant une large diffusion. Les données élèves de l'ancien prototype ne sont pas migrées.
+**Cycle d'un certificat** (non négociable, voulu pour que le portail ne confirme que des formations réellement suivies) :
+- `brouillon` : invisible du public. Saisie libre, import CSV, ajout depuis le catalogue.
+- `publié` : visible dans la vérification. Exige : n° de certificat, date d'obtention, début et fin de session, mode (présentiel / en ligne / mixte), résultat « réussi », évaluateur, et des dates cohérentes (pas dans le futur). Une fois publié, le certificat **ne se modifie plus**.
+- `révoqué` : exige un motif ; la vérification publique l'affiche « Révoqué ». Une erreur se corrige en révoquant puis en créant un nouveau certificat.
+
+**Journal** : toute écriture sur un dossier ou une inscription est accompagnée, dans le même lot, d'une entrée `audit_log` (qui, quand, quoi). Les règles l'exigent (`existsAfter`) ; le journal est en ajout seul, ni modifiable ni supprimable depuis le site.
+
+**Import CSV** (dans l'onglet Certificats, modèle `public/modele-certificats.csv`) : une ligne par certificat, dates AAAA-MM-JJ ou JJ/MM/AAAA, séparateur virgule ou point-virgule (Excel), colonnes `student_code, full_name, national_id, passport, course_name, imo_number, certificate_number, completed_on, valid_until, session_start, session_end, mode, result, assessor`. Tout est contrôlé avant écriture, regroupé par personne (identifiants communs), importé **en brouillon**, relançable sans doublon ; un certificat publié n'est jamais modifié par un import. Plus de script Node ni de clé de compte de service.
+
+**Inscriptions** : statut (en attente d'avance, avance payée, en formation, solde à régler, terminée, annulée), montants et dates reçus, notes ; photo et pièce visibles. **Messages** : à traiter / traité.
+
+**Mise en service en production** (à faire par le propriétaire du projet) : activer le fournisseur **Google** (console Firebase > Authentication > Méthode de connexion) puis créer les documents `admins/<e-mail>`. Tant qu'aucun document `admins` n'existe, personne n'entre.
+
+**Tester sans toucher à la production** (Java requis) : `firebase emulators:start --only auth,firestore`, puis `VITE_FIRESTORE_EMULATOR=127.0.0.1:8080 VITE_AUTH_EMULATOR=127.0.0.1:9099 npm run dev`. Créer un administrateur de test : `curl -X PATCH -H 'Authorization: Bearer owner' -H 'Content-Type: application/json' -d '{"fields":{"role":{"stringValue":"test"}}}' "http://127.0.0.1:8080/v1/projects/maritime-training-app/databases/(default)/documents/admins/admin@example.com"`. En mode émulateur seulement, `window.__signInAs('admin@example.com')` ouvre une session sans fenêtre Google. Le serveur de dev charge lentement dans certains Chrome (milliers de fichiers d'icônes) ; le navigateur intégré s'en sort.
+
+**Limites** : pas de notification par e-mail (le personnel consulte l'espace) ni de paiement en ligne (Firebase Blaze requis pour des fonctions serveur) ; la liste des inscriptions charge les photos (200 au plus) ; la sécurité repose sur les règles Firestore et sur le contrôle d'accès à la console du projet (quiconque y est propriétaire peut tout modifier, journal compris).
 
 ## Données : état actuel
 
@@ -124,7 +136,7 @@ Le CLI Firebase est installé et connecté sur le poste du développeur. `fireba
   - **Fautes dans les noms** : « Seafare » (Able Seafare Deck), « Seafares » (Security Training For Seafares…), « Assesor » (Train The Simulator And Assesor).
   - **Intitulés incohérents** : « Updating » (7.01, 7.03, 7.04) et « Upgrading » (7.02) pour des cours de la même série. Durées très longues (105 à 196 jours) pour ces cours, à vérifier.
 - **Données de certificats** : à fournir par le client (nom, n° de carte d'identité et/ou passeport, formation, n° de certificat, dates d'obtention et d'échéance), puis à importer (voir « Vérification »). Il a parlé de « valide » ou « en cours de validité » : les deux mots sont traités comme un seul statut (**Valide**), l'autre étant **Expiré**. Si un autre statut est voulu (ex. formation en cours, certificat révoqué), le dire.
-- **Espace d'administration** (note vocale du client, 2026-10-29, transcrite localement) : à clarifier **avant** de construire. Le client veut inscrire lui-même des personnes « en mode administrateur », choisir les certificats « qu'ils devraient avoir » pour qu'ils apparaissent ensuite comme validés dans le portail de vérification, et évoque des gens qui ne suivent pas la formation et veulent des certificats « à la va-vite ». Un outil de saisie de formations **réellement suivies** est légitime ; un outil qui fait confirmer par le portail des certificats non acquis ne l'est pas (certificats de sécurité maritime). Si on construit, l'émission d'un certificat doit exiger des preuves de formation (session, dates, résultat) et laisser une trace d'audit (qui, quand).
+- **Espace d'administration** : le client a demandé (note vocale du 2026-10-29) à inscrire lui-même des personnes et à choisir leurs certificats. Après clarification relayée (usage légitime, besoin de maîtriser l'outil pendant les tests), il a été construit **avec les garde-fous ci-dessus** (brouillon, publication conditionnée à des preuves de session, journal). Ne pas les assouplir sans nouvelle clarification : ce sont des certificats de sécurité maritime. À faire : activer Google, créer les comptes `admins` (e-mails à fournir).
 - **Mode de paiement** de l'avance et du solde (virement, mobile money, carte...).
 - **E-mail de contact** : le client a fourni `info@pmts.online`, mais **`pmts.online` appartient à un tiers** (enregistré le 2025-12-04, site actif). Son domaine est `p-mts.online` (avec tiret). Mettre `SITE.email` uniquement quand une boîte existe réellement (ex. `info@p-mts.online`, à créer : il faudra un service de messagerie).
 - **Téléphone et WhatsApp** : valeurs fournies (`+507 000 000`, `+507 6000 0000`) invalides ou factices, donc `null` dans `src/config/site.ts`.

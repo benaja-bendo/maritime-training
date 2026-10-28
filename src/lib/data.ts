@@ -73,6 +73,7 @@ export async function findStudent(
         certificate_number: str(r.certificate_number),
         completed_on: completed,
         valid_until: str(r.valid_until),
+        revoked: r.revoked === true,
       };
     })
     .filter((c): c is NonNullable<typeof c> => c !== null)

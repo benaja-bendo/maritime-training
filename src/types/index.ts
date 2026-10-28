@@ -64,6 +64,7 @@ export interface Certificate {
   certificate_number: string | null;
   completed_on: string;
   valid_until: string | null;
+  revoked: boolean;
 }
 
 export interface VerifiedStudent {

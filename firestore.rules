@@ -3,35 +3,118 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Pré-inscriptions : le public peut en créer, jamais les lire, modifier ni supprimer.
-    // Seul le personnel y accède (console Firebase ou SDK admin).
+    // ---------- Fonctions communes ----------
+
+    function text(v, min, max) {
+      return v is string && v.size() >= min && v.size() <= max;
+    }
+
+    // Personnel autorisé : compte Google vérifié, dont l'e-mail figure dans la collection
+    // admins (créée à la main dans la console Firebase, jamais par le site).
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && exists(/databases/$(database)/documents/admins/$(request.auth.token.email.lower()));
+    }
+
+    // Toute écriture du personnel sur un dossier doit s'accompagner, dans le même lot,
+    // d'une entrée du journal d'audit (audit_log) qu'elle référence.
+    function hasAudit(d) {
+      return d.audit_id is string
+        && existsAfter(/databases/$(database)/documents/audit_log/$(d.audit_id));
+    }
+
+    // ---------- Personnel ----------
+
+    // Chacun peut seulement vérifier s'il figure dans la liste.
+    match /admins/{email} {
+      allow get: if request.auth != null && request.auth.token.email.lower() == email;
+      allow list, create, update, delete: if false;
+    }
+
+    // Journal d'audit : ajout seul, jamais modifié ni supprimé.
+    match /audit_log/{id} {
+      allow get, list: if isAdmin();
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasOnly(['actor', 'action', 'student_id', 'registration', 'detail', 'at'])
+        && request.resource.data.keys().hasAll(['actor', 'action', 'detail', 'at'])
+        && request.resource.data.actor == request.auth.token.email.lower()
+        && request.resource.data.at == request.time
+        && text(request.resource.data.action, 1, 80)
+        && text(request.resource.data.detail, 0, 2000);
+      allow update, delete: if false;
+    }
+
+    // ---------- Inscriptions : le public crée, le personnel suit ----------
+
     match /registrations/{ref} {
       allow create: if isValidRegistration(ref, request.resource.data);
-      allow read, update, delete: if false;
+      allow get, list: if isAdmin();
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['status', 'payments', 'admin_notes', 'audit_id', 'updated_by', 'updated_at'])
+        && request.resource.data.status in
+             ['pending_deposit', 'deposit_paid', 'in_training', 'balance_due', 'completed', 'cancelled']
+        && request.resource.data.updated_by == request.auth.token.email.lower()
+        && request.resource.data.updated_at == request.time
+        && hasAudit(request.resource.data);
+      allow delete: if false;
     }
 
-    // Messages du formulaire de contact : même principe, création seule.
+    // ---------- Messages de contact ----------
+
     match /contact_messages/{id} {
       allow create: if isValidContactMessage(request.resource.data);
-      allow read, update, delete: if false;
+      allow get, list: if isAdmin();
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['handled', 'handled_by', 'handled_at'])
+        && request.resource.data.handled is bool
+        && request.resource.data.handled_by in [request.auth.token.email.lower(), ''];
+      allow delete: if false;
     }
 
-    // Vérification de certificats : lecture d'un document précis seulement, jamais de liste.
-    // Les clés sont des empreintes SHA-256 de numéros (64 caractères hexadécimaux) ; les
-    // dossiers ont des identifiants aléatoires. Écriture réservée au personnel (SDK admin).
+    // ---------- Vérification des certificats ----------
+
+    // Public : lecture d'un document précis seulement, jamais de liste. Les clés sont des
+    // empreintes SHA-256 de numéros ; les dossiers ont des identifiants aléatoires.
+    // Écriture : personnel seulement, avec journal d'audit.
     match /certificate_keys/{key} {
       allow get: if key.matches('[0-9a-f]{64}');
-      allow list, create, update, delete: if false;
-    }
-    match /students/{id} {
-      allow get: if id.matches('[A-Za-z0-9]{20}');
-      allow list, create, update, delete: if false;
+      allow create: if isAdmin()
+        && key.matches('[0-9a-f]{64}')
+        && request.resource.data.keys().hasOnly(['student_id', 'audit_id'])
+        && hasAudit(request.resource.data);
+      allow delete: if isAdmin();
+      allow list, update: if false;
     }
 
-    // Marqueur d'ouverture du service de vérification (écrit par le script d'import).
+    // Dossier public : uniquement les certificats publiés ou révoqués (voir admin_students).
+    match /students/{id} {
+      allow get: if id.matches('[A-Za-z0-9]{20}');
+      allow create, update: if isAdmin()
+        && id.matches('[A-Za-z0-9]{20}')
+        && hasAudit(request.resource.data);
+      allow list, delete: if false;
+    }
+
+    // Dossier de travail du personnel : brouillons, numéros de pièce, notes. Jamais public.
+    match /admin_students/{id} {
+      allow get, list: if isAdmin();
+      allow create, update: if isAdmin()
+        && id.matches('[A-Za-z0-9]{20}')
+        && request.resource.data.updated_by == request.auth.token.email.lower()
+        && hasAudit(request.resource.data);
+      allow delete: if false;
+    }
+
+    // Marqueur d'ouverture du service de vérification.
     match /site_status/{id} {
       allow get: if id == 'verification';
-      allow list, create, update, delete: if false;
+      allow create, update: if isAdmin()
+        && id == 'verification'
+        && request.resource.data.open is bool;
+      allow list, delete: if false;
     }
 
     // Tout le reste est fermé.
@@ -39,9 +122,7 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
-    function text(v, min, max) {
-      return v is string && v.size() >= min && v.size() <= max;
-    }
+    // ---------- Validation des créations publiques ----------
 
     function isValidContactMessage(d) {
       return d.keys().hasOnly(['name', 'email', 'subject', 'message', 'created_at'])

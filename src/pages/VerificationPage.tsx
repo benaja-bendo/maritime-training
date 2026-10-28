@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { findStudent, isVerificationOpen, ServiceUnavailableError } from '@/lib/data';
 import { certificateStatus, normalizeIdentifier, todayInPanama } from '@/lib/verification';
 import type { VerificationMethod } from '@/lib/verification';
-import type { VerifiedStudent } from '@/types';
+import type { Certificate, VerifiedStudent } from '@/types';
 import {
   ShieldCheck,
   Search,
@@ -110,8 +110,10 @@ export default function VerificationPage() {
 
   const certificates = result?.student.certificates ?? [];
   const today = result?.checkedOn ?? todayInPanama();
-  const validCount = certificates.filter((c) => certificateStatus(c.valid_until, today) === 'valid').length;
-  const expiredCount = certificates.length - validCount;
+  const statusOf = (c: Certificate) => certificateStatus(c.valid_until, today, c.revoked);
+  const validCount = certificates.filter((c) => statusOf(c) === 'valid').length;
+  const expiredCount = certificates.filter((c) => statusOf(c) === 'expired').length;
+  const revokedCount = certificates.filter((c) => statusOf(c) === 'revoked').length;
 
   return (
     <div className="pt-16 md:pt-20">
@@ -282,6 +284,11 @@ export default function VerificationPage() {
                         {expiredCount} expiré{expiredCount > 1 ? 's' : ''}
                       </span>
                     )}
+                    {revokedCount > 0 && (
+                      <span className="px-3 py-1 rounded-full bg-red-500/10 text-red-300">
+                        {revokedCount} révoqué{revokedCount > 1 ? 's' : ''}
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -292,7 +299,8 @@ export default function VerificationPage() {
                 ) : (
                   <ul className="space-y-3">
                     {certificates.map((c, i) => {
-                      const expired = certificateStatus(c.valid_until, today) === 'expired';
+                      const status = statusOf(c);
+                      const expired = status !== 'valid';
                       return (
                         <li
                           key={`${c.certificate_number ?? c.course_name}-${i}`}
@@ -324,7 +332,9 @@ export default function VerificationPage() {
                               )}
                             </div>
                             <p className={`mt-1.5 text-sm ${expired ? 'text-red-300' : 'text-emerald-300/90'}`}>
-                              {c.valid_until
+                              {status === 'revoked'
+                                ? 'Ce certificat a été révoqué : il n’est plus valable.'
+                                : c.valid_until
                                 ? expired
                                   ? `Expiré depuis le ${formatDate(c.valid_until)}`
                                   : `En cours de validité jusqu’au ${formatDate(c.valid_until)}`
@@ -343,7 +353,7 @@ export default function VerificationPage() {
                             ) : (
                               <CheckCircle2 className="w-4 h-4" />
                             )}
-                            {expired ? 'Expiré' : 'Valide'}
+                            {status === 'revoked' ? 'Révoqué' : status === 'expired' ? 'Expiré' : 'Valide'}
                           </span>
                         </li>
                       );

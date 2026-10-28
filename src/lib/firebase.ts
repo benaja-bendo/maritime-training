@@ -17,9 +17,12 @@ export const isFirebaseConfigured = Boolean(
 
 let emulatorConnected = false;
 
+export function getFirebaseApp() {
+  return getApps().length ? getApp() : initializeApp(config);
+}
+
 export function getDb() {
-  const app = getApps().length ? getApp() : initializeApp(config);
-  const db = getFirestore(app);
+  const db = getFirestore(getFirebaseApp());
 
   // Tests locaux uniquement : `VITE_FIRESTORE_EMULATOR=127.0.0.1:8080 npm run dev`.
   // Ignoré dans le build de production (import.meta.env.DEV vaut false).
