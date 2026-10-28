@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-[#0b1b30] text-slate-100 antialiased;
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+}
+
+@layer components {
+  .container-app {
+    @apply max-w-7xl mx-auto px-5 sm:px-8 lg:px-10;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-sm bg-[#e1b936] text-[#08182d] font-bold transition-all hover:bg-[#f0cc58] active:scale-[0.98];
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-sm bg-transparent text-white font-semibold border border-slate-500 transition-all hover:border-[#e1b936] hover:text-[#e1b936] active:scale-[0.98];
+  }
+  .card {
+    @apply bg-[#102641] rounded-sm border border-[#294769] shadow-none transition-all hover:border-[#e1b936]/60;
+  }
+  .input-field {
+    @apply w-full px-4 py-3 rounded-sm border border-[#385371] bg-[#102641] text-white placeholder-slate-400 transition-colors focus:border-[#e1b936] focus:ring-1 focus:ring-[#e1b936]/40 outline-none;
+  }
+  .section-label {
+    @apply text-[#e1b936] text-xs font-bold uppercase tracking-[0.16em];
+  }
+  .gold-rule {
+    @apply inline-block w-10 h-px bg-[#e1b936] align-middle;
+  }
+}
+
+.prose h2, .prose h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
