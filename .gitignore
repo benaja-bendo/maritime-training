@@ -16,7 +16,14 @@ dist-ssr
 firebase-debug.log*
 firebase-export-*/
 
+# Données personnelles et clés : ne jamais versionner
+data/
+serviceAccount*.json
+*-firebase-adminsdk-*.json
+
 # Logs
+firestore-debug.log
+ui-debug.log
 logs
 *.log
 npm-debug.log*

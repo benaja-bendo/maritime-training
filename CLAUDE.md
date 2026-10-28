@@ -21,6 +21,7 @@ npm run typecheck   # tsc sans émission
 npm run lint        # ESLint
 npm run build       # build de production dans dist/
 npm run deploy      # build + firebase deploy --only hosting
+npm run certificates:import -- fichier.csv   # contrôle un CSV de certificats (voir « Vérification »)
 firebase deploy --only firestore:rules   # publier firestore.rules
 ```
 
@@ -38,6 +39,8 @@ le site fonctionne mais l'inscription répond « pas encore disponible ».
 - `src/lib/data.ts` : **seul point d'accès aux données**. Les pages n'importent rien d'autre pour lire ou écrire.
 - `src/lib/pricing.ts` : taux d'avance (`DEPOSIT_RATE`), pack BST (`BST_PACK`), calcul en centimes, format USD.
 - `src/lib/format.ts` : durées en français (virgule décimale, « 0,5 jour », « 13,25 h »). À utiliser pour tout affichage de durée.
+- `src/lib/verification.ts` : normalisation des numéros, clé de recherche (SHA-256), statut d'un certificat. Partagé avec le script d'import : syntaxe TypeScript sans enum.
+- `scripts/import-certificates.mjs` + `scripts/example-certificats.csv` : import des certificats dans Firestore.
 - `src/lib/image.ts` : traitement de la photo d'identité. `src/lib/countries.ts` : liste des pays (français, Panama en tête).
 - `src/lib/firebase.ts` : initialisation Firebase, chargée à la demande (import dynamique) pour ne pas alourdir les autres pages.
 - `src/data/courses.ts` : catalogue de 51 formations.
@@ -66,6 +69,29 @@ Parcours voulu par le client : le candidat remplit le formulaire (nom, prénoms,
 - Pas de paiement en ligne : l'écran de confirmation dit que les modalités seront communiquées par l'équipe, sauf si `SITE.paymentInstructions` est renseigné.
 - Recommandé avant une large diffusion : activer **App Check** (anti-abus) sur Firestore.
 
+## Vérification des certificats (`/verification`)
+
+Trois méthodes de recherche : identifiant étudiant, numéro de carte d'identité, numéro de passeport. Le résultat affiche le nom, l'identifiant et les formations suivies, chacune avec son statut : **Valide** (« en cours de validité », jusqu'à sa date d'échéance incluse, ou sans échéance) ou **Expiré** (échéance dépassée, calculée à la date du jour au Panama). Ni photo, ni date de naissance, ni nationalité, ni numéro de pièce ne sont affichés.
+
+**Modèle Firestore** (écriture réservée au personnel via le SDK admin ; le public ne peut que lire UN document précis, jamais lister) :
+- `certificate_keys/{sha256}` → `{ student_id }`. La clé est l'empreinte de `méthode:numéro normalisé` (majuscules, sans accents, espaces ni tirets : « 8-123-456 » = « 8123456 »). Aucun numéro en clair en base.
+- `students/{id aléatoire}` → `{ student_code, full_name, certificates[] }`, chaque certificat : `course_name, imo_number, certificate_number, completed_on, valid_until` (dates AAAA-MM-JJ, `valid_until` vide = pas d'expiration).
+- `site_status/verification` → `{ open: true }`, écrit par le premier import. **Tant qu'il est absent, la page affiche « Ouverture prochaine »** : une base vide répondrait « aucun dossier » à de vrais diplômés, ce qui serait trompeur.
+
+**Saisie des données** : pas d'interface d'administration. Le personnel remplit un CSV (modèle : `scripts/example-certificats.csv`, une ligne par certificat, dates AAAA-MM-JJ ou JJ/MM/AAAA, séparateur virgule ou point-virgule d'Excel), enregistré dans `data/` (ignoré par git : données personnelles). Le script contrôle tout avant d'écrire (formation inconnue, date invalide, doublon, noms incohérents...), regroupe les lignes d'une même personne, génère un identifiant `STU-XXXXXXXX` si absent et peut être relancé sans créer de doublons.
+
+```bash
+npm run certificates:import -- data/certificats.csv                       # contrôle seulement
+FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 npm run certificates:import -- data/certificats.csv --write   # émulateur local
+GOOGLE_APPLICATION_CREDENTIALS=/chemin/cle.json npm run certificates:import -- data/certificats.csv --write --production
+```
+
+La clé de compte de service (console Firebase > Paramètres du projet > Comptes de service) donne un accès total : la garder hors du dépôt. Pas de suppression via le script : supprimer un dossier et ses clés dans la console.
+
+**Tester sans toucher à la production** (Java requis) : `firebase emulators:start --only firestore`, importer dans l'émulateur comme ci-dessus, puis `VITE_FIRESTORE_EMULATOR=127.0.0.1:8080 npm run dev`. Le dev server charge lentement dans certains Chrome (milliers de fichiers d'icônes) ; le navigateur intégré s'en sort.
+
+**Limites connues** : un numéro de pièce ou un identifiant fonctionne comme un mot de passe faible. Sans serveur, rien ne limite le nombre d'essais : quelqu'un de patient pourrait tenter des numéros à la chaîne. Les identifiants générés (`STU-` + 8 caractères aléatoires) résistent, pas des numéros de carte prévisibles. À renforcer avec **App Check** avant une large diffusion. Les données élèves de l'ancien prototype ne sont pas migrées.
+
 ## Données : état actuel
 
 | Fonction (`src/lib/data.ts`) | État |
@@ -73,10 +99,10 @@ Parcours voulu par le client : le candidat remplit le formulaire (nom, prénoms,
 | `getCourses`, `getCourse` | Lisent `src/data/courses.ts` (statique) |
 | `submitRegistration` (page Inscription) | **Branché sur Firestore** (`registrations`) |
 | `submitContactMessage` (page Contact) | **Branché sur Firestore** (`contact_messages`, même principe : création seule, lecture par le personnel dans la console) |
-| `findStudentByCode` (page Vérification) | Lève `ServiceUnavailableError` : pas encore branché |
+| `findStudent`, `isVerificationOpen` (page Vérification) | **Branché sur Firestore** (`certificate_keys`, `students`, `site_status`) |
 | `submitVolunteer` (page Volontaires) | Lève `ServiceUnavailableError` : pas encore branché |
 
-Les deux dernières affichent volontairement « pas encore disponible ». Ne pas les faire répondre « introuvable » ou « envoyé » sans backend : sur un portail de vérification de certificats, ce serait trompeur. Pour les brancher : remplacer le corps de la fonction (signature et pages inchangées) et ajouter la collection correspondante dans `firestore.rules`.
+`submitVolunteer` affiche volontairement « pas encore disponible ». Ne pas la faire répondre « envoyé » sans backend. Pour la brancher : remplacer le corps de la fonction (signature et page inchangées) et ajouter la collection dans `firestore.rules`.
 
 ## Dépôt public : règles strictes
 
@@ -97,6 +123,7 @@ Le CLI Firebase est installé et connecté sur le poste du développeur. `fireba
   - **Doublons probables** : « Rating as Able Seafarer for Deck / Engine » et « Able Seafare Deck / Able Seafarer Engine » ont la même durée (5 jours, 40 h) et la liste de prix du client ne reprend que les deux premiers (voir plus haut).
   - **Fautes dans les noms** : « Seafare » (Able Seafare Deck), « Seafares » (Security Training For Seafares…), « Assesor » (Train The Simulator And Assesor).
   - **Intitulés incohérents** : « Updating » (7.01, 7.03, 7.04) et « Upgrading » (7.02) pour des cours de la même série. Durées très longues (105 à 196 jours) pour ces cours, à vérifier.
+- **Données de certificats** : à fournir par le client (nom, n° de carte d'identité et/ou passeport, formation, n° de certificat, dates d'obtention et d'échéance), puis à importer (voir « Vérification »). Il a parlé de « valide » ou « en cours de validité » : les deux mots sont traités comme un seul statut (**Valide**), l'autre étant **Expiré**. Si un autre statut est voulu (ex. formation en cours, certificat révoqué), le dire.
 - **Mode de paiement** de l'avance et du solde (virement, mobile money, carte...).
 - **E-mail de contact** : le client a fourni `info@pmts.online`, mais **`pmts.online` appartient à un tiers** (enregistré le 2025-12-04, site actif). Son domaine est `p-mts.online` (avec tiret). Mettre `SITE.email` uniquement quand une boîte existe réellement (ex. `info@p-mts.online`, à créer : il faudra un service de messagerie).
 - **Téléphone et WhatsApp** : valeurs fournies (`+507 000 000`, `+507 6000 0000`) invalides ou factices, donc `null` dans `src/config/site.ts`.

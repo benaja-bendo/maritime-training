@@ -632,7 +632,7 @@ export default function RegistrationPage() {
                     <span>
                       J’accepte que mes données personnelles (identité, numéro de pièce
                       d’identité, photo) soient utilisées par {SITE.name} pour traiter mon
-                      inscription et établir mes documents de formation. *
+                      inscription, établir mes documents de formation et permettre la vérification en ligne de mes certificats (nom et formations suivies). *
                     </span>
                   </label>
 

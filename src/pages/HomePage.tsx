@@ -41,7 +41,7 @@ export default function HomePage() {
                 icon: ShieldCheck,
                 to: '/verification',
                 title: 'Vérification de documents',
-                desc: 'Entrez un identifiant étudiant pour consulter son dossier et ses certificats.',
+                desc: 'Entrez l’identifiant, le numéro de pièce d’identité ou de passeport pour consulter les certificats et leur statut.',
                 cta: 'Vérifier un document',
               },
               {
@@ -100,8 +100,8 @@ export default function HomePage() {
             Vérifiez un certificat en ligne
           </h2>
           <p className="mt-4 text-slate-300">
-            Chaque étudiant possède un identifiant unique. Entrez-le pour accéder
-            instantanément à son dossier de formation.
+            Retrouvez les formations d’un étudiant et le statut de ses certificats
+            (valide ou expiré) avec son identifiant, sa carte d’identité ou son passeport.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link to="/verification" className="btn-primary">

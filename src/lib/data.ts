@@ -3,15 +3,17 @@ import type {
   Course,
   RegistrationInput,
   RegistrationReceipt,
-  VerificationResult,
+  VerifiedStudent,
   VolunteerInput,
 } from '@/types';
 import { COURSES } from '@/data/courses';
 import { computeQuote, DEPOSIT_RATE } from '@/lib/pricing';
+import { lookupKey } from '@/lib/verification';
+import type { VerificationMethod } from '@/lib/verification';
 
 // Couche d'accès aux données : les pages n'importent que ce fichier.
-// Les cours viennent du fichier statique ; les inscriptions sont enregistrées dans Firestore ;
-// la vérification et les candidatures volontaires attendent Firestore (voir CLAUDE.md).
+// Les cours viennent du fichier statique ; les inscriptions, messages et vérifications
+// passent par Firestore ; les candidatures volontaires attendent Firestore (voir CLAUDE.md).
 
 export class ServiceUnavailableError extends Error {
   constructor(message = "Ce service n'est pas encore disponible.") {
@@ -28,12 +30,65 @@ export async function getCourse(id: string): Promise<Course | null> {
   return COURSES.find((c) => c.id === id) ?? null;
 }
 
-export async function findStudentByCode(
-  _code: string,
-): Promise<VerificationResult | null> {
-  throw new ServiceUnavailableError(
-    "La vérification de documents n'est pas encore disponible.",
-  );
+const str = (v: unknown): string | null => (typeof v === 'string' && v ? v : null);
+
+// Recherche un étudiant par identifiant, numéro de carte d'identité ou numéro de passeport.
+// Deux lectures par document exact (jamais de liste) : la clé (empreinte du numéro) renvoie
+// l'identifiant du dossier, puis le dossier public. Renvoie null si aucun dossier n'existe.
+export async function findStudent(
+  method: VerificationMethod,
+  value: string,
+): Promise<VerifiedStudent | null> {
+  const { isFirebaseConfigured, getDb } = await import('@/lib/firebase');
+  if (!isFirebaseConfigured) {
+    throw new ServiceUnavailableError(
+      "La vérification de documents n'est pas encore disponible.",
+    );
+  }
+  const { doc, getDoc } = await import('firebase/firestore');
+  const db = getDb();
+
+  const key = await lookupKey(method, value);
+  const alias = await withTimeout(getDoc(doc(db, 'certificate_keys', key)), 15_000);
+  const studentId = alias.exists() ? str(alias.data().student_id) : null;
+  if (!studentId) return null;
+
+  const snap = await withTimeout(getDoc(doc(db, 'students', studentId)), 15_000);
+  if (!snap.exists()) return null;
+  const d = snap.data();
+  const fullName = str(d.full_name);
+  const code = str(d.student_code);
+  if (!fullName || !code) return null;
+
+  const raw: unknown[] = Array.isArray(d.certificates) ? d.certificates : [];
+  const certificates = raw
+    .map((c) => {
+      const r = (c ?? {}) as Record<string, unknown>;
+      const name = str(r.course_name);
+      const completed = str(r.completed_on);
+      if (!name || !completed) return null;
+      return {
+        course_name: name,
+        imo_number: str(r.imo_number),
+        certificate_number: str(r.certificate_number),
+        completed_on: completed,
+        valid_until: str(r.valid_until),
+      };
+    })
+    .filter((c): c is NonNullable<typeof c> => c !== null)
+    .sort((a, b) => b.completed_on.localeCompare(a.completed_on));
+
+  return { student_code: code, full_name: fullName, certificates };
+}
+
+// La vérification n'ouvre qu'une fois les certificats importés : le script d'import écrit
+// ce marqueur. Tant qu'il est absent, « aucun dossier » ne voudrait rien dire (la base est vide).
+export async function isVerificationOpen(): Promise<boolean> {
+  const { isFirebaseConfigured, getDb } = await import('@/lib/firebase');
+  if (!isFirebaseConfigured) return false;
+  const { doc, getDoc } = await import('firebase/firestore');
+  const snap = await withTimeout(getDoc(doc(getDb(), 'site_status', 'verification')), 15_000);
+  return snap.exists() && snap.data().open === true;
 }
 
 export async function submitVolunteer(_volunteer: VolunteerInput): Promise<void> {

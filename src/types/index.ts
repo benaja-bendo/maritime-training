@@ -9,25 +9,6 @@ export interface Course {
   price_usd: number | null;
 }
 
-export interface Student {
-  id: string;
-  student_code: string;
-  full_name: string;
-  nationality: string | null;
-  date_of_birth: string | null;
-  photo_url: string | null;
-}
-
-export interface StudentCourse {
-  id: string;
-  student_id: string;
-  course_id: string;
-  completion_date: string | null;
-  certificate_number: string | null;
-  status: string;
-  course: Course;
-}
-
 export interface Volunteer {
   id: string;
   full_name: string;
@@ -38,11 +19,6 @@ export interface Volunteer {
   message: string | null;
   status: string;
   created_at: string;
-}
-
-export interface VerificationResult {
-  student: Student;
-  courses: StudentCourse[];
 }
 
 export type VolunteerInput = Pick<
@@ -80,4 +56,18 @@ export interface ContactInput {
   email: string;
   subject: string;
   message: string;
+}
+
+export interface Certificate {
+  course_name: string;
+  imo_number: string | null;
+  certificate_number: string | null;
+  completed_on: string;
+  valid_until: string | null;
+}
+
+export interface VerifiedStudent {
+  student_code: string;
+  full_name: string;
+  certificates: Certificate[];
 }

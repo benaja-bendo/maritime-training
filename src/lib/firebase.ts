@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
 
 // Ce module est chargé à la demande (import dynamique depuis data.ts) pour ne pas
 // alourdir les pages qui n'utilisent pas Firebase.
@@ -15,7 +15,19 @@ export const isFirebaseConfigured = Boolean(
   config.apiKey && config.projectId && config.appId,
 );
 
+let emulatorConnected = false;
+
 export function getDb() {
   const app = getApps().length ? getApp() : initializeApp(config);
-  return getFirestore(app);
+  const db = getFirestore(app);
+
+  // Tests locaux uniquement : `VITE_FIRESTORE_EMULATOR=127.0.0.1:8080 npm run dev`.
+  // Ignoré dans le build de production (import.meta.env.DEV vaut false).
+  const emulator = import.meta.env.DEV ? import.meta.env.VITE_FIRESTORE_EMULATOR : undefined;
+  if (emulator && !emulatorConnected) {
+    const [host, port] = String(emulator).split(':');
+    connectFirestoreEmulator(db, host, Number(port));
+    emulatorConnected = true;
+  }
+  return db;
 }

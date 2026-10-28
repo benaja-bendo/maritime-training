@@ -16,6 +16,24 @@ service cloud.firestore {
       allow read, update, delete: if false;
     }
 
+    // Vérification de certificats : lecture d'un document précis seulement, jamais de liste.
+    // Les clés sont des empreintes SHA-256 de numéros (64 caractères hexadécimaux) ; les
+    // dossiers ont des identifiants aléatoires. Écriture réservée au personnel (SDK admin).
+    match /certificate_keys/{key} {
+      allow get: if key.matches('[0-9a-f]{64}');
+      allow list, create, update, delete: if false;
+    }
+    match /students/{id} {
+      allow get: if id.matches('[A-Za-z0-9]{20}');
+      allow list, create, update, delete: if false;
+    }
+
+    // Marqueur d'ouverture du service de vérification (écrit par le script d'import).
+    match /site_status/{id} {
+      allow get: if id == 'verification';
+      allow list, create, update, delete: if false;
+    }
+
     // Tout le reste est fermé.
     match /{document=**} {
       allow read, write: if false;
