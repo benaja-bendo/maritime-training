@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { getCourses } from '@/lib/data';
+import { formatUsd } from '@/lib/pricing';
 import type { Course } from '@/types';
 import {
   Search,
@@ -165,6 +166,11 @@ export default function CoursesPage() {
                         <Clock className="w-4 h-4" />
                         {course.duration_hours != null ? `${course.duration_hours} h` : '—'}
                       </span>
+                      {course.price_usd != null && (
+                        <span className="ml-auto font-semibold text-[#e1b936]">
+                          {formatUsd(course.price_usd)}
+                        </span>
+                      )}
                     </div>
 
                     <span className="mt-4 inline-flex items-center gap-1.5 text-[#e1b936] font-semibold text-sm group-hover:gap-2.5 transition-all">

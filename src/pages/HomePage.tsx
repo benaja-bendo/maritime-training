@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ShieldCheck, Award, Users, Waves, Search, HeartHandshake, BookOpen } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Award, Users, Waves, Search, HeartHandshake, BookOpen, GraduationCap } from 'lucide-react';
 import Hero from '@/components/Hero';
 
 export default function HomePage() {
@@ -16,12 +16,12 @@ export default function HomePage() {
               Tout votre parcours maritime en un seul lieu
             </h2>
             <p className="mt-4 text-slate-300">
-              Consultez le catalogue, vérifiez vos documents et rejoignez notre réseau
-              de volontaires.
+              Consultez le catalogue, inscrivez-vous en ligne, vérifiez vos documents
+              et rejoignez notre réseau de volontaires.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
                 icon: BookOpen,
@@ -29,6 +29,13 @@ export default function HomePage() {
                 title: 'Catalogue de formations',
                 desc: 'Plus de 50 cours certifiés STCW et MLC, de la sécurité de base au grade d’officier.',
                 cta: 'Voir les formations',
+              },
+              {
+                icon: GraduationCap,
+                to: '/inscription',
+                title: 'Inscription en ligne',
+                desc: 'Choisissez vos modules, consultez les tarifs et réglez une avance pour finaliser votre inscription.',
+                cta: 'S’inscrire',
               },
               {
                 icon: ShieldCheck,

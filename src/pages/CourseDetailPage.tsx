@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getCourse } from '@/lib/data';
+import { depositLabel, formatUsd } from '@/lib/pricing';
 import type { Course } from '@/types';
 import {
+  GraduationCap,
   ArrowLeft,
   Clock,
   Calendar,
@@ -137,6 +139,34 @@ export default function CourseDetailPage() {
                 <span className="text-slate-200 text-sm">{item}</span>
               </div>
             ))}
+          </div>
+
+          {/* Inscription */}
+          <div className="mt-10 p-6 sm:p-8 rounded-2xl border border-[#e1b936]/40 bg-[#102641] text-white flex flex-col sm:flex-row items-start sm:items-center gap-5 justify-between">
+            <div className="flex items-center gap-4">
+              <GraduationCap className="w-8 h-8 text-[#e1b936] shrink-0" />
+              <div>
+                <h3 className="font-semibold text-lg">Suivre cette formation en ligne</h3>
+                <p className="text-slate-300 text-sm mt-0.5">
+                  {course.price_usd != null ? (
+                    <>
+                      Tarif :{' '}
+                      <strong className="text-[#e1b936]">{formatUsd(course.price_usd)}</strong>.{' '}
+                    </>
+                  ) : (
+                    'Tarif à confirmer par notre équipe. '
+                  )}
+                  Avance de {depositLabel} à l’inscription, solde à régler après la formation.
+                </p>
+              </div>
+            </div>
+            <Link
+              to={`/inscription?cours=${course.id}`}
+              className="btn-primary whitespace-nowrap"
+            >
+              <GraduationCap className="w-4 h-4" />
+              S’inscrire
+            </Link>
           </div>
 
           {/* CTA */}

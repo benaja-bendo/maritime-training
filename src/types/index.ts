@@ -6,6 +6,7 @@ export interface Course {
   duration_hours: number | null;
   category: string;
   image_url: string | null;
+  price_usd: number | null;
 }
 
 export interface Student {
@@ -48,3 +49,27 @@ export type VolunteerInput = Pick<
   Volunteer,
   'full_name' | 'email' | 'phone' | 'position' | 'experience' | 'message'
 >;
+
+export interface Quote {
+  total: number | null;
+  deposit: number | null;
+  balance: number | null;
+}
+
+export type IdType = 'national_id' | 'passport';
+
+export interface RegistrationInput {
+  last_name: string;
+  first_names: string;
+  email: string;
+  nationality: string;
+  id_type: IdType;
+  id_number: string;
+  photo_data_url: string;
+  courses: Pick<Course, 'id' | 'name' | 'price_usd'>[];
+}
+
+export interface RegistrationReceipt {
+  reference: string;
+  quote: Quote;
+}

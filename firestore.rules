@@ -1,0 +1,59 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Pré-inscriptions : le public peut en créer, jamais les lire, modifier ni supprimer.
+    // Seul le personnel y accède (console Firebase ou SDK admin).
+    match /registrations/{ref} {
+      allow create: if isValidRegistration(ref, request.resource.data);
+      allow read, update, delete: if false;
+    }
+
+    // Tout le reste est fermé.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function text(v, min, max) {
+      return v is string && v.size() >= min && v.size() <= max;
+    }
+
+    function isValidRegistration(ref, d) {
+      return d.keys().hasOnly([
+          'reference', 'last_name', 'first_names', 'email', 'nationality',
+          'id_type', 'id_number', 'photo_data_url', 'courses',
+          'quote_total_usd', 'quote_deposit_usd', 'deposit_rate',
+          'status', 'consent_at', 'created_at'
+        ])
+        && d.keys().hasAll([
+          'reference', 'last_name', 'first_names', 'email', 'nationality',
+          'id_type', 'id_number', 'photo_data_url', 'courses',
+          'quote_total_usd', 'quote_deposit_usd', 'deposit_rate',
+          'status', 'consent_at', 'created_at'
+        ])
+        && ref.matches('PMTS-[A-HJ-NP-Z2-9]{8}')
+        && d.reference == ref
+        && text(d.last_name, 1, 80)
+        && text(d.first_names, 1, 120)
+        && text(d.nationality, 2, 80)
+        && text(d.email, 5, 120)
+        && d.email.matches('[^@ ]+@[^@ ]+\\.[^@ ]+')
+        && d.id_type in ['national_id', 'passport']
+        && text(d.id_number, 4, 30)
+        && text(d.photo_data_url, 100, 400000)
+        && d.photo_data_url.matches('data:image/jpeg;base64,.*')
+        && d.courses is list
+        && d.courses.size() >= 1
+        && d.courses.size() <= 15
+        && (d.quote_total_usd == null || (d.quote_total_usd is number && d.quote_total_usd >= 0))
+        && (d.quote_deposit_usd == null || (d.quote_deposit_usd is number && d.quote_deposit_usd >= 0))
+        && d.deposit_rate is number
+        && d.deposit_rate > 0
+        && d.deposit_rate <= 1
+        && d.status == 'pending_deposit'
+        && d.consent_at == request.time
+        && d.created_at == request.time;
+    }
+  }
+}
