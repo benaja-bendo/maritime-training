@@ -1,6 +1,16 @@
 import { Link } from 'react-router-dom';
-import { Anchor, Ship, Waves, Mail, MapPin, Phone } from 'lucide-react';
+import { Anchor, Ship, Waves, Mail, MapPin, Phone, Clock } from 'lucide-react';
 import { SITE } from '@/config/site';
+
+const COURSE_GROUPS = [
+  'Sécurité de base STCW',
+  'Programmes des officiers',
+  'Opérations des pétroliers',
+  'Navigation et simulateurs',
+  'Médical et lutte contre les incendies',
+];
+
+const ACCREDITATIONS = ['AMP', 'IMO', 'STCW', 'OPITO'];
 
 export default function Footer() {
   return (
@@ -13,10 +23,7 @@ export default function Footer() {
             </div>
             <span className="font-semibold text-sm text-white leading-tight">Panama Maritime<br />Training Services</span>
           </div>
-          <p className="text-sm text-slate-400 leading-relaxed">
-            Centre de formation maritime du Panama. Formations conformes aux standards
-            internationaux STCW et MLC.
-          </p>
+          <p className="text-sm text-slate-400 leading-relaxed">{SITE.tagline}</p>
         </div>
 
         <div>
@@ -25,10 +32,12 @@ export default function Footer() {
           </h4>
           <ul className="space-y-2 text-sm">
             <li><Link to="/" className="hover:text-[#e1b936] transition-colors">Accueil</Link></li>
+            <li><Link to="/a-propos" className="hover:text-[#e1b936] transition-colors">À propos</Link></li>
             <li><Link to="/formations" className="hover:text-[#e1b936] transition-colors">Formations</Link></li>
             <li><Link to="/inscription" className="hover:text-[#e1b936] transition-colors">Inscription</Link></li>
             <li><Link to="/verification" className="hover:text-[#e1b936] transition-colors">Vérification</Link></li>
             <li><Link to="/volontaires" className="hover:text-[#e1b936] transition-colors">Volontaires</Link></li>
+            <li><Link to="/contact" className="hover:text-[#e1b936] transition-colors">Contact</Link></li>
           </ul>
         </div>
 
@@ -37,10 +46,9 @@ export default function Footer() {
             <Waves className="w-4 h-4 text-[#e1b936]" /> Formations
           </h4>
           <ul className="space-y-2 text-sm text-slate-400">
-            <li>Sécurité de base</li>
-            <li>Officiers pont & machine</li>
-            <li>Tankers & cargaisons</li>
-            <li>Sécurité & sauvetage</li>
+            {COURSE_GROUPS.map((g) => (
+              <li key={g}>{g}</li>
+            ))}
           </ul>
         </div>
 
@@ -63,13 +71,31 @@ export default function Footer() {
                 <span>{SITE.email}</span>
               </li>
             )}
+            {SITE.hours && (
+              <li className="flex items-start gap-2">
+                <Clock className="w-4 h-4 text-[#e1b936] mt-0.5 shrink-0" />
+                <span>{SITE.hours}</span>
+              </li>
+            )}
           </ul>
         </div>
       </div>
 
       <div className="border-t border-[#294769]">
-        <div className="container-app py-6 text-center text-sm text-slate-400">
-          © {new Date().getFullYear()} {SITE.name}. Tous droits réservés.
+        <div className="container-app py-6 text-center text-sm text-slate-400 space-y-2">
+          <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs uppercase tracking-widest">
+            <span className="text-slate-500">Accréditations</span>
+            {ACCREDITATIONS.map((a) => (
+              <span key={a} className="font-semibold text-[#e1b936]">{a}</span>
+            ))}
+          </p>
+          <p>
+            © {new Date().getFullYear()} {SITE.name}. Tous droits réservés. Enregistré dans
+            la {SITE.country}.
+          </p>
+          <p className="text-xs text-slate-500">
+            Certifié en vertu de la convention STCW et de la réglementation AMP
+          </p>
         </div>
       </div>
     </footer>

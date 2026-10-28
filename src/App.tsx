@@ -6,6 +6,8 @@ import CourseDetailPage from '@/pages/CourseDetailPage';
 import VerificationPage from '@/pages/VerificationPage';
 import VolunteersPage from '@/pages/VolunteersPage';
 import RegistrationPage from '@/pages/RegistrationPage';
+import AboutPage from '@/pages/AboutPage';
+import ContactPage from '@/pages/ContactPage';
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
+          <Route path="/a-propos" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="/formations" element={<CoursesPage />} />
           <Route path="/formations/:id" element={<CourseDetailPage />} />
           <Route path="/inscription" element={<RegistrationPage />} />

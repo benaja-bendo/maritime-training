@@ -32,9 +32,9 @@ le site fonctionne mais l'inscription répond « pas encore disponible ».
 
 ## Structure
 
-- `src/App.tsx` : routes (`/`, `/formations`, `/formations/:id`, `/inscription`, `/verification`, `/volontaires`).
-- `src/pages/` : une page par route. `src/components/` : Header, Footer, Hero, Layout, ScrollToTop.
-- `src/config/site.ts` : **nom, pays, adresse, téléphone, e-mail, instructions de paiement**. Un champ à `null` n'est pas affiché.
+- `src/App.tsx` : routes (`/`, `/a-propos`, `/formations`, `/formations/:id`, `/inscription`, `/verification`, `/volontaires`, `/contact`).
+- `src/pages/` : une page par route. `src/components/` : Header, Footer, Hero, Layout, ScrollToTop. Le contenu de `AboutPage` et `ContactPage` (textes du client) est en tête de fichier, sous forme de tableaux.
+- `src/config/site.ts` : **nom, pays, slogan, adresse, horaires, téléphone, WhatsApp, e-mail, instructions de paiement**. Un champ à `null` n'est pas affiché (en-tête de page Contact, pied de page).
 - `src/lib/data.ts` : **seul point d'accès aux données**. Les pages n'importent rien d'autre pour lire ou écrire.
 - `src/lib/pricing.ts` : taux d'avance (`DEPOSIT_RATE`), calcul en centimes, format USD.
 - `src/lib/format.ts` : durées en français (virgule décimale, « 0,5 jour », « 13,25 h »). À utiliser pour tout affichage de durée.
@@ -70,7 +70,8 @@ Parcours voulu par le client : le candidat remplit le formulaire (nom, prénoms,
 | Fonction (`src/lib/data.ts`) | État |
 | --- | --- |
 | `getCourses`, `getCourse` | Lisent `src/data/courses.ts` (statique) |
-| `submitRegistration` (page Inscription) | **Branché sur Firestore** |
+| `submitRegistration` (page Inscription) | **Branché sur Firestore** (`registrations`) |
+| `submitContactMessage` (page Contact) | **Branché sur Firestore** (`contact_messages`, même principe : création seule, lecture par le personnel dans la console) |
 | `findStudentByCode` (page Vérification) | Lève `ServiceUnavailableError` : pas encore branché |
 | `submitVolunteer` (page Volontaires) | Lève `ServiceUnavailableError` : pas encore branché |
 
@@ -96,9 +97,13 @@ Le CLI Firebase est installé et connecté sur le poste du développeur. `fireba
   - **Fautes dans les noms** : « Seafare » (Able Seafare Deck), « Seafares » (Security Training For Seafares…), « Assesor » (Train The Simulator And Assesor).
   - **Intitulés incohérents** : « Updating » (7.01, 7.03, 7.04) et « Upgrading » (7.02) pour des cours de la même série. Durées très longues (105 à 196 jours) pour ces cours, à vérifier.
 - **Mode de paiement** de l'avance et du solde (virement, mobile money, carte...).
-- **Coordonnées** (adresse, téléphone, e-mail) : à saisir dans `src/config/site.ts`. Les anciennes valeurs (Marseille, +33) étaient factices et ont été retirées.
-- **Références panaméennes** : agrément éventuel de l'Autorité maritime du Panama (AMP), numéro d'autorisation. Ne rien affirmer sans document du client.
-- **Chiffres du site** (« 1200+ étudiants », « 15 ans d'expérience », « 100 % certifiées ») hérités du prototype, non vérifiés.
+- **E-mail de contact** : le client a fourni `info@pmts.online`, mais **`pmts.online` appartient à un tiers** (enregistré le 2025-12-04, site actif). Son domaine est `p-mts.online` (avec tiret). Mettre `SITE.email` uniquement quand une boîte existe réellement (ex. `info@p-mts.online`, à créer : il faudra un service de messagerie).
+- **Téléphone et WhatsApp** : valeurs fournies (`+507 000 000`, `+507 6000 0000`) invalides ou factices, donc `null` dans `src/config/site.ts`.
+- **Page À propos** (texte fourni par le client, repris tel quel à de petites corrections typographiques près) : contient des affirmations à **faire documenter avant mise en ligne publique** : accréditation complète AMP en 2016, reconnaissance OPITO, 2 000 diplômés de 40 nationalités, fondation en 2014, noms, titres et parcours de 4 instructeurs, équipements (simulateurs, piscine, etc.). Le texte ressemble par endroits à un modèle générique (incohérence copyright 2011 / fondation 2014, coordonnées factices, mentions « Catégorie: » parasites retirées). Pour des certificats de sécurité maritime, une fausse accréditation est un risque juridique sérieux.
+- **Chiffres de l'accueil** (50+ formations, 2 000 diplômés, 40+ nationalités, 2014) alignés sur la page À propos du client ; ils remplacent « 1200+ étudiants / 15 ans / 100 % certifiées » du prototype.
+- **FAQ** (page Contact) : le client a fourni les questions sans réponses. Les réponses actuelles sont provisoires, rédigées à partir des informations déjà données (parcours d'inscription, plateforme en ligne) et renvoient vers le formulaire pour le reste. À faire valider ou remplacer, surtout : modes de paiement, délai d'obtention du certificat, reconnaissance internationale, réservations de groupe.
+- **Pied de page** : la liste « Offshore & BOSIET » fournie par le client n'a **pas été reprise** : aucune formation offshore/BOSIET n'existe dans le catalogue de 51 cours.
+- **Pages légales manquantes** : « Politique de confidentialité », « Conditions d'utilisation » et « Certifications » sont citées par le client mais n'existent pas. La politique de confidentialité est nécessaire dès maintenant puisque le site collecte des pièces d'identité et des photos.
 - **Langue** : le site est en français ; le Panama est hispanophone, une version espagnole ou anglaise est peut-être attendue.
 
 ## Points connus

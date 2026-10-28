@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ShieldCheck, Award, Users, Waves, BookOpen } from 'lucide-react';
+import { ArrowRight, Globe, Award, Users, Waves, BookOpen } from 'lucide-react';
 import { SITE } from '@/config/site';
 
 export default function Hero() {
@@ -59,9 +59,9 @@ export default function Hero() {
           <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-2xl border-t border-[#6b7c91]/40 pt-6">
             {[
               { icon: Award, value: '50+', label: 'Formations' },
-              { icon: Users, value: '1200+', label: 'Étudiants' },
-              { icon: ShieldCheck, value: '100%', label: 'Certifiées' },
-              { icon: Waves, value: '15 ans', label: "D'expérience" },
+              { icon: Users, value: '2 000', label: 'Diplômés' },
+              { icon: Globe, value: '40+', label: 'Nationalités' },
+              { icon: Waves, value: '2014', label: 'Année de fondation' },
             ].map((stat) => (
               <div key={stat.label} className="text-center sm:text-left">
                 <stat.icon className="w-5 h-5 text-[#e1b936] mb-2 mx-auto sm:mx-0" />

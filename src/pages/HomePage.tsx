@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ShieldCheck, Award, Users, Waves, Search, HeartHandshake, BookOpen, GraduationCap } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Award, Users, Waves, Globe, Search, HeartHandshake, BookOpen, GraduationCap } from 'lucide-react';
 import Hero from '@/components/Hero';
 
 export default function HomePage() {
@@ -78,9 +78,9 @@ export default function HomePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
               { icon: Award, value: '50+', label: 'Formations' },
-              { icon: Users, value: '1200+', label: 'Étudiants' },
-              { icon: ShieldCheck, value: '100%', label: 'Certifiées' },
-              { icon: Waves, value: '15 ans', label: "D'expérience" },
+              { icon: Users, value: '2 000', label: 'Diplômés' },
+              { icon: Globe, value: '40+', label: 'Nationalités' },
+              { icon: Waves, value: '2014', label: 'Année de fondation' },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
                 <stat.icon className="w-6 h-6 text-[#e1b936] mb-3 mx-auto" />

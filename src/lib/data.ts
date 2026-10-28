@@ -1,4 +1,5 @@
 import type {
+  ContactInput,
   Course,
   RegistrationInput,
   RegistrationReceipt,
@@ -107,4 +108,26 @@ export async function submitRegistration(
   );
 
   return { reference, quote };
+}
+
+// Enregistre un message du formulaire de contact. Le personnel le lit dans la console Firebase.
+export async function submitContactMessage(input: ContactInput): Promise<void> {
+  const { isFirebaseConfigured, getDb } = await import('@/lib/firebase');
+  if (!isFirebaseConfigured) {
+    throw new ServiceUnavailableError(
+      "L'envoi de messages n'est pas encore disponible.",
+    );
+  }
+  const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+
+  await withTimeout(
+    addDoc(collection(getDb(), 'contact_messages'), {
+      name: input.name.trim(),
+      email: input.email.trim(),
+      subject: input.subject.trim(),
+      message: input.message.trim(),
+      created_at: serverTimestamp(),
+    }),
+    20_000,
+  );
 }

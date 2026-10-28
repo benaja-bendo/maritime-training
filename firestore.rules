@@ -10,6 +10,12 @@ service cloud.firestore {
       allow read, update, delete: if false;
     }
 
+    // Messages du formulaire de contact : même principe, création seule.
+    match /contact_messages/{id} {
+      allow create: if isValidContactMessage(request.resource.data);
+      allow read, update, delete: if false;
+    }
+
     // Tout le reste est fermé.
     match /{document=**} {
       allow read, write: if false;
@@ -17,6 +23,17 @@ service cloud.firestore {
 
     function text(v, min, max) {
       return v is string && v.size() >= min && v.size() <= max;
+    }
+
+    function isValidContactMessage(d) {
+      return d.keys().hasOnly(['name', 'email', 'subject', 'message', 'created_at'])
+        && d.keys().hasAll(['name', 'email', 'subject', 'message', 'created_at'])
+        && text(d.name, 1, 120)
+        && text(d.email, 5, 120)
+        && d.email.matches('[^@ ]+@[^@ ]+\\.[^@ ]+')
+        && text(d.subject, 0, 150)
+        && text(d.message, 1, 4000)
+        && d.created_at == request.time;
     }
 
     function isValidRegistration(ref, d) {

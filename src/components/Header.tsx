@@ -4,9 +4,11 @@ import { Anchor, Menu, X, GraduationCap } from 'lucide-react';
 
 const links = [
   { to: '/', label: 'Accueil' },
+  { to: '/a-propos', label: 'À propos' },
   { to: '/formations', label: 'Formations' },
   { to: '/verification', label: 'Vérification' },
   { to: '/volontaires', label: 'Volontaires' },
+  { to: '/contact', label: 'Contact' },
 ];
 
 export default function Header() {
@@ -47,7 +49,7 @@ export default function Header() {
           </div>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden lg:flex items-center gap-1">
           {links.map((l) => {
             const active = location.pathname === l.to;
             return (
@@ -66,13 +68,13 @@ export default function Header() {
           })}
         </nav>
 
-        <Link to="/inscription" className="hidden md:inline-flex items-center gap-2 px-5 py-2.5 rounded-sm bg-[#e1b936] text-[#08182d] text-sm font-bold hover:bg-[#f0cc58] transition-colors">
+        <Link to="/inscription" className="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 rounded-sm bg-[#e1b936] text-[#08182d] text-sm font-bold hover:bg-[#f0cc58] transition-colors">
           <GraduationCap className="w-4 h-4" />
           S'inscrire
         </Link>
 
         <button
-          className="md:hidden p-2 rounded-lg text-white"
+          className="lg:hidden p-2 rounded-lg text-white"
           onClick={() => setOpen(!open)}
           aria-label="Menu"
         >
@@ -81,7 +83,7 @@ export default function Header() {
       </div>
 
       {open && (
-        <div className="md:hidden bg-[#08182d] border-t border-[#294769] shadow-lg">
+        <div className="lg:hidden bg-[#08182d] border-t border-[#294769] shadow-lg">
           <nav className="container-app py-4 flex flex-col gap-1">
             {links.map((l) => (
               <Link

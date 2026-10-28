@@ -73,3 +73,10 @@ export interface RegistrationReceipt {
   reference: string;
   quote: Quote;
 }
+
+export interface ContactInput {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
