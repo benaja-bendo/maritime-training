@@ -7,6 +7,7 @@ import {
   ServiceUnavailableError,
 } from '@/lib/data';
 import { computeQuote, depositLabel, formatUsd } from '@/lib/pricing';
+import { formatDays } from '@/lib/format';
 import { prepareIdPhoto, PhotoError } from '@/lib/image';
 import { getCountries } from '@/lib/countries';
 import { SITE } from '@/config/site';
@@ -502,9 +503,7 @@ export default function RegistrationPage() {
                                 <span className="block text-xs text-slate-400">
                                   {c.category}
                                   {c.duration_days != null &&
-                                    ` · ${c.duration_days} jour${
-                                      Number(c.duration_days) > 1 ? 's' : ''
-                                    }`}
+                                    ` · ${formatDays(c.duration_days)}`}
                                 </span>
                               </span>
                               <PriceTag course={c} />

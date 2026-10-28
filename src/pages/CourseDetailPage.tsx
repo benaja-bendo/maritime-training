@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getCourse } from '@/lib/data';
 import { depositLabel, formatUsd } from '@/lib/pricing';
+import { formatDays, formatHours } from '@/lib/format';
 import type { Course } from '@/types';
 import {
   GraduationCap,
@@ -97,8 +98,8 @@ export default function CourseDetailPage() {
           {/* Quick facts */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
             {[
-              { icon: Calendar, label: 'Durée', value: course.duration_days != null ? `${course.duration_days} jour${Number(course.duration_days) > 1 ? 's' : ''}` : '—' },
-              { icon: Clock, label: 'Heures', value: course.duration_hours != null ? `${course.duration_hours} h` : '—' },
+              { icon: Calendar, label: 'Durée', value: course.duration_days != null ? formatDays(course.duration_days) : '—' },
+              { icon: Clock, label: 'Heures', value: course.duration_hours != null ? formatHours(course.duration_hours) : '—' },
               { icon: Tag, label: 'Catégorie', value: course.category },
             ].map((fact) => (
               <div key={fact.label} className="card p-5 flex items-center gap-4">

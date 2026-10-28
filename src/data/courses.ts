@@ -176,7 +176,7 @@ export const COURSES: Course[] = [
   {
     id: '1a1ee458-fb6e-4d63-9947-6479d1ba3c89',
     imo_number: '1.25',
-    name: 'General Operator\'s Certificate for Global Maritime Distress and Safety System (GMDSS)',
+    name: 'General Operator’s Certificate for Global Maritime Distress and Safety System (GMDSS)',
     duration_days: 17,
     duration_hours: 132,
     category: 'Communications',
@@ -426,7 +426,7 @@ export const COURSES: Course[] = [
   {
     id: '449ac290-fb0a-4348-9b50-7e4b2c5387a5',
     imo_number: null,
-    name: 'Ship\'s Cook in accordance with MLC, 2006 Regulation 3.2',
+    name: 'Ship’s Cook in accordance with MLC, 2006 Regulation 3.2',
     duration_days: 5,
     duration_hours: 40,
     category: 'Catering',

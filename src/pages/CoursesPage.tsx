@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { getCourses } from '@/lib/data';
 import { formatUsd } from '@/lib/pricing';
+import { formatDays, formatHours } from '@/lib/format';
 import type { Course } from '@/types';
 import {
   Search,
@@ -158,13 +159,11 @@ export default function CoursesPage() {
                     <div className="mt-auto pt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-500">
                       <span className="inline-flex items-center gap-1.5">
                         <Calendar className="w-4 h-4" />
-                        {course.duration_days != null
-                          ? `${course.duration_days} jour${Number(course.duration_days) > 1 ? 's' : ''}`
-                          : '—'}
+                        {course.duration_days != null ? formatDays(course.duration_days) : '—'}
                       </span>
                       <span className="inline-flex items-center gap-1.5">
                         <Clock className="w-4 h-4" />
-                        {course.duration_hours != null ? `${course.duration_hours} h` : '—'}
+                        {course.duration_hours != null ? formatHours(course.duration_hours) : '—'}
                       </span>
                       {course.price_usd != null && (
                         <span className="ml-auto font-semibold text-[#e1b936]">

@@ -37,6 +37,7 @@ le site fonctionne mais l'inscription répond « pas encore disponible ».
 - `src/config/site.ts` : **nom, pays, adresse, téléphone, e-mail, instructions de paiement**. Un champ à `null` n'est pas affiché.
 - `src/lib/data.ts` : **seul point d'accès aux données**. Les pages n'importent rien d'autre pour lire ou écrire.
 - `src/lib/pricing.ts` : taux d'avance (`DEPOSIT_RATE`), calcul en centimes, format USD.
+- `src/lib/format.ts` : durées en français (virgule décimale, « 0,5 jour », « 13,25 h »). À utiliser pour tout affichage de durée.
 - `src/lib/image.ts` : traitement de la photo d'identité. `src/lib/countries.ts` : liste des pays (français, Panama en tête).
 - `src/lib/firebase.ts` : initialisation Firebase, chargée à la demande (import dynamique) pour ne pas alourdir les autres pages.
 - `src/data/courses.ts` : catalogue de 51 formations.
@@ -90,6 +91,10 @@ Le CLI Firebase est installé et connecté sur le poste du développeur. `fireba
 
 - **Tarifs** : `price_usd` vaut `null` pour les 51 formations (affiché « Prix à confirmer »). Dès réception de la liste, les renseigner dans `src/data/courses.ts`.
 - **Taux d'avance** : le client a dit « 45, voire 50 % ». `DEPOSIT_RATE` est à 0,5 dans `src/lib/pricing.ts`.
+- **Liste des formations** : le fichier « heure STCW.txt » fourni par le client (51 lignes : n° IMO, nom, jours, heures) a été comparé au catalogue le 2026-10-28 : il est identique (seule différence : apostrophes `'` / `’`, alignées sur le client). Points laissés tels quels, à lui faire confirmer :
+  - **Doublons probables** : « Rating as Able Seafarer for Deck / Engine » et « Able Seafare Deck / Able Seafarer Engine » ont la même durée (5 jours, 40 h). Deux cours identiques côté candidat, avec deux tarifs à fixer.
+  - **Fautes dans les noms** : « Seafare » (Able Seafare Deck), « Seafares » (Security Training For Seafares…), « Assesor » (Train The Simulator And Assesor).
+  - **Intitulés incohérents** : « Updating » (7.01, 7.03, 7.04) et « Upgrading » (7.02) pour des cours de la même série. Durées très longues (105 à 196 jours) pour ces cours, à vérifier.
 - **Mode de paiement** de l'avance et du solde (virement, mobile money, carte...).
 - **Coordonnées** (adresse, téléphone, e-mail) : à saisir dans `src/config/site.ts`. Les anciennes valeurs (Marseille, +33) étaient factices et ont été retirées.
 - **Références panaméennes** : agrément éventuel de l'Autorité maritime du Panama (AMP), numéro d'autorisation. Ne rien affirmer sans document du client.
