@@ -98,7 +98,7 @@ Page interne (non liée depuis le site, `noindex`), chargée à part. Onglets : 
 
 **Inscriptions** : statut (en attente d'avance, avance payée, en formation, solde à régler, terminée, annulée), montants et dates reçus, notes ; photo et pièce visibles. **Messages** : à traiter / traité.
 
-**Mise en service en production** (à faire par le propriétaire du projet) : activer le fournisseur **Google** (console Firebase > Authentication > Méthode de connexion) puis créer les documents `admins/<e-mail>`. Tant qu'aucun document `admins` n'existe, personne n'entre.
+**Mise en service en production** (faite le 2026-10-29) : la connexion **Google** est activée par `firebase.json` (section `auth`, déployée avec `firebase deploy --only auth`, e-mail d'assistance : celui du propriétaire du projet). Le premier administrateur est `loncleodiala@gmail.com` (document `admins/loncleodiala@gmail.com`, champ `role: "admin"`, créé dans la console Firestore). Pour ajouter un administrateur : créer `admins/<e-mail en minuscules>` de la même façon. Pour en retirer un : supprimer son document. **Quand un nom de domaine sera branché**, l'ajouter dans la console Firebase > Authentication > Paramètres > Domaines autorisés, sinon la connexion échouera (`auth/unauthorized-domain`). Un `auth/configuration-not-found` signifie que l'authentification n'est pas initialisée sur le projet.
 
 **Tester sans toucher à la production** (Java requis) : `firebase emulators:start --only auth,firestore`, puis `VITE_FIRESTORE_EMULATOR=127.0.0.1:8080 VITE_AUTH_EMULATOR=127.0.0.1:9099 npm run dev`. Créer un administrateur de test : `curl -X PATCH -H 'Authorization: Bearer owner' -H 'Content-Type: application/json' -d '{"fields":{"role":{"stringValue":"test"}}}' "http://127.0.0.1:8080/v1/projects/maritime-training-app/databases/(default)/documents/admins/admin@example.com"`. En mode émulateur seulement, `window.__signInAs('admin@example.com')` ouvre une session sans fenêtre Google. Le serveur de dev charge lentement dans certains Chrome (milliers de fichiers d'icônes) ; le navigateur intégré s'en sort.
 
@@ -125,7 +125,7 @@ Page interne (non liée depuis le site, `noindex`), chargée à part. Onglets : 
 
 ## Déploiement
 
-Le CLI Firebase est installé et connecté sur le poste du développeur. `firebase.json` envoie toutes les URL vers `index.html` (routage côté client) et met en cache long les fichiers de `/assets`. `npm run deploy` ne publie que Hosting : les règles Firestore se publient à part.
+Le CLI Firebase est installé et connecté sur le poste du développeur. `firebase.json` envoie toutes les URL vers `index.html` (routage côté client) et met en cache long **seulement** les fichiers hachés de `/assets` : les pages HTML sont en `no-cache`, sinon un navigateur garde l'ancienne version jusqu'à une heure après un déploiement (constaté le 2026-10-29). Après une mise en ligne, un navigateur qui avait déjà une ancienne page en cache peut encore avoir besoin d'un rechargement forcé (Cmd+Maj+R) une seule fois. `npm run deploy` ne publie que Hosting : les règles Firestore se publient à part.
 
 ## À confirmer avec le client
 

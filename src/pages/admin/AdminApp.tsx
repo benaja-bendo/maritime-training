@@ -55,10 +55,21 @@ export default function AdminApp() {
     try {
       await signInWithGoogle();
     } catch (e) {
-      const code = (e as { code?: string }).code ?? '';
-      if (code !== 'auth/popup-closed-by-user' && code !== 'auth/cancelled-popup-request') {
-        setError('Connexion impossible. Réessayez.');
-      }
+      const code = (e as { code?: string }).code ?? 'inconnue';
+      if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') return;
+      const messages: Record<string, string> = {
+        'auth/popup-blocked':
+          'Le navigateur a bloqué la fenêtre de connexion. Autorisez les fenêtres surgissantes pour ce site, puis réessayez.',
+        'auth/network-request-failed':
+          'Problème de réseau. Vérifiez votre connexion internet, puis réessayez.',
+        'auth/operation-not-allowed':
+          'La connexion Google n’est pas activée pour ce site. Contactez le développeur.',
+        'auth/configuration-not-found':
+          'La connexion Google n’est pas activée pour ce site. Contactez le développeur.',
+        'auth/unauthorized-domain':
+          'Cette adresse de site n’est pas autorisée pour la connexion. Contactez le développeur.',
+      };
+      setError(messages[code] ?? `Connexion impossible (code : ${code}). Réessayez.`);
     }
   };
 
