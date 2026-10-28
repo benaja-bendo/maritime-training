@@ -74,7 +74,7 @@ export default function CoursesPage() {
           </h1>
           <p className="mt-4 text-slate-300 max-w-2xl text-lg">
             Plus de 50 cours conformes aux standards STCW et MLC, du certificat de
-            base à la formation d\u2019officier chef.
+            base à la formation d’officier chef.
           </p>
         </div>
       </section>

@@ -61,8 +61,8 @@ export default function VerificationPage() {
             Vérification de Documents
           </h1>
           <p className="mt-4 text-slate-300 max-w-2xl text-lg">
-            Entrez l\u2019identifiant d\u2019un étudiant pour consulter son dossier de
-            formation et vérifier l\u2019authenticité de ses certificats.
+            Entrez l’identifiant d’un étudiant pour consulter son dossier de
+            formation et vérifier l’authenticité de ses certificats.
           </p>
         </div>
       </section>

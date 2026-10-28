@@ -45,7 +45,7 @@ export default function CourseDetailPage() {
       <div className="pt-16 md:pt-20 min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
         <BookOpen className="w-12 h-12 text-slate-300 mb-4" />
         <h1 className="text-2xl font-bold text-white">Formation introuvable</h1>
-        <p className="mt-2 text-slate-500">Cette formation n\u2019existe pas ou a été retirée.</p>
+        <p className="mt-2 text-slate-500">Cette formation n’existe pas ou a été retirée.</p>
         <Link to="/formations" className="btn-primary mt-6">
           <ArrowLeft className="w-4 h-4" />
           Retour au catalogue
@@ -117,8 +117,8 @@ export default function CourseDetailPage() {
             <p className="text-slate-300 leading-relaxed">
               Cette formation est dispensée dans le respect des conventions
               internationales STCW et MLC 2006. Elle combine théorie et pratique
-              pour garantir l\u2019acquisition des compétences requises à bord des
-              navires marchands. À l\u2019issue du cours, les stagiaires reçoivent un
+              pour garantir l’acquisition des compétences requises à bord des
+              navires marchands. À l’issue du cours, les stagiaires reçoivent un
               certificat officiel enregistré dans notre base de données et
               vérifiable via le portail de vérification.
             </p>

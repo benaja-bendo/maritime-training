@@ -40,7 +40,7 @@ export default function VolunteersPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.full_name || !form.email) {
-      setError('Le nom et l\u2019email sont obligatoires.');
+      setError('Le nom et l’email sont obligatoires.');
       return;
     }
     setLoading(true);
@@ -61,7 +61,7 @@ export default function VolunteersPage() {
         setError(err.message);
         return;
       }
-      setError("Une erreur est survenue lors de l\u2019envoi. Réessayez.");
+      setError("Une erreur est survenue lors de l’envoi. Réessayez.");
       return;
     }
     setLoading(false);
@@ -101,7 +101,7 @@ export default function VolunteersPage() {
                 Pourquoi nous rejoindre ?
               </h2>
               <p className="text-slate-300 leading-relaxed">
-                Vous avez une expérience maritime et l\u2019envie de transmettre votre
+                Vous avez une expérience maritime et l’envie de transmettre votre
                 savoir ? Devenez instructeur volontaire au sein de notre académie et
                 participez à la formation de la prochaine génération de marins.
               </p>

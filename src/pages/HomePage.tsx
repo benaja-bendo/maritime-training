@@ -27,7 +27,7 @@ export default function HomePage() {
                 icon: BookOpen,
                 to: '/formations',
                 title: 'Catalogue de formations',
-                desc: 'Plus de 50 cours certifiés STCW et MLC, de la sécurité de base au grade d\u2019officier.',
+                desc: 'Plus de 50 cours certifiés STCW et MLC, de la sécurité de base au grade d’officier.',
                 cta: 'Voir les formations',
               },
               {
