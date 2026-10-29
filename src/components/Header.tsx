@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Anchor, Menu, X, GraduationCap } from 'lucide-react';
+import { Menu, X, GraduationCap } from 'lucide-react';
+import LogoMark from '@/components/LogoMark';
 
 const links = [
   { to: '/', label: 'Accueil' },
@@ -38,15 +39,11 @@ export default function Header() {
       }`}
     >
       <div className="container-app flex items-center justify-between h-16 md:h-20">
-        <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="flex items-center justify-center w-10 h-10 rounded-full border border-[#e1b936] text-[#e1b936] group-hover:bg-[#e1b936] group-hover:text-[#08182d] transition-colors">
-            <Anchor className="w-5 h-5" />
-          </div>
-          <div className="flex flex-col leading-tight">
-            <span className="font-semibold text-sm text-white leading-tight">
-              Panama Maritime<br />Training Services
-            </span>
-          </div>
+        <Link to="/" className="flex items-center gap-3 group" aria-label="Panama Maritime Training Services, accueil">
+          <LogoMark className="h-11 md:h-14 transition-transform group-hover:scale-105" />
+          <span className="font-semibold text-sm md:text-[15px] text-white leading-tight">
+            Panama Maritime<br />Training Services
+          </span>
         </Link>
 
         <nav className="hidden lg:flex items-center gap-1">

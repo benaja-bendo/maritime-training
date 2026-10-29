@@ -260,6 +260,7 @@ export async function listRegistrations(): Promise<AdminRegistration[]> {
       id_type: x.id_type === 'passport' ? 'passport' : 'national_id',
       id_number: str(x.id_number),
       photo_data_url: str(x.photo_data_url),
+      position: str(x.position),
       courses: courses.map((c) => {
         const r = (c ?? {}) as Record<string, unknown>;
         return { id: str(r.id), name: str(r.name), imo_number: str(r.imo_number) || null, price_usd: num(r.price_usd) };

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Navigate, Route, Routes } from 'react-router-dom';
-import { Anchor, Loader2, LogOut, ShieldAlert } from 'lucide-react';
+import { Loader2, LogOut, ShieldAlert } from 'lucide-react';
+import LogoMark from '@/components/LogoMark';
 import { isFirebaseConfigured } from '@/lib/firebase';
 import { isAdminEmail, signInWithGoogle, signOutAdmin, watchAuth } from '@/lib/auth';
 import AdminCertificates from '@/pages/admin/AdminCertificates';
@@ -85,9 +86,13 @@ export default function AdminApp() {
     return (
       <div className="min-h-screen bg-[#0b1b30] flex items-center justify-center px-4">
         <div className="card p-8 max-w-md w-full text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-full border border-[#e1b936] text-[#e1b936] mb-4">
-            {access.state === 'denied' ? <ShieldAlert className="w-6 h-6" /> : <Anchor className="w-6 h-6" />}
-          </div>
+          {access.state === 'denied' ? (
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full border border-[#e1b936] text-[#e1b936] mb-4">
+              <ShieldAlert className="w-6 h-6" />
+            </div>
+          ) : (
+            <LogoMark className="h-20 mb-4 mx-auto" />
+          )}
           <h1 className="text-xl font-semibold text-white">Espace administration</h1>
           {access.state === 'denied' ? (
             <>
@@ -121,7 +126,7 @@ export default function AdminApp() {
       <header className="bg-[#08182d] border-b border-[#294769]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
           <Link to="/admin" className="flex items-center gap-2 text-white font-semibold text-sm">
-            <Anchor className="w-5 h-5 text-[#e1b936]" /> PMTS · Administration
+            <LogoMark className="h-8" /> PMTS · Administration
           </Link>
           <div className="flex items-center gap-4 text-sm">
             <span className="hidden sm:inline text-slate-400">{access.email}</span>

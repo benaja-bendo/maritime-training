@@ -34,6 +34,8 @@ le site fonctionne mais l'inscription répond « pas encore disponible ».
 
 - `src/App.tsx` : routes (`/`, `/a-propos`, `/formations`, `/formations/:id`, `/inscription`, `/verification`, `/volontaires`, `/contact`).
 - `src/pages/` : une page par route. `src/components/` : Header, Footer, Hero, Layout, ScrollToTop. Le contenu de `AboutPage` et `ContactPage` (textes du client) est en tête de fichier, sous forme de tableaux.
+- `src/components/LogoMark.tsx` : écusson du logo (`public/logo-mark-sm.webp`), utilisé dans l'en-tête, le pied de page et l'administration. Le nom reste écrit en texte à côté (net à toute taille, lisible par les lecteurs d'écran).
+- `design/` : logo du client (`logo-source.jpg`, fichier JPEG 1536×1024 reçu le 2026-10-29), script `build-logo.py` qui le détoure (fond bleu nuit rendu transparent, bords reconstitués sans liseré) et produit `public/logo-mark-sm.webp`, `public/icon-*.png`, `public/favicon.ico`, `public/og-image.jpg` et les maîtres transparents `design/logo-mark.png` et `design/logo-complet.png`. Relancer `python3 design/build-logo.py` (Pillow, NumPy, SciPy) si le client envoie un meilleur fichier, de préférence un SVG.
 - `src/config/site.ts` : **nom, pays, slogan, adresse, horaires, téléphone, WhatsApp, e-mail, instructions de paiement**. Un champ à `null` n'est pas affiché (en-tête de page Contact, pied de page).
 - `src/lib/data.ts` : **seul point d'accès aux données**. Les pages n'importent rien d'autre pour lire ou écrire.
 - `src/lib/pricing.ts` : taux d'avance (`DEPOSIT_RATE`), pack BST (`BST_PACK`), calcul en centimes, format USD.
@@ -43,7 +45,7 @@ le site fonctionne mais l'inscription répond « pas encore disponible ».
 - `src/pages/admin/` : espace d'administration, chargé à part (`/admin`). `public/modele-certificats.csv` : modèle d'import.
 - `src/lib/image.ts` : traitement de la photo d'identité. `src/lib/countries.ts` : liste des pays (français, Panama en tête).
 - `src/lib/firebase.ts` : initialisation Firebase, chargée à la demande (import dynamique) pour ne pas alourdir les autres pages.
-- `src/data/courses.ts` : catalogue de 51 formations.
+- `src/data/courses.ts` : catalogue de 51 formations. `src/data/positions.ts` : 22 fonctions à bord (matelot, mécanicien, commandant...) et les formations qui leur correspondent.
 - `src/types/index.ts` : modèles. `firestore.rules` : règles de sécurité Firestore.
 - `src/index.css` : classes utilitaires du design (`container-app`, `btn-primary`, `btn-secondary`, `card`, `input-field`, `section-label`, `gold-rule`).
 
@@ -60,12 +62,13 @@ le site fonctionne mais l'inscription répond « pas encore disponible ».
 
 Parcours voulu par le client : le candidat remplit le formulaire (nom, prénoms, e-mail, nationalité, CNI **ou** passeport + numéro, photo d'identité, choix des formations). Le prix de chaque formation s'affiche à la sélection, avec le total, l'**avance** (`DEPOSIT_RATE`) et le **solde**. L'inscription n'est finalisée qu'après paiement de l'avance ; le solde est payé après la formation, pour recevoir les documents.
 
+- **Fonction à bord** (étape 3, facultative) : le candidat choisit son poste ; les formations correspondantes sont cochées (en tête de liste, marquées « Recommandée »), il peut en retirer ou en ajouter. Changer de fonction remplace les formations de l'ancienne fonction mais garde celles que le candidat a cochées lui-même. Certaines formations sont proposées « selon votre cas » (non cochées), et celles que la fonction exige mais que le catalogue n'a pas (BOSIET, HUET, IWCF...) sont signalées au candidat. Le libellé choisi est stocké dans `position` (≤ 100 caractères, champ optionnel des règles) et affiché dans l'administration. Pour modifier une fonction : `src/data/positions.ts` (référence = numéro IMO, ou début du nom pour les formations sans numéro).
 - `submitRegistration` crée un document `registrations/PMTS-XXXXXXXX` (référence aléatoire, affichée au candidat) avec `status: 'pending_deposit'`.
 - Les montants stockés (`quote_total_usd`, `quote_deposit_usd`, `quote_discount_usd`) sont **indicatifs** : le personnel recalcule à partir des tarifs en vigueur. `quote_discount_usd` est optionnel dans les règles (compatibilité avec les anciennes pages ouvertes).
 - **Tarifs** : liste fournie par le client le 2026-10-28, appliquée à 49 formations (`price_usd` dans `src/data/courses.ts`). **Pack complet BST** à 395 USD (1.13 + 1.19 + 1.20 + 1.21, soit 440 USD à l'unité) : remise automatique quand les quatre sont cochées, bouton « Ajouter le pack » sur la page Inscription. Le pack n'est pas une formation du catalogue.
 - **Photo** : recadrée en 420×540 (35×45 mm) et compressée en JPEG dans le navigateur, stockée en base64 dans le document (champ `photo_data_url`). Choix fait pour rester sur la formule gratuite, car Cloud Storage exige la formule Blaze. À revoir si le volume augmente.
 - **Sécurité** (`firestore.rules`) : le public peut **créer** un dossier (forme et tailles validées), jamais le lire, le modifier ni le supprimer. Tout le reste est fermé. Vérifié depuis l'extérieur : lecture, liste, modification, suppression et écriture hors schéma renvoient 403.
-- Le personnel ne voit les dossiers que dans la console Firebase (Firestore > `registrations`). Il n'existe pas encore d'espace administrateur ni de notification par e-mail.
+- Le personnel consulte et traite les dossiers dans l'espace `/admin` (onglet Inscriptions) ou dans la console Firebase (Firestore > `registrations`). Pas encore de notification par e-mail.
 - Pas de paiement en ligne : l'écran de confirmation dit que les modalités seront communiquées par l'équipe, sauf si `SITE.paymentInstructions` est renseigné.
 - Recommandé avant une large diffusion : activer **App Check** (anti-abus) sur Firestore.
 
@@ -129,6 +132,9 @@ Le CLI Firebase est installé et connecté sur le poste du développeur. `fireba
 
 ## À confirmer avec le client
 
+- **Logo** : fichier reçu en JPEG (1536×1024) sur fond bleu nuit, détouré à partir de cette image : l'écusson ne dépasse pas 507×590 px, il est net jusqu'à environ 110 px de haut sur écran à haute densité, au-delà il faudra l'original vectoriel (SVG/AI/PDF). À 16 px (onglet du navigateur) l'écusson se réduit à une pastille colorée reconnaissable, pas lisible dans le détail. Le client doit aussi confirmer qu'il autorise l'usage de son logo dans cette démonstration.
+- **Fonctions à bord** : la liste vient d'un message du client (fonctions et formations requises). Lecture appliquée : « A & B » = les deux formations cochées ; « A / B » = A cochée, B proposée « selon votre cas » (ex. Medical First Aid / Medical Care pour l'officier HSE, Ordinary Seaman / Rating Forming Part of Navigational Watch pour le matelot débutant) ; « Dangerous, Hazardous And Harmful Cargoes (si pétrolier) » proposée mais non cochée pour le peintre. À valider avec lui. Formations demandées mais **absentes du catalogue** (signalées au candidat, non vendables en ligne) : BOSIET, MIST, HUET, IWCF/IADC Well Control, Banksman & Rigger, Offshore Crane Operator, High Voltage Safety, Food Safety & Hygiene/HACCP, IMCA ROV, NI DP (Basic/Advanced), DP Operator Certificate, CAA Offshore Radio Operator, licence de pilotage portuaire ; et deux brevets (officier STCW, capitaine au long cours), qui sont des titres et non des cours. À ajouter au catalogue avec leurs prix s'il veut les vendre.
+
 - **« Able Seafare Deck » et « Able Seafarer Engine »** : le client a répondu que ce ne sont pas des doublons de « Rating as Able Seafarer for Deck / Engine » et a envoyé 450 USD « pour compléter » (message relayé le 2026-10-29, lu comme 450 USD pour chacune des deux formations restées sans prix). À reconfirmer si besoin. Le catalogue reste à 51 formations, les textes « plus de 50 » restent exacts.
 - **Taux d'avance** : le client a dit « 45, voire 50 % ». `DEPOSIT_RATE` est à 0,5 dans `src/lib/pricing.ts`.
 - **Liste des formations** : le fichier « heure STCW.txt » fourni par le client (51 lignes : n° IMO, nom, jours, heures) a été comparé au catalogue le 2026-10-28 : il est identique (seule différence : apostrophes `'` / `’`, alignées sur le client). Points laissés tels quels, à lui faire confirmer :
@@ -149,7 +155,7 @@ Le CLI Firebase est installé et connecté sur le poste du développeur. `fireba
 
 ## Points connus
 
-- Pas de dossier `public/` : le favicon `/vite.svg` référencé dans `index.html` n'existe pas (404). Pas de balises Open Graph.
+- Favicon, icône d'écran d'accueil et image de partage (`og-image.jpg`, aperçu WhatsApp) viennent du logo. L'URL de l'image de partage dans `index.html` (`og:image`) est écrite en dur sur `https://maritime-training-app.web.app` : **à changer quand un nom de domaine sera branché** (les aperçus exigent une URL absolue).
 - Les images des formations sont des liens directs vers Pexels (pas hébergées ici).
 - Le titre du bandeau d'accueil « Advance Your Maritime Career » est en anglais.
 - Sur la page Volontaires, les libellés du formulaire sont en `text-slate-700` sur fond sombre (faible contraste).

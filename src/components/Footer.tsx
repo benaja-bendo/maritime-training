@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Anchor, Ship, Waves, Mail, MapPin, Phone, Clock } from 'lucide-react';
+import { Ship, Waves, Mail, MapPin, Phone, Clock } from 'lucide-react';
+import LogoMark from '@/components/LogoMark';
 import { SITE } from '@/config/site';
 
 const COURSE_GROUPS = [
@@ -17,10 +18,8 @@ export default function Footer() {
     <footer className="bg-[#0b1b30] text-slate-300 border-t border-[#294769]">
       <div className="container-app py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
         <div className="md:col-span-1">
-          <div className="flex items-center gap-2.5 mb-4">
-            <div className="flex items-center justify-center w-10 h-10 rounded-full border border-[#e1b936] text-[#e1b936]">
-              <Anchor className="w-5 h-5" />
-            </div>
+          <div className="flex items-center gap-3 mb-4">
+            <LogoMark className="h-16" />
             <span className="font-semibold text-sm text-white leading-tight">Panama Maritime<br />Training Services</span>
           </div>
           <p className="text-sm text-slate-400 leading-relaxed">{SITE.tagline}</p>

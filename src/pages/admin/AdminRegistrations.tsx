@@ -95,6 +95,7 @@ export default function AdminRegistrations({ email }: { email: string }) {
                       <p className="text-slate-200">{r.email}</p>
                       <p className="text-slate-300">{r.nationality}</p>
                       <p className="text-slate-300">{r.id_type === 'passport' ? 'Passeport' : 'Carte d’identité'} : <span className="font-mono">{r.id_number}</span></p>
+                      {r.position && <p className="text-slate-300">Fonction : <span className="text-white">{r.position}</span></p>}
                     </div>
                     <div className="text-sm">
                       <p className="text-xs uppercase tracking-wider text-slate-400 mb-1">Formations</p>

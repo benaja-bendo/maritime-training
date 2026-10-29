@@ -10,6 +10,7 @@ import { BST_PACK, computeQuote, depositLabel, findBstPack, formatUsd } from '@/
 import { formatDays } from '@/lib/format';
 import { prepareIdPhoto, PhotoError } from '@/lib/image';
 import { getCountries } from '@/lib/countries';
+import { POSITION_GROUPS, getPosition, resolveRef, resolveRefs } from '@/data/positions';
 import { SITE } from '@/config/site';
 import type { Course, IdType, RegistrationReceipt } from '@/types';
 import {
@@ -26,7 +27,12 @@ import {
   ClipboardList,
   CreditCard,
   GraduationCap,
+  Briefcase,
+  Plus,
 } from 'lucide-react';
+
+// Limite des règles Firestore : 15 formations au plus par inscription.
+const MAX_COURSES = 15;
 
 const STEPS = [
   {
@@ -108,6 +114,7 @@ export default function RegistrationPage() {
 
   const [courses, setCourses] = useState<Course[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
+  const [positionId, setPositionId] = useState('');
   const [search, setSearch] = useState('');
   const [form, setForm] = useState(EMPTY_FORM);
   const [photo, setPhoto] = useState<string | null>(null);
@@ -119,6 +126,7 @@ export default function RegistrationPage() {
     receipt: RegistrationReceipt;
     email: string;
     chosen: Course[];
+    position: string | null;
   } | null>(null);
 
   const countries = useMemo(() => getCountries(), []);
@@ -137,16 +145,38 @@ export default function RegistrationPage() {
     })();
   }, [preselected]);
 
+  const position = getPosition(positionId);
+  const recommended = useMemo(
+    () => (position ? resolveRefs(courses, position.courses) : []),
+    [position, courses],
+  );
+  const recommendedIds = useMemo(() => new Set(recommended.map((c) => c.id)), [recommended]);
+  const optionalCourses = useMemo(
+    () =>
+      (position?.optional ?? []).flatMap((o) => {
+        const course = resolveRef(courses, o.ref);
+        return course ? [{ course, note: o.note }] : [];
+      }),
+    [position, courses],
+  );
+
   const visible = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return courses;
+    if (!q) {
+      // Les formations de la fonction choisie passent en tête de liste.
+      if (recommendedIds.size === 0) return courses;
+      return [
+        ...courses.filter((c) => recommendedIds.has(c.id)),
+        ...courses.filter((c) => !recommendedIds.has(c.id)),
+      ];
+    }
     return courses.filter(
       (c) =>
         c.name.toLowerCase().includes(q) ||
         c.category.toLowerCase().includes(q) ||
         (c.imo_number ?? '').toLowerCase().includes(q),
     );
-  }, [courses, search]);
+  }, [courses, search, recommendedIds]);
 
   const chosen = useMemo(
     () =>
@@ -157,12 +187,22 @@ export default function RegistrationPage() {
   );
   const quote = useMemo(() => computeQuote(chosen), [chosen]);
   const pack = useMemo(() => findBstPack(courses), [courses]);
+  const packOn = !!pack && pack.ids.every((id) => selected.includes(id));
 
   const update = (k: keyof typeof EMPTY_FORM, v: string) =>
     setForm((f) => ({ ...f, [k]: v }));
 
   const toggle = (id: string) =>
     setSelected((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
+
+  // Choisir une fonction coche ses formations. Les formations que le candidat a ajoutées lui-même
+  // (hors liste de l'ancienne fonction) sont conservées ; celles de l'ancienne fonction sont remplacées.
+  const choosePosition = (id: string) => {
+    const previous = new Set(recommended.map((c) => c.id));
+    const next = resolveRefs(courses, getPosition(id)?.courses ?? []).map((c) => c.id);
+    setSelected((s) => [...new Set([...next, ...s.filter((x) => !previous.has(x))])]);
+    setPositionId(id);
+  };
 
   const addPack = () => {
     if (pack) setSelected((s) => [...s, ...pack.ids.filter((id) => !s.includes(id))]);
@@ -189,6 +229,10 @@ export default function RegistrationPage() {
       setError('Choisissez au moins une formation.');
       return;
     }
+    if (chosen.length > MAX_COURSES) {
+      setError(`Une inscription porte sur ${MAX_COURSES} formations au plus. Retirez-en ${chosen.length - MAX_COURSES}.`);
+      return;
+    }
     if (!photo) {
       setError('Ajoutez votre photo d’identité.');
       return;
@@ -199,6 +243,7 @@ export default function RegistrationPage() {
       const receipt = await submitRegistration({
         ...form,
         photo_data_url: photo,
+        position: position?.label,
         courses: chosen.map(({ id, name, imo_number, price_usd }) => ({
           id,
           name,
@@ -206,7 +251,7 @@ export default function RegistrationPage() {
           price_usd,
         })),
       });
-      setDone({ receipt, email: form.email.trim(), chosen });
+      setDone({ receipt, email: form.email.trim(), chosen, position: position?.label ?? null });
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       setError(
@@ -255,7 +300,13 @@ export default function RegistrationPage() {
                 </div>
               </div>
 
-              <ul className="mt-8 divide-y divide-[#294769] border-y border-[#294769]">
+              {done.position && (
+                <p className="mt-6 text-center text-sm text-slate-300">
+                  Fonction : <span className="text-white">{done.position}</span>
+                </p>
+              )}
+
+              <ul className="mt-6 divide-y divide-[#294769] border-y border-[#294769]">
                 {done.chosen.map((c) => (
                   <li key={c.id} className="flex items-center justify-between gap-4 py-3 text-sm">
                     <span className="text-slate-200">{c.name}</span>
@@ -485,6 +536,101 @@ export default function RegistrationPage() {
                   {/* 3. Formations */}
                   <div className="card p-6 sm:p-8">
                     <SectionTitle n={3} title="Choisissez vos formations" />
+
+                    <div className="mb-5 rounded-sm border border-[#294769] bg-[#0b1b30] p-4">
+                      <Field label="Votre fonction à bord (facultatif)" htmlFor="position" icon={Briefcase}>
+                        <select
+                          id="position"
+                          value={positionId}
+                          onChange={(e) => choosePosition(e.target.value)}
+                          className="input-field pl-10"
+                        >
+                          <option value="">— Je choisis moi-même mes formations —</option>
+                          {POSITION_GROUPS.map((g) => (
+                            <optgroup key={g.label} label={g.label}>
+                              {g.positions.map((p) => (
+                                <option key={p.id} value={p.id}>
+                                  {p.label}
+                                </option>
+                              ))}
+                            </optgroup>
+                          ))}
+                        </select>
+                      </Field>
+                      <p className="mt-2 text-xs text-slate-400">
+                        Vous ne savez pas quelles formations choisir ? Indiquez votre fonction :
+                        nous cochons celles qui lui correspondent. Vous pouvez ensuite en retirer
+                        ou en ajouter.
+                      </p>
+
+                      {position && (
+                        <div className="mt-4 space-y-3 text-sm">
+                          <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-slate-200">
+                            <span>
+                              <strong className="text-[#e1b936]">
+                                {recommended.length} formations
+                              </strong>{' '}
+                              proposées pour cette fonction, cochées ci-dessous.
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => choosePosition(position.id)}
+                              className="text-xs underline text-slate-300 hover:text-white"
+                            >
+                              Recocher les formations de cette fonction
+                            </button>
+                          </p>
+
+                          {optionalCourses.length > 0 && (
+                            <div>
+                              <p className="text-xs uppercase tracking-wider text-slate-400 mb-1.5">
+                                Selon votre cas
+                              </p>
+                              <ul className="space-y-1.5">
+                                {optionalCourses.map(({ course, note }) => {
+                                  const on = selected.includes(course.id);
+                                  return (
+                                    <li key={course.id}>
+                                      <button
+                                        type="button"
+                                        onClick={() => toggle(course.id)}
+                                        aria-pressed={on}
+                                        className="inline-flex items-start gap-2 text-left text-slate-200 hover:text-white"
+                                      >
+                                        {on ? (
+                                          <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0 text-emerald-300" />
+                                        ) : (
+                                          <Plus className="w-4 h-4 mt-0.5 shrink-0 text-[#e1b936]" />
+                                        )}
+                                        <span>
+                                          {course.name}{' '}
+                                          <span className="text-slate-400">({note})</span>
+                                        </span>
+                                      </button>
+                                    </li>
+                                  );
+                                })}
+                              </ul>
+                            </div>
+                          )}
+
+                          {position.unavailable && (
+                            <p className="text-xs text-slate-400 leading-relaxed">
+                              <span className="text-slate-300">
+                                Également demandé pour cette fonction, mais pas encore dans notre
+                                catalogue :
+                              </span>{' '}
+                              {position.unavailable.join(' ; ')}.{' '}
+                              <Link to="/contact" className="underline hover:text-white">
+                                Écrivez-nous
+                              </Link>{' '}
+                              pour ces formations.
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
                     {pack && (
                       <div className="mb-4 flex flex-col sm:flex-row sm:items-center gap-3 justify-between rounded-sm border border-[#e1b936]/40 bg-[#e1b936]/5 p-4">
                         <p className="text-sm text-slate-200">
@@ -493,13 +639,19 @@ export default function RegistrationPage() {
                           <strong>{formatUsd(BST_PACK.price)}</strong> au lieu de{' '}
                           {formatUsd(pack.regular)}.
                         </p>
-                        <button
-                          type="button"
-                          onClick={addPack}
-                          className="btn-secondary whitespace-nowrap"
-                        >
-                          Ajouter le pack
-                        </button>
+                        {packOn ? (
+                          <span className="inline-flex items-center gap-2 text-sm font-medium text-emerald-300 whitespace-nowrap">
+                            <CheckCircle2 className="w-4 h-4" /> Pack appliqué
+                          </span>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={addPack}
+                            className="btn-secondary whitespace-nowrap"
+                          >
+                            Ajouter le pack
+                          </button>
+                        )}
                       </div>
                     )}
                     <div className="relative mb-4">
@@ -537,6 +689,12 @@ export default function RegistrationPage() {
                                   {c.category}
                                   {c.duration_days != null &&
                                     ` · ${formatDays(c.duration_days)}`}
+                                  {recommendedIds.has(c.id) && (
+                                    <span className="text-[#e1b936]">
+                                      {' '}
+                                      · Recommandée pour votre fonction
+                                    </span>
+                                  )}
                                 </span>
                               </span>
                               <PriceTag course={c} />

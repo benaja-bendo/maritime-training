@@ -148,6 +148,7 @@ export async function submitRegistration(
       id_type: input.id_type,
       id_number: input.id_number.trim(),
       photo_data_url: input.photo_data_url,
+      ...(input.position ? { position: input.position } : {}),
       courses: input.courses.map((c) => ({
         id: c.id,
         name: c.name,

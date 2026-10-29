@@ -43,6 +43,8 @@ export interface RegistrationInput {
   id_type: IdType;
   id_number: string;
   photo_data_url: string;
+  /** Fonction à bord choisie (libellé), facultatif. */
+  position?: string;
   courses: Pick<Course, 'id' | 'name' | 'imo_number' | 'price_usd'>[];
 }
 

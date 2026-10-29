@@ -140,7 +140,7 @@ service cloud.firestore {
           'reference', 'last_name', 'first_names', 'email', 'nationality',
           'id_type', 'id_number', 'photo_data_url', 'courses',
           'quote_total_usd', 'quote_deposit_usd', 'quote_discount_usd', 'deposit_rate',
-          'status', 'consent_at', 'created_at'
+          'position', 'status', 'consent_at', 'created_at'
         ])
         && d.keys().hasAll([
           'reference', 'last_name', 'first_names', 'email', 'nationality',
@@ -168,6 +168,7 @@ service cloud.firestore {
         && d.deposit_rate > 0
         && d.deposit_rate <= 1
         && (!('quote_discount_usd' in d) || (d.quote_discount_usd is number && d.quote_discount_usd >= 0))
+        && (!('position' in d) || text(d.position, 1, 100))
         && d.status == 'pending_deposit'
         && d.consent_at == request.time
         && d.created_at == request.time;
