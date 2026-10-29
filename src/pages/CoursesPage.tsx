@@ -34,6 +34,8 @@ const CATEGORIES = [
   'Leadership',
   'Crowd & Crisis',
   'Yacht',
+  'Offshore',
+  'Specialised Operations',
 ];
 
 export default function CoursesPage() {
@@ -75,8 +77,8 @@ export default function CoursesPage() {
             Nos Formations Maritimes
           </h1>
           <p className="mt-4 text-slate-300 max-w-2xl text-lg">
-            Plus de 50 cours conformes aux standards STCW et MLC, du certificat de
-            base à la formation d’officier chef.
+            Plus de 50 cours : formations STCW et MLC, du certificat de base à la
+            formation d’officier chef, et formations offshore et spécialisées.
           </p>
         </div>
       </section>

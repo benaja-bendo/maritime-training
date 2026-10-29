@@ -1,6 +1,8 @@
 import type { Course } from '@/types';
 
-// Catalogue des formations (51 cours), exporté de l'ancienne base de données.
+// Catalogue des formations (63 cours), exporté de l'ancienne base de données.
+// 51 formations STCW/MLC (liste du client) + 12 formations offshore et spécialisées (`framework: 'industry'`,
+// ajoutées le 2026-10-29 depuis la liste des fonctions) : leurs prix et leurs durées restent à fournir.
 // Source de vérité provisoire, en attendant la migration vers Firestore.
 export const COURSES: Course[] = [
   {
@@ -74,6 +76,17 @@ export const COURSES: Course[] = [
     price_usd: 200,
   },
   {
+    id: 'b9d50510-81ce-47a5-884a-1160a2927728',
+    imo_number: null,
+    name: 'Banksman & Rigger Level 1 / 2',
+    duration_days: null,
+    duration_hours: null,
+    category: 'Offshore',
+    image_url: null,
+    price_usd: null, // prix et durée à confirmer par le client
+    framework: 'industry',
+  },
+  {
     id: '895ef950-5efa-4321-99cf-81d03a21ee35',
     imo_number: '1.04',
     name: 'Basic Training For Liquefied Gas Tanker Cargo Operations',
@@ -94,6 +107,17 @@ export const COURSES: Course[] = [
     price_usd: 350,
   },
   {
+    id: '34e1e9a4-557a-452a-b036-8a3748c9fd07',
+    imo_number: null,
+    name: 'BOSIET with EBS / CA-EBS (Offshore Survival)',
+    duration_days: null,
+    duration_hours: null,
+    category: 'Offshore',
+    image_url: null,
+    price_usd: null, // prix et durée à confirmer par le client
+    framework: 'industry',
+  },
+  {
     id: 'f60fcffc-e403-4343-80cb-ee44be9b9ff4',
     imo_number: null,
     name: 'Bridge Resources Management',
@@ -102,6 +126,17 @@ export const COURSES: Course[] = [
     category: 'Resource Management',
     image_url: 'https://images.pexels.com/photos/18442732/pexels-photo-18442732.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
     price_usd: 450,
+  },
+  {
+    id: 'f6a2f57f-e866-4a74-8c62-cb00e6f946ea',
+    imo_number: null,
+    name: 'CAA Offshore Radio Operator',
+    duration_days: null,
+    duration_hours: null,
+    category: 'Communications',
+    image_url: null,
+    price_usd: null, // prix et durée à confirmer par le client
+    framework: 'industry',
   },
   {
     id: 'b5a600f0-7c42-4669-b9bb-66b3e120ceb3',
@@ -174,6 +209,17 @@ export const COURSES: Course[] = [
     price_usd: 120,
   },
   {
+    id: 'bb02ab47-c2a6-414c-b6b3-9b3f7fd64208',
+    imo_number: null,
+    name: 'Food Safety & Hygiene / HACCP',
+    duration_days: null,
+    duration_hours: null,
+    category: 'Catering',
+    image_url: null,
+    price_usd: null, // prix et durée à confirmer par le client
+    framework: 'industry',
+  },
+  {
     id: '1a1ee458-fb6e-4d63-9947-6479d1ba3c89',
     imo_number: '1.25',
     name: 'General Operator’s Certificate for Global Maritime Distress and Safety System (GMDSS)',
@@ -182,6 +228,50 @@ export const COURSES: Course[] = [
     category: 'Communications',
     image_url: 'https://images.pexels.com/photos/4911062/pexels-photo-4911062.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
     price_usd: 1200,
+  },
+  {
+    id: '7f74634c-113f-41c8-80fa-a845769b31ab',
+    imo_number: null,
+    name: 'High Voltage Safety Course',
+    duration_days: null,
+    duration_hours: null,
+    category: 'Specialised Operations',
+    image_url: null,
+    price_usd: null, // prix et durée à confirmer par le client
+    framework: 'industry',
+  },
+  {
+    id: '7367b4af-ebb6-438a-ad63-4fc99ae43253',
+    imo_number: null,
+    name: 'HUET (Helicopter Underwater Escape Training)',
+    duration_days: null,
+    duration_hours: null,
+    category: 'Offshore',
+    image_url: null,
+    price_usd: null, // prix et durée à confirmer par le client
+    framework: 'industry',
+  },
+  {
+    id: 'b8e77a3f-1b20-466a-8107-45dd4f6dc998',
+    imo_number: null,
+    name: 'IMCA ROV Pilot Technician Grade 2 / Grade 1',
+    duration_days: null,
+    duration_hours: null,
+    category: 'Specialised Operations',
+    image_url: null,
+    price_usd: null, // prix et durée à confirmer par le client
+    framework: 'industry',
+  },
+  {
+    id: '94e93e28-df03-4ce6-a6d6-2057c8aa47aa',
+    imo_number: null,
+    name: 'IWCF / IADC Well Control (Level 3 or 4)',
+    duration_days: null,
+    duration_hours: null,
+    category: 'Offshore',
+    image_url: null,
+    price_usd: null, // prix et durée à confirmer par le client
+    framework: 'industry',
   },
   {
     id: '1328ed45-358b-4db2-b617-ba5ed0fe911a',
@@ -222,6 +312,50 @@ export const COURSES: Course[] = [
     category: 'Medical',
     image_url: 'https://images.pexels.com/photos/33862096/pexels-photo-33862096.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
     price_usd: 250,
+  },
+  {
+    id: '423c4bfc-e582-4ece-81c4-db02539cd6b7',
+    imo_number: null,
+    name: 'MIST (Minimum Industry Safety Training)',
+    duration_days: null,
+    duration_hours: null,
+    category: 'Offshore',
+    image_url: null,
+    price_usd: null, // prix et durée à confirmer par le client
+    framework: 'industry',
+  },
+  {
+    id: '95e2b6dc-46ce-434f-85e7-9ad3b4595c4a',
+    imo_number: null,
+    name: 'NI DP Advanced / Simulator Course (Nautical Institute)',
+    duration_days: null,
+    duration_hours: null,
+    category: 'Specialised Operations',
+    image_url: null,
+    price_usd: null, // prix et durée à confirmer par le client
+    framework: 'industry',
+  },
+  {
+    id: 'b0da25e7-8138-46f9-9f10-6cd5d0edbfda',
+    imo_number: null,
+    name: 'NI DP Basic / Induction Course (Nautical Institute)',
+    duration_days: null,
+    duration_hours: null,
+    category: 'Specialised Operations',
+    image_url: null,
+    price_usd: null, // prix et durée à confirmer par le client
+    framework: 'industry',
+  },
+  {
+    id: 'fd1d824f-c304-45b3-9de2-2722b3feb6b0',
+    imo_number: null,
+    name: 'Offshore Crane Operator Stage 2 / Stage 3',
+    duration_days: null,
+    duration_hours: null,
+    category: 'Offshore',
+    image_url: null,
+    price_usd: null, // prix et durée à confirmer par le client
+    framework: 'industry',
   },
   {
     id: '93a83fd3-d053-4e6a-8271-0bebeb693ef1',

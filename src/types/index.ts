@@ -7,6 +7,8 @@ export interface Course {
   category: string;
   image_url: string | null;
   price_usd: number | null;
+  /** Formation du secteur (offshore, énergie, positionnement dynamique...), hors cadre STCW / MLC. */
+  framework?: 'industry';
 }
 
 export interface Volunteer {

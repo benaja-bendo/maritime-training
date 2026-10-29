@@ -9,6 +9,7 @@ const COURSE_GROUPS = [
   'Opérations des pétroliers',
   'Navigation et simulateurs',
   'Médical et lutte contre les incendies',
+  'Offshore et opérations spécialisées',
 ];
 
 const ACCREDITATIONS = ['AMP', 'IMO', 'STCW', 'OPITO'];

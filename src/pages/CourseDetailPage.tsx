@@ -60,7 +60,7 @@ export default function CourseDetailPage() {
   return (
     <div className="pt-16 md:pt-20">
       {/* Hero with image */}
-      <section className="relative h-[42vh] min-h-[320px] overflow-hidden">
+      <section className="relative h-[42vh] min-h-[320px] overflow-hidden bg-[#102641]">
         {course.image_url && (
           <img
             src={course.image_url}
@@ -117,24 +117,41 @@ export default function CourseDetailPage() {
           {/* Description */}
           <div className="prose max-w-none">
             <h2 className="text-xl font-bold text-white mb-3">Présentation</h2>
-            <p className="text-slate-300 leading-relaxed">
-              Cette formation est dispensée dans le respect des conventions
-              internationales STCW et MLC 2006. Elle combine théorie et pratique
-              pour garantir l’acquisition des compétences requises à bord des
-              navires marchands. À l’issue du cours, les stagiaires reçoivent un
-              certificat officiel enregistré dans notre base de données et
-              vérifiable via le portail de vérification.
-            </p>
+            {course.framework === 'industry' ? (
+              <p className="text-slate-300 leading-relaxed">
+                Cette formation s’adresse aux métiers de l’offshore et des opérations
+                spécialisées. Le programme, la durée, le tarif et l’organisme de
+                référence de la formation, ainsi que les modalités de délivrance du
+                certificat, sont confirmés par notre équipe avant votre inscription.
+              </p>
+            ) : (
+              <p className="text-slate-300 leading-relaxed">
+                Cette formation est dispensée dans le respect des conventions
+                internationales STCW et MLC 2006. Elle combine théorie et pratique
+                pour garantir l’acquisition des compétences requises à bord des
+                navires marchands. À l’issue du cours, les stagiaires reçoivent un
+                certificat officiel enregistré dans notre base de données et
+                vérifiable via le portail de vérification.
+              </p>
+            )}
           </div>
 
           {/* Highlights */}
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {[
-              'Certificat officiel enregistré et vérifiable en ligne',
-              'Formateurs expérimentés du secteur maritime',
-              'Théorie et exercices pratiques en conditions réelles',
-              'Conforme aux standards STCW et MLC 2006',
-            ].map((item) => (
+            {(course.framework === 'industry'
+              ? [
+                  'Programme, durée et tarif confirmés avant l’inscription',
+                  'Formateurs expérimentés du secteur maritime',
+                  'Théorie et exercices pratiques en conditions réelles',
+                  'Inscription et suivi du paiement en ligne',
+                ]
+              : [
+                  'Certificat officiel enregistré et vérifiable en ligne',
+                  'Formateurs expérimentés du secteur maritime',
+                  'Théorie et exercices pratiques en conditions réelles',
+                  'Conforme aux standards STCW et MLC 2006',
+                ]
+            ).map((item) => (
               <div key={item} className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
                 <span className="text-slate-200 text-sm">{item}</span>

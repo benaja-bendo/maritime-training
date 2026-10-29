@@ -614,17 +614,13 @@ export default function RegistrationPage() {
                             </div>
                           )}
 
-                          {position.unavailable && (
+                          {position.prerequisites && (
                             <p className="text-xs text-slate-400 leading-relaxed">
                               <span className="text-slate-300">
-                                Également demandé pour cette fonction, mais pas encore dans notre
-                                catalogue :
+                                Également requis pour cette fonction, mais délivré en dehors de nos
+                                formations :
                               </span>{' '}
-                              {position.unavailable.join(' ; ')}.{' '}
-                              <Link to="/contact" className="underline hover:text-white">
-                                Écrivez-nous
-                              </Link>{' '}
-                              pour ces formations.
+                              {position.prerequisites.join(' ; ')}.
                             </p>
                           )}
                         </div>
