@@ -74,6 +74,21 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // ---------- Catalogue des formations ----------
+
+    // Un seul document (`courses`) pour tout le catalogue : une lecture par visite du site.
+    // Public : lecture seule. Personnel : écriture versionnée (version + 1) et journalisée.
+    match /catalog/{doc} {
+      allow get: if doc == 'courses';
+      allow create: if isAdmin() && doc == 'courses'
+        && isValidCatalog(request.resource.data)
+        && request.resource.data.version == 1;
+      allow update: if isAdmin() && doc == 'courses'
+        && isValidCatalog(request.resource.data)
+        && request.resource.data.version == resource.data.version + 1;
+      allow list, delete: if false;
+    }
+
     // ---------- Vérification des certificats ----------
 
     // Public : lecture d'un document précis seulement, jamais de liste. Les clés sont des
@@ -133,6 +148,17 @@ service cloud.firestore {
         && text(d.subject, 0, 150)
         && text(d.message, 1, 4000)
         && d.created_at == request.time;
+    }
+
+    function isValidCatalog(d) {
+      return d.keys().hasOnly(['courses', 'version', 'updated_at', 'audit_id'])
+        && d.keys().hasAll(['courses', 'version', 'updated_at', 'audit_id'])
+        && d.courses is list
+        && d.courses.size() >= 1
+        && d.courses.size() <= 300
+        && d.version is int
+        && d.updated_at == request.time
+        && hasAudit(d);
     }
 
     function isValidRegistration(ref, d) {

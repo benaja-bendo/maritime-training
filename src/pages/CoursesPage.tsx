@@ -13,8 +13,8 @@ import {
   ArrowRight,
 } from 'lucide-react';
 
-const CATEGORIES = [
-  'Toutes',
+// Ordre habituel des catégories ; celles que l'administration crée viennent ensuite.
+const CATEGORY_ORDER = [
   'Basic Safety',
   'Medical',
   'Navigation',
@@ -43,6 +43,13 @@ export default function CoursesPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('Toutes');
+
+  const categories = useMemo(() => {
+    const present = new Set(courses.map((c) => c.category));
+    const known = CATEGORY_ORDER.filter((c) => present.has(c));
+    const others = [...present].filter((c) => !CATEGORY_ORDER.includes(c)).sort();
+    return ['Toutes', ...known, ...others];
+  }, [courses]);
 
   useEffect(() => {
     (async () => {
@@ -104,7 +111,7 @@ export default function CoursesPage() {
                 onChange={(e) => setCategory(e.target.value)}
                 className="input-field md:w-56"
               >
-                {CATEGORIES.map((cat) => (
+                {categories.map((cat) => (
                   <option key={cat} value={cat}>
                     {cat === 'Toutes' ? 'Toutes les catégories' : cat}
                   </option>

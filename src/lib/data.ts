@@ -6,14 +6,15 @@ import type {
   VerifiedStudent,
   VolunteerInput,
 } from '@/types';
-import { COURSES } from '@/data/courses';
+import { loadCatalog } from '@/lib/catalog';
 import { computeQuote, DEPOSIT_RATE } from '@/lib/pricing';
 import { lookupKey } from '@/lib/verification';
 import type { VerificationMethod } from '@/lib/verification';
 
 // Couche d'accès aux données : les pages n'importent que ce fichier.
-// Les cours viennent du fichier statique ; les inscriptions, messages et vérifications
-// passent par Firestore ; les candidatures volontaires attendent Firestore (voir CLAUDE.md).
+// Les cours viennent du catalogue (Firestore, modifiable depuis /admin, avec la liste de
+// `src/data/courses.ts` en secours) ; les inscriptions, messages et vérifications passent par
+// Firestore ; les candidatures volontaires attendent Firestore (voir CLAUDE.md).
 
 export class ServiceUnavailableError extends Error {
   constructor(message = "Ce service n'est pas encore disponible.") {
@@ -22,12 +23,18 @@ export class ServiceUnavailableError extends Error {
   }
 }
 
+/** Formations visibles sur le site. */
 export async function getCourses(): Promise<Course[]> {
-  return COURSES;
+  return (await loadCatalog()).filter((c) => !c.hidden);
+}
+
+/** Toutes les formations, masquées comprises (administration). */
+export async function getAllCourses(): Promise<Course[]> {
+  return loadCatalog();
 }
 
 export async function getCourse(id: string): Promise<Course | null> {
-  return COURSES.find((c) => c.id === id) ?? null;
+  return (await getCourses()).find((c) => c.id === id) ?? null;
 }
 
 const str = (v: unknown): string | null => (typeof v === 'string' && v ? v : null);

@@ -5,6 +5,7 @@ import LogoMark from '@/components/LogoMark';
 import { isFirebaseConfigured } from '@/lib/firebase';
 import { isAdminEmail, signInWithGoogle, signOutAdmin, watchAuth } from '@/lib/auth';
 import AdminCertificates from '@/pages/admin/AdminCertificates';
+import AdminCatalog from '@/pages/admin/AdminCatalog';
 import AdminRegistrations from '@/pages/admin/AdminRegistrations';
 import AdminMessages from '@/pages/admin/AdminMessages';
 import AdminAudit from '@/pages/admin/AdminAudit';
@@ -18,6 +19,7 @@ type Access =
 
 const TABS = [
   { to: 'certificats', label: 'Certificats' },
+  { to: 'formations', label: 'Formations' },
   { to: 'inscriptions', label: 'Inscriptions' },
   { to: 'messages', label: 'Messages' },
   { to: 'journal', label: 'Journal' },
@@ -155,6 +157,7 @@ export default function AdminApp() {
         <Routes>
           <Route index element={<Navigate to="certificats" replace />} />
           <Route path="certificats" element={<AdminCertificates email={access.email} />} />
+          <Route path="formations" element={<AdminCatalog email={access.email} />} />
           <Route path="inscriptions" element={<AdminRegistrations email={access.email} />} />
           <Route path="messages" element={<AdminMessages email={access.email} />} />
           <Route path="journal" element={<AdminAudit />} />

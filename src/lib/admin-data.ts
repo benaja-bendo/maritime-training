@@ -7,13 +7,17 @@ import {
   orderBy,
   query,
   serverTimestamp,
+  runTransaction,
   Timestamp,
   updateDoc,
   writeBatch,
 } from 'firebase/firestore';
+import { COURSES } from '@/data/courses';
 import { getDb } from '@/lib/firebase';
+import { describeChanges as describeCatalogChanges, parseCourses, resetCatalogCache } from '@/lib/catalog';
 import { emptyStudent, missingForPublish, newCertificate } from '@/lib/certificates';
 import { lookupKey, normalizeIdentifier, todayInPanama } from '@/lib/verification';
+import type { Course } from '@/types';
 import type {
   AdminCertificate,
   AdminMessage,
@@ -308,6 +312,63 @@ export async function updateRegistration(
     updated_at: serverTimestamp(),
   });
   await batch.commit();
+}
+
+// ---------- Catalogue des formations ----------
+
+export interface CatalogState {
+  courses: Course[];
+  /** 0 tant que le catalogue n'a jamais été enregistré dans la base (le site affiche alors la liste d'origine). */
+  version: number;
+}
+
+export async function loadAdminCatalog(): Promise<CatalogState> {
+  const snap = await getDoc(doc(getDb(), 'catalog', 'courses'));
+  if (!snap.exists()) return { courses: structuredClone(COURSES), version: 0 };
+  const data = snap.data();
+  const courses = parseCourses(data.courses);
+  if (!courses) throw new Error('Le catalogue enregistré est illisible : contactez le développeur avant de le modifier.');
+  return { courses, version: Number(data.version) || 0 };
+}
+
+// Un document unique pour tout le catalogue : le site le lit en une requête. L'écriture est
+// versionnée (deux administrateurs ne s'écrasent pas) et journalisée dans la même transaction.
+export async function saveCatalog(next: Course[], base: CatalogState, actor: string): Promise<void> {
+  const db = getDb();
+  const ref = doc(db, 'catalog', 'courses');
+  const auditRef = doc(collection(db, 'audit_log'));
+  const courses = next.map((c) => ({
+    id: c.id,
+    imo_number: c.imo_number,
+    name: c.name.trim(),
+    duration_days: c.duration_days,
+    duration_hours: c.duration_hours,
+    category: c.category.trim() || 'Autre',
+    image_url: c.image_url,
+    price_usd: c.price_usd,
+    ...(c.framework ? { framework: c.framework } : {}),
+    ...(c.hidden ? { hidden: true } : {}),
+  }));
+  await runTransaction(db, async (tx) => {
+    const current = await tx.get(ref);
+    const version = current.exists() ? Number(current.data().version) || 0 : 0;
+    if (version !== base.version) {
+      throw new Error('Le catalogue a été modifié par quelqu’un d’autre entre-temps. Rechargez la page, puis refaites vos modifications.');
+    }
+    tx.set(auditRef, {
+      actor,
+      action: 'catalogue',
+      detail: describeCatalogChanges(base.courses, next),
+      at: serverTimestamp(),
+    });
+    tx.set(ref, {
+      courses,
+      version: version + 1,
+      updated_at: serverTimestamp(),
+      audit_id: auditRef.id,
+    });
+  });
+  resetCatalogCache();
 }
 
 // ---------- Messages et journal ----------

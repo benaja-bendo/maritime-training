@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FileUp, Plus, Save, Search, Trash2, Upload, X } from 'lucide-react';
-import { getCourses } from '@/lib/data';
+import { getAllCourses } from '@/lib/data';
 import {
   emptyStudent,
   listAdminStudents,
@@ -52,7 +52,7 @@ export default function AdminCertificates({ email }: { email: string }) {
 
   useEffect(() => {
     refresh();
-    getCourses().then(setCatalog);
+    getAllCourses().then(setCatalog);
   }, [refresh]);
 
   const filtered = useMemo(() => {
