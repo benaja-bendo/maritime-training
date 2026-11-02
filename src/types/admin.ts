@@ -29,6 +29,8 @@ export interface AdminStudent {
   full_name: string;
   national_id: string;
   passport: string;
+  nationality: string;
+  photo_data_url: string;
   notes: string;
   certificates: AdminCertificate[];
 }

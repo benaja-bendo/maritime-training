@@ -9,6 +9,8 @@ export const emptyStudent = (): AdminStudent => ({
   full_name: '',
   national_id: '',
   passport: '',
+  nationality: '',
+  photo_data_url: '',
   notes: '',
   certificates: [],
 });

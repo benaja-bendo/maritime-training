@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { FileUp, Plus, Save, Search, Trash2, Upload, X } from 'lucide-react';
+import { Camera, FileUp, Plus, Save, Search, Trash2, Upload, X } from 'lucide-react';
 import { getAllCourses } from '@/lib/data';
+import { prepareIdPhoto, PhotoError } from '@/lib/image';
+import { getCountries } from '@/lib/countries';
 import {
   emptyStudent,
   listAdminStudents,
@@ -39,6 +41,9 @@ export default function AdminCertificates({ email }: { email: string }) {
   const [revokeId, setRevokeId] = useState<string | null>(null);
   const [revokeReason, setRevokeReason] = useState('');
   const [showImport, setShowImport] = useState(false);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+
+  const countries = useMemo(() => getCountries('fr'), []);
 
   const refresh = useCallback(async () => {
     try {
@@ -70,9 +75,29 @@ export default function AdminCertificates({ email }: { email: string }) {
   const open = (s: AdminStudent | null) => {
     setError(null);
     setNotice(null);
+    setPhotoError(null);
     setRevokeId(null);
     setForm(s ? clone(s) : emptyStudent());
     setSaved(s ? clone(s) : null);
+  };
+
+  const onPhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPhotoError(null);
+    try {
+      const dataUrl = await prepareIdPhoto(file);
+      setField('photo_data_url', dataUrl);
+    } catch (err) {
+      setPhotoError(err instanceof PhotoError ? err.message : 'Impossible de traiter cette photo.');
+    } finally {
+      e.target.value = '';
+    }
+  };
+
+  const removePhoto = () => {
+    setPhotoError(null);
+    setField('photo_data_url', '');
   };
 
   const persist = async (next: AdminStudent, action: string, doneMsg: string) => {
@@ -153,13 +178,25 @@ export default function AdminCertificates({ email }: { email: string }) {
               const n = (st: string) => s.certificates.filter((c) => c.status === st).length;
               return (
                 <li key={s.id}>
-                  <button onClick={() => open(s)} className={`w-full text-left px-2 py-2.5 hover:bg-[#172f4e] ${form?.id === s.id ? 'bg-[#172f4e]' : ''}`}>
-                    <div className="text-sm font-medium text-white">{s.full_name}</div>
-                    <div className="text-xs text-slate-400 font-mono">{s.student_code}</div>
-                    <div className="mt-1 flex gap-2 text-[11px]">
-                      <span className="text-slate-300">{n('draft')} brouillon(s)</span>
-                      <span className="text-emerald-300">{n('published')} publié(s)</span>
-                      {n('revoked') > 0 && <span className="text-red-300">{n('revoked')} révoqué(s)</span>}
+                  <button onClick={() => open(s)} className={`w-full text-left px-2 py-2.5 hover:bg-[#172f4e] flex items-center gap-2.5 ${form?.id === s.id ? 'bg-[#172f4e]' : ''}`}>
+                    {s.photo_data_url ? (
+                      <img src={s.photo_data_url} alt="" className="w-8 h-10 object-cover rounded-sm border border-[#294769] flex-shrink-0" />
+                    ) : (
+                      <div className="w-8 h-10 rounded-sm border border-[#294769] bg-[#0b1b30] flex items-center justify-center flex-shrink-0 text-slate-500">
+                        <Camera className="w-3.5 h-3.5 opacity-40" />
+                      </div>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-medium text-white truncate">{s.full_name}</div>
+                      <div className="text-xs text-slate-400 font-mono truncate">
+                        {s.student_code}
+                        {s.nationality && <span className="font-sans text-slate-400 ml-1">· {s.nationality}</span>}
+                      </div>
+                      <div className="mt-1 flex gap-2 text-[11px]">
+                        <span className="text-slate-300">{n('draft')} brouillon(s)</span>
+                        <span className="text-emerald-300">{n('published')} publié(s)</span>
+                        {n('revoked') > 0 && <span className="text-red-300">{n('revoked')} révoqué(s)</span>}
+                      </div>
                     </div>
                   </button>
                 </li>
@@ -196,14 +233,71 @@ export default function AdminCertificates({ email }: { email: string }) {
           </div>
         ) : (
           <>
-            <div className="card p-5 sm:p-6 space-y-4">
+            <div className="card p-5 sm:p-6 space-y-5">
               <h2 className="font-semibold text-white">{saved ? form.full_name || 'Fiche' : 'Nouvelle fiche'}</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Lbl label="Nom complet *"><input className={inputCls} value={form.full_name} onChange={(e) => setField('full_name', e.target.value)} maxLength={120} /></Lbl>
-                <Lbl label="Identifiant étudiant"><input className={`${inputCls} font-mono`} value={form.student_code} onChange={(e) => setField('student_code', e.target.value)} readOnly={!!saved} placeholder="Généré automatiquement" /></Lbl>
-                <Lbl label="N° de carte d’identité"><input className={`${inputCls} font-mono`} value={form.national_id} onChange={(e) => setField('national_id', e.target.value)} maxLength={30} /></Lbl>
-                <Lbl label="N° de passeport"><input className={`${inputCls} font-mono`} value={form.passport} onChange={(e) => setField('passport', e.target.value)} maxLength={30} /></Lbl>
+
+              <div className="flex flex-col sm:flex-row gap-5 items-start">
+                {/* Zone photo */}
+                <div className="flex flex-col items-center sm:items-start space-y-2 flex-shrink-0">
+                  <span className="text-xs font-medium text-slate-300">Photo du candidat</span>
+                  <div className="w-24 sm:w-28 aspect-[7/9] rounded-md border border-[#294769] bg-[#0b1b30] flex items-center justify-center overflow-hidden relative shadow-inner">
+                    {form.photo_data_url ? (
+                      <img src={form.photo_data_url} alt="Photo du candidat" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="flex flex-col items-center text-slate-500 text-center p-2">
+                        <Camera className="w-7 h-7 mb-1 opacity-50" />
+                        <span className="text-[10px] leading-tight">Aucune photo</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <label className="btn-secondary !py-1 !px-2.5 text-xs cursor-pointer inline-flex items-center gap-1.5">
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>{form.photo_data_url ? 'Changer' : 'Uploader'}</span>
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        className="hidden"
+                        onChange={onPhotoChange}
+                      />
+                    </label>
+                    {form.photo_data_url && (
+                      <button
+                        type="button"
+                        onClick={removePhoto}
+                        className="p-1 text-slate-400 hover:text-red-300 rounded transition-colors"
+                        title="Supprimer la photo"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                  {photoError && <p className="text-xs text-red-300 max-w-[13rem]">{photoError}</p>}
+                </div>
+
+                {/* Formulaire identité & nationalité */}
+                <div className="flex-1 w-full space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <Lbl label="Nom complet *"><input className={inputCls} value={form.full_name} onChange={(e) => setField('full_name', e.target.value)} maxLength={120} /></Lbl>
+                    <Lbl label="Identifiant étudiant"><input className={`${inputCls} font-mono`} value={form.student_code} onChange={(e) => setField('student_code', e.target.value)} readOnly={!!saved} placeholder="Généré automatiquement" /></Lbl>
+                    <Lbl label="Nationalité">
+                      <select
+                        className={inputCls}
+                        value={form.nationality}
+                        onChange={(e) => setField('nationality', e.target.value)}
+                      >
+                        <option value="">— Sélectionner une nationalité —</option>
+                        {countries.map((c) => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
+                      </select>
+                    </Lbl>
+                    <Lbl label="N° de carte d’identité"><input className={`${inputCls} font-mono`} value={form.national_id} onChange={(e) => setField('national_id', e.target.value)} maxLength={30} /></Lbl>
+                    <Lbl label="N° de passeport" className="sm:col-span-2"><input className={`${inputCls} font-mono`} value={form.passport} onChange={(e) => setField('passport', e.target.value)} maxLength={30} /></Lbl>
+                  </div>
+                </div>
               </div>
+
               <Lbl label="Notes internes (jamais publiques)"><textarea className={inputCls} rows={2} value={form.notes} onChange={(e) => setField('notes', e.target.value)} /></Lbl>
             </div>
 

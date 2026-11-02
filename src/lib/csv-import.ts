@@ -317,6 +317,8 @@ export function mergeParsed(
           full_name: p.full_name,
           national_id: p.national_id,
           passport: p.passport,
+          nationality: '',
+          photo_data_url: '',
           notes: '',
           certificates: [],
         };

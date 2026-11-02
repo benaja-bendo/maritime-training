@@ -49,6 +49,8 @@ function toStudent(id: string, d: Record<string, unknown>): AdminStudent {
     full_name: str(d.full_name),
     national_id: str(d.national_id),
     passport: str(d.passport),
+    nationality: str(d.nationality),
+    photo_data_url: str(d.photo_data_url),
     notes: str(d.notes),
     certificates: certs.map((raw) => {
       const c = (raw ?? {}) as Record<string, unknown>;
@@ -92,6 +94,8 @@ function describeChanges(prev: AdminStudent | null, next: AdminStudent): string 
     prev.full_name !== next.full_name ||
     prev.national_id !== next.national_id ||
     prev.passport !== next.passport ||
+    prev.nationality !== next.nationality ||
+    prev.photo_data_url !== next.photo_data_url ||
     prev.notes !== next.notes
   ) {
     parts.push('modification de la fiche');
