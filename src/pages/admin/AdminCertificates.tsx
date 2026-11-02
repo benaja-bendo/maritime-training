@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+﻿import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Camera, FileUp, Plus, Save, Search, Sparkles, Trash2, Upload, X } from 'lucide-react';
 import { getAllCourses } from '@/lib/data';
 import { prepareIdPhoto, PhotoError } from '@/lib/image';
@@ -27,13 +27,32 @@ const STATUS_BADGE = {
 const clone = (s: AdminStudent): AdminStudent => JSON.parse(JSON.stringify(s));
 const errMsg = (e: unknown) => (e instanceof Error ? e.message : 'Une erreur est survenue.');
 
+const START_CERT_NUMBER = 43289;
+
+const MONTHS = [
+  { value: '01', label: '01 - Janvier' },
+  { value: '02', label: '02 - Février' },
+  { value: '03', label: '03 - Mars' },
+  { value: '04', label: '04 - Avril' },
+  { value: '05', label: '05 - Mai' },
+  { value: '06', label: '06 - Juin' },
+  { value: '07', label: '07 - Juillet' },
+  { value: '08', label: '08 - Août' },
+  { value: '09', label: '09 - Septembre' },
+  { value: '10', label: '10 - Octobre' },
+  { value: '11', label: '11 - Novembre' },
+  { value: '12', label: '12 - Décembre' },
+] as const;
+
 function getNextCertificateNumber(
   year: number | string,
+  month: number | string,
   existingStudents: AdminStudent[],
   currentCertificates: AdminCertificate[] = [],
   excludeCertId?: string,
 ): string {
   const y = String(year).trim() || String(new Date().getFullYear());
+  const m = String(month).trim().padStart(2, '0') || String(new Date().getMonth() + 1).padStart(2, '0');
   const used = new Set<string>();
 
   for (const s of existingStudents) {
@@ -50,34 +69,52 @@ function getNextCertificateNumber(
     }
   }
 
-  let maxSeq = 0;
-  const regex = new RegExp(`^(?:PMTS-)?${y}-(\\d+)$`, 'i');
+  let maxSeq = START_CERT_NUMBER - 1;
+  const prefixRegex = new RegExp(`^(?:PMTS-)?${y}-?${m}-(\\d+)$`, 'i');
+  const generalRegex = /(\d{5,})$/;
+
   for (const num of used) {
-    const match = num.match(regex);
-    if (match) {
-      const val = parseInt(match[1], 10);
+    const matchPrefix = num.match(prefixRegex);
+    if (matchPrefix) {
+      const val = parseInt(matchPrefix[1], 10);
       if (val > maxSeq) maxSeq = val;
+    } else {
+      const matchGeneral = num.match(generalRegex);
+      if (matchGeneral) {
+        const val = parseInt(matchGeneral[1], 10);
+        if (val >= START_CERT_NUMBER && val > maxSeq) {
+          maxSeq = val;
+        }
+      }
     }
   }
 
   let nextSeq = maxSeq + 1;
-  let candidate = `PMTS-${y}-${String(nextSeq).padStart(4, '0')}`;
+  let candidate = `PMTS-${y}-${m}-${nextSeq}`;
   while (used.has(candidate.toUpperCase())) {
     nextSeq++;
-    candidate = `PMTS-${y}-${String(nextSeq).padStart(4, '0')}`;
+    candidate = `PMTS-${y}-${m}-${nextSeq}`;
   }
 
   return candidate;
 }
 
-function getCertYear(c: AdminCertificate, fallbackYear: number): number {
-  const match = c.certificate_number.match(/\b(20\d{2})\b/);
-  if (match) return Number(match[1]);
-  if (c.completed_on) {
-    const y = parseInt(c.completed_on.split('-')[0], 10);
-    if (y && y >= 2000 && y <= 2099) return y;
+function getCertYearAndMonth(
+  c: AdminCertificate,
+  fallbackYear: number,
+  fallbackMonth: string,
+): { year: number; month: string } {
+  if (c.completed_on && c.completed_on.includes('-')) {
+    const parts = c.completed_on.split('-');
+    if (parts[0] && parts[1]) {
+      return { year: Number(parts[0]), month: parts[1].padStart(2, '0') };
+    }
   }
-  return fallbackYear;
+  const match = c.certificate_number.match(/\b(20\d{2})[-/]?(\d{2})\b/);
+  if (match) {
+    return { year: Number(match[1]), month: match[2].padStart(2, '0') };
+  }
+  return { year: fallbackYear, month: fallbackMonth };
 }
 
 export default function AdminCertificates({ email }: { email: string }) {
@@ -96,6 +133,9 @@ export default function AdminCertificates({ email }: { email: string }) {
   const [showImport, setShowImport] = useState(false);
   const [photoError, setPhotoError] = useState<string | null>(null);
   const [defaultYear, setDefaultYear] = useState<number>(() => new Date().getFullYear());
+  const [defaultMonth, setDefaultMonth] = useState<string>(() =>
+    String(new Date().getMonth() + 1).padStart(2, '0'),
+  );
 
   const countries = useMemo(() => getCountries('fr'), []);
 
@@ -224,11 +264,14 @@ export default function AdminCertificates({ email }: { email: string }) {
     const cert = newCertificate(course);
     cert.certificate_number = getNextCertificateNumber(
       defaultYear,
+      defaultMonth,
       students,
       form.certificates,
     );
     const today = todayInPanama();
-    cert.completed_on = today.startsWith(String(defaultYear)) ? today : `${defaultYear}-01-01`;
+    cert.completed_on = today.startsWith(String(defaultYear))
+      ? today
+      : `${defaultYear}-${defaultMonth}-01`;
     setField('certificates', [...form.certificates, cert]);
     setAddCourse('');
   };
@@ -408,7 +451,7 @@ export default function AdminCertificates({ email }: { email: string }) {
                 <div>
                   <h2 className="font-semibold text-white">Certificats</h2>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    Numéros générés selon l’année désignée (format PMTS-AAAA-XXXX sans doublon).
+                    Numéros générés : PMTS-AAAA-MM-NNNNN (départ : 43289, sans doublon).
                   </p>
                 </div>
                 <div className="flex flex-wrap items-end gap-2">
@@ -423,6 +466,19 @@ export default function AdminCertificates({ email }: { email: string }) {
                       className={`${inputCls} !w-24 text-center font-mono`}
                       title="Année désignée pour la génération automatique du numéro de certificat"
                     />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-slate-300 mb-1">Mois</label>
+                    <select
+                      value={defaultMonth}
+                      onChange={(e) => setDefaultMonth(e.target.value)}
+                      className={`${inputCls} !w-40 font-mono`}
+                      title="Mois désigné pour la génération automatique"
+                    >
+                      {MONTHS.map((m) => (
+                        <option key={m.value} value={m.value}>{m.label}</option>
+                      ))}
+                    </select>
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-slate-300 mb-1">Formation</label>
@@ -455,7 +511,7 @@ export default function AdminCertificates({ email }: { email: string }) {
                 const locked = c.status !== 'draft';
                 const badge = STATUS_BADGE[c.status];
                 const expired = isCertExpired(c);
-                const certYear = getCertYear(c, defaultYear);
+                const { year: certYear, month: certMonth } = getCertYearAndMonth(c, defaultYear, defaultMonth);
                 return (
                   <div key={c.id} className="rounded-xl border border-[#294769] p-4 space-y-3">
                     <div className="flex flex-wrap items-center gap-2 justify-between">
@@ -480,7 +536,7 @@ export default function AdminCertificates({ email }: { email: string }) {
                             disabled={locked}
                             value={c.certificate_number}
                             onChange={(e) => patchCert(c.id, { certificate_number: e.target.value })}
-                            placeholder="ex: PMTS-2026-0001"
+                            placeholder="ex: PMTS-2026-11-43289"
                           />
                           {!locked && (
                             <button
@@ -488,6 +544,7 @@ export default function AdminCertificates({ email }: { email: string }) {
                               onClick={() => {
                                 const nextNum = getNextCertificateNumber(
                                   certYear,
+                                  certMonth,
                                   students,
                                   form.certificates,
                                   c.id,
@@ -495,7 +552,7 @@ export default function AdminCertificates({ email }: { email: string }) {
                                 patchCert(c.id, { certificate_number: nextNum });
                               }}
                               className="btn-secondary !py-1.5 !px-2.5 text-xs inline-flex items-center gap-1 flex-shrink-0"
-                              title={`Régénérer automatiquement un numéro unique pour l'année ${certYear}`}
+                              title={`Régénérer automatiquement un numéro unique pour ${certYear}-${certMonth}`}
                             >
                               <Sparkles className="w-3.5 h-3.5 text-amber-300" />
                               <span className="hidden xl:inline">Auto</span>
