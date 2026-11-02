@@ -49,7 +49,7 @@ export function parseCourse(x: unknown): Course | null {
     name,
     duration_days: amount(o.duration_days),
     duration_hours: amount(o.duration_hours),
-    category: text(o.category) || 'Autre',
+    category: text(o.category) || 'Other',
     image_url: text(o.image_url) || null,
     price_usd: amount(o.price_usd),
   };

@@ -17,7 +17,7 @@ import type { VerificationMethod } from '@/lib/verification';
 // Firestore ; les candidatures volontaires attendent Firestore (voir CLAUDE.md).
 
 export class ServiceUnavailableError extends Error {
-  constructor(message = "Ce service n'est pas encore disponible.") {
+  constructor(message = 'This service is not available yet.') {
     super(message);
     this.name = 'ServiceUnavailableError';
   }
@@ -48,9 +48,7 @@ export async function findStudent(
 ): Promise<VerifiedStudent | null> {
   const { isFirebaseConfigured, getDb } = await import('@/lib/firebase');
   if (!isFirebaseConfigured) {
-    throw new ServiceUnavailableError(
-      "La vérification de documents n'est pas encore disponible.",
-    );
+    throw new ServiceUnavailableError('Document verification is not available yet.');
   }
   const { doc, getDoc } = await import('firebase/firestore');
   const db = getDb();
@@ -100,9 +98,7 @@ export async function isVerificationOpen(): Promise<boolean> {
 }
 
 export async function submitVolunteer(_volunteer: VolunteerInput): Promise<void> {
-  throw new ServiceUnavailableError(
-    "L'envoi des candidatures n'est pas encore disponible.",
-  );
+  throw new ServiceUnavailableError('Volunteer applications cannot be submitted yet.');
 }
 
 // Alphabet sans caractères ambigus (ni 0/O, ni 1/I) ; 32 symboles = pas de biais avec un octet.
@@ -136,9 +132,7 @@ export async function submitRegistration(
 ): Promise<RegistrationReceipt> {
   const { isFirebaseConfigured, getDb } = await import('@/lib/firebase');
   if (!isFirebaseConfigured) {
-    throw new ServiceUnavailableError(
-      "Les inscriptions en ligne ne sont pas encore disponibles.",
-    );
+    throw new ServiceUnavailableError('Online registration is not available yet.');
   }
   const { doc, setDoc, serverTimestamp } = await import('firebase/firestore');
 
@@ -180,9 +174,7 @@ export async function submitRegistration(
 export async function submitContactMessage(input: ContactInput): Promise<void> {
   const { isFirebaseConfigured, getDb } = await import('@/lib/firebase');
   if (!isFirebaseConfigured) {
-    throw new ServiceUnavailableError(
-      "L'envoi de messages n'est pas encore disponible.",
-    );
+    throw new ServiceUnavailableError('Messages cannot be sent yet.');
   }
   const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
 

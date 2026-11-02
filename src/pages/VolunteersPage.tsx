@@ -13,12 +13,12 @@ import {
 } from 'lucide-react';
 
 const POSITIONS = [
-  'Instructeur sécurité',
-  'Instructeur survie',
-  'Formateur pont',
-  'Formateur machine',
-  'Coordinateur de stage',
-  'Autre',
+  'Safety instructor',
+  'Survival instructor',
+  'Deck trainer',
+  'Engine trainer',
+  'Course coordinator',
+  'Other',
 ];
 
 export default function VolunteersPage() {
@@ -40,7 +40,7 @@ export default function VolunteersPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.full_name || !form.email) {
-      setError('Le nom et l’email sont obligatoires.');
+      setError('Name and email are required.');
       return;
     }
     setLoading(true);
@@ -61,7 +61,7 @@ export default function VolunteersPage() {
         setError(err.message);
         return;
       }
-      setError("Une erreur est survenue lors de l’envoi. Réessayez.");
+      setError('Something went wrong while sending. Please try again.');
       return;
     }
     setLoading(false);
@@ -81,14 +81,14 @@ export default function VolunteersPage() {
       <section className="bg-[#172f4e] py-16 md:py-20 border-b border-[#294769]">
         <div className="container-app">
           <span className="text-[#e1b936] text-sm font-semibold uppercase tracking-wider">
-            Rejoignez-nous
+            Join us
           </span>
           <h1 className="mt-2 text-3xl sm:text-5xl font-semibold text-white">
-            Inscription Volontaires
+            Volunteer Registration
           </h1>
           <p className="mt-4 text-slate-300 max-w-2xl text-lg">
-            Partagez votre expérience maritime en devenant instructeur volontaire au
-            sein de notre académie.
+            Share your maritime experience by becoming a volunteer instructor at
+            our academy.
           </p>
         </div>
       </section>
@@ -98,30 +98,30 @@ export default function VolunteersPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             <div className="lg:sticky lg:top-28">
               <h2 className="text-2xl font-bold text-white mb-4">
-                Pourquoi nous rejoindre ?
+                Why join us?
               </h2>
               <p className="text-slate-300 leading-relaxed">
-                Vous avez une expérience maritime et l’envie de transmettre votre
-                savoir ? Devenez instructeur volontaire au sein de notre académie et
-                participez à la formation de la prochaine génération de marins.
+                Do you have maritime experience and the desire to pass on your
+                knowledge? Become a volunteer instructor at our academy and help train
+                the next generation of seafarers.
               </p>
 
               <div className="mt-8 space-y-5">
                 {[
                   {
                     icon: HeartHandshake,
-                    title: 'Partagez votre expertise',
-                    desc: 'Transmettez vos compétences à des étudiants motivés du monde entier.',
+                    title: 'Share your expertise',
+                    desc: 'Pass your skills on to motivated students from around the world.',
                   },
                   {
                     icon: Briefcase,
-                    title: 'Flexibilité totale',
-                    desc: 'Choisissez vos modules et votre disponibilité. Interventions ponctuelles ou régulières.',
+                    title: 'Total flexibility',
+                    desc: 'Choose your modules and your availability. One-off or regular sessions.',
                   },
                   {
                     icon: CheckCircle2,
-                    title: 'Certification reconnue',
-                    desc: 'Vos interventions sont créditées et ajoutées à votre dossier professionnel.',
+                    title: 'Recognised contribution',
+                    desc: 'Your sessions are credited and added to your professional record.',
                   },
                 ].map((item) => (
                   <div key={item.title} className="flex items-start gap-4">
@@ -143,27 +143,27 @@ export default function VolunteersPage() {
                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 mb-5">
                     <CheckCircle2 className="w-8 h-8" />
                   </div>
-                  <h3 className="text-xl font-bold text-white">Inscription envoyée !</h3>
+                  <h3 className="text-xl font-bold text-white">Registration sent!</h3>
                   <p className="mt-2 text-slate-300 max-w-sm mx-auto">
-                    Merci pour votre intérêt. Notre équipe vous contactera dans les
-                    prochains jours pour finaliser votre inscription.
+                    Thank you for your interest. Our team will contact you in the
+                    coming days to finalise your registration.
                   </p>
                   <button
                     onClick={() => setSuccess(false)}
                     className="btn-secondary mt-6"
                   >
-                    Soumettre une autre candidature
+                    Submit another application
                   </button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <h3 className="font-semibold text-white text-lg">
-                    Candidature volontaire
+                    Volunteer application
                   </h3>
 
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                      Nom complet *
+                      Full name *
                     </label>
                     <div className="relative">
                       <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -173,7 +173,7 @@ export default function VolunteersPage() {
                         value={form.full_name}
                         onChange={(e) => update('full_name', e.target.value)}
                         className="input-field pl-10"
-                        placeholder="Jean Dupont"
+                        placeholder="John Smith"
                       />
                     </div>
                   </div>
@@ -191,13 +191,13 @@ export default function VolunteersPage() {
                           value={form.email}
                           onChange={(e) => update('email', e.target.value)}
                           className="input-field pl-10"
-                          placeholder="jean@email.com"
+                          placeholder="john@email.com"
                         />
                       </div>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                        Téléphone
+                        Phone
                       </label>
                       <div className="relative">
                         <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -214,14 +214,14 @@ export default function VolunteersPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                      Poste souhaité
+                      Desired role
                     </label>
                     <select
                       value={form.position}
                       onChange={(e) => update('position', e.target.value)}
                       className="input-field"
                     >
-                      <option value="">— Sélectionnez —</option>
+                      <option value="">— Select —</option>
                       {POSITIONS.map((p) => (
                         <option key={p} value={p}>{p}</option>
                       ))}
@@ -230,7 +230,7 @@ export default function VolunteersPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                      Expérience maritime
+                      Maritime experience
                     </label>
                     <div className="relative">
                       <Briefcase className="absolute left-3.5 top-3.5 w-4 h-4 text-slate-400" />
@@ -239,7 +239,7 @@ export default function VolunteersPage() {
                         value={form.experience}
                         onChange={(e) => update('experience', e.target.value)}
                         className="input-field pl-10"
-                        placeholder="Ex : 10 ans comme officier pont sur navires citernes…"
+                        placeholder="e.g. 10 years as a deck officer on tankers…"
                       />
                     </div>
                   </div>
@@ -255,7 +255,7 @@ export default function VolunteersPage() {
                         value={form.message}
                         onChange={(e) => update('message', e.target.value)}
                         className="input-field pl-10"
-                        placeholder="Disponibilités, motivations, questions…"
+                        placeholder="Availability, motivation, questions…"
                       />
                     </div>
                   </div>
@@ -274,12 +274,12 @@ export default function VolunteersPage() {
                     {loading ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        Envoi en cours…
+                        Sending…
                       </>
                     ) : (
                       <>
                         <Send className="w-4 h-4" />
-                        Envoyer ma candidature
+                        Send my application
                       </>
                     )}
                   </button>

@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import HomePage from '@/pages/HomePage';
 import CoursesPage from '@/pages/CoursesPage';
@@ -12,6 +12,17 @@ import ContactPage from '@/pages/ContactPage';
 
 // Espace d'administration : chargé à part, le site public n'en paie pas le poids.
 const AdminApp = lazy(() => import('@/pages/admin/AdminApp'));
+
+// Anciennes adresses en français : les liens déjà partagés (WhatsApp, e-mails...) continuent de fonctionner.
+function RedirectTo({ to }: { to: string }) {
+  const { search } = useLocation();
+  return <Navigate to={`${to}${search}`} replace />;
+}
+
+function RedirectToCourse() {
+  const { id } = useParams<{ id: string }>();
+  return <Navigate to={`/courses/${id}`} replace />;
+}
 
 function App() {
   return (
@@ -27,13 +38,18 @@ function App() {
         />
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
-          <Route path="/a-propos" element={<AboutPage />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
-          <Route path="/formations" element={<CoursesPage />} />
-          <Route path="/formations/:id" element={<CourseDetailPage />} />
-          <Route path="/inscription" element={<RegistrationPage />} />
+          <Route path="/courses" element={<CoursesPage />} />
+          <Route path="/courses/:id" element={<CourseDetailPage />} />
+          <Route path="/register" element={<RegistrationPage />} />
           <Route path="/verification" element={<VerificationPage />} />
-          <Route path="/volontaires" element={<VolunteersPage />} />
+          <Route path="/volunteers" element={<VolunteersPage />} />
+          <Route path="/a-propos" element={<RedirectTo to="/about" />} />
+          <Route path="/formations" element={<RedirectTo to="/courses" />} />
+          <Route path="/formations/:id" element={<RedirectToCourse />} />
+          <Route path="/inscription" element={<RedirectTo to="/register" />} />
+          <Route path="/volontaires" element={<RedirectTo to="/volunteers" />} />
           <Route path="*" element={<HomePage />} />
         </Route>
       </Routes>

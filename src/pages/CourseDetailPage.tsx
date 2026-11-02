@@ -47,11 +47,11 @@ export default function CourseDetailPage() {
     return (
       <div className="pt-16 md:pt-20 min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
         <BookOpen className="w-12 h-12 text-slate-300 mb-4" />
-        <h1 className="text-2xl font-bold text-white">Formation introuvable</h1>
-        <p className="mt-2 text-slate-500">Cette formation n’existe pas ou a été retirée.</p>
-        <Link to="/formations" className="btn-primary mt-6">
+        <h1 className="text-2xl font-bold text-white">Course not found</h1>
+        <p className="mt-2 text-slate-500">This course does not exist or has been withdrawn.</p>
+        <Link to="/courses" className="btn-primary mt-6">
           <ArrowLeft className="w-4 h-4" />
-          Retour au catalogue
+          Back to the catalogue
         </Link>
       </div>
     );
@@ -71,7 +71,7 @@ export default function CourseDetailPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/70 to-slate-900/40" />
         <div className="container-app relative z-10 h-full flex flex-col justify-end pb-10">
           <Link
-            to="/formations"
+            to="/courses"
             className="inline-flex items-center gap-1.5 text-[#e1b936] text-sm font-medium mb-4 hover:text-[#f0cc58] w-fit"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -98,9 +98,9 @@ export default function CourseDetailPage() {
           {/* Quick facts */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
             {[
-              { icon: Calendar, label: 'Durée', value: course.duration_days != null ? formatDays(course.duration_days) : '—' },
-              { icon: Clock, label: 'Heures', value: course.duration_hours != null ? formatHours(course.duration_hours) : '—' },
-              { icon: Tag, label: 'Catégorie', value: course.category },
+              { icon: Calendar, label: 'Duration', value: course.duration_days != null ? formatDays(course.duration_days) : '—' },
+              { icon: Clock, label: 'Hours', value: course.duration_hours != null ? formatHours(course.duration_hours) : '—' },
+              { icon: Tag, label: 'Category', value: course.category },
             ].map((fact) => (
               <div key={fact.label} className="card p-5 flex items-center gap-4">
                 <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-[#e1b936]/10 text-[#e1b936] shrink-0">
@@ -116,22 +116,21 @@ export default function CourseDetailPage() {
 
           {/* Description */}
           <div className="prose max-w-none">
-            <h2 className="text-xl font-bold text-white mb-3">Présentation</h2>
+            <h2 className="text-xl font-bold text-white mb-3">Overview</h2>
             {course.framework === 'industry' ? (
               <p className="text-slate-300 leading-relaxed">
-                Cette formation s’adresse aux métiers de l’offshore et des opérations
-                spécialisées. Le programme, la durée, le tarif et l’organisme de
-                référence de la formation, ainsi que les modalités de délivrance du
-                certificat, sont confirmés par notre équipe avant votre inscription.
+                This course is aimed at offshore and specialised operations roles. The
+                programme, duration, price and reference body for the course, as well
+                as how the certificate is issued, are confirmed by our team before you
+                register.
               </p>
             ) : (
               <p className="text-slate-300 leading-relaxed">
-                Cette formation est dispensée dans le respect des conventions
-                internationales STCW et MLC 2006. Elle combine théorie et pratique
-                pour garantir l’acquisition des compétences requises à bord des
-                navires marchands. À l’issue du cours, les stagiaires reçoivent un
-                certificat officiel enregistré dans notre base de données et
-                vérifiable via le portail de vérification.
+                This course is delivered in line with the international STCW and MLC
+                2006 conventions. It combines theory and practice to ensure trainees
+                acquire the skills required on board merchant ships. On completion,
+                trainees receive an official certificate recorded in our database and
+                verifiable through the verification portal.
               </p>
             )}
           </div>
@@ -140,16 +139,16 @@ export default function CourseDetailPage() {
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
             {(course.framework === 'industry'
               ? [
-                  'Programme, durée et tarif confirmés avant l’inscription',
-                  'Formateurs expérimentés du secteur maritime',
-                  'Théorie et exercices pratiques en conditions réelles',
-                  'Inscription et suivi du paiement en ligne',
+                  'Programme, duration and price confirmed before registration',
+                  'Experienced maritime industry instructors',
+                  'Theory and practical exercises in realistic conditions',
+                  'Online registration and payment tracking',
                 ]
               : [
-                  'Certificat officiel enregistré et vérifiable en ligne',
-                  'Formateurs expérimentés du secteur maritime',
-                  'Théorie et exercices pratiques en conditions réelles',
-                  'Conforme aux standards STCW et MLC 2006',
+                  'Official certificate, recorded and verifiable online',
+                  'Experienced maritime industry instructors',
+                  'Theory and practical exercises in realistic conditions',
+                  'Compliant with STCW and MLC 2006 standards',
                 ]
             ).map((item) => (
               <div key={item} className="flex items-start gap-3">
@@ -164,26 +163,26 @@ export default function CourseDetailPage() {
             <div className="flex items-center gap-4">
               <GraduationCap className="w-8 h-8 text-[#e1b936] shrink-0" />
               <div>
-                <h3 className="font-semibold text-lg">Suivre cette formation en ligne</h3>
+                <h3 className="font-semibold text-lg">Take this course online</h3>
                 <p className="text-slate-300 text-sm mt-0.5">
                   {course.price_usd != null ? (
                     <>
-                      Tarif :{' '}
+                      Price:{' '}
                       <strong className="text-[#e1b936]">{formatUsd(course.price_usd)}</strong>.{' '}
                     </>
                   ) : (
-                    'Tarif à confirmer par notre équipe. '
+                    'Price to be confirmed by our team. '
                   )}
-                  Avance de {depositLabel} à l’inscription, solde à régler après la formation.
+                  {depositLabel} deposit on registration, balance payable after the course.
                 </p>
               </div>
             </div>
             <Link
-              to={`/inscription?cours=${course.id}`}
+              to={`/register?course=${course.id}`}
               className="btn-primary whitespace-nowrap"
             >
               <GraduationCap className="w-4 h-4" />
-              S’inscrire
+              Register
             </Link>
           </div>
 
@@ -192,9 +191,9 @@ export default function CourseDetailPage() {
             <div className="flex items-center gap-4">
               <ShieldCheck className="w-8 h-8 text-[#e1b936] shrink-0" />
               <div>
-                <h3 className="font-semibold text-lg">Déjà inscrit ?</h3>
+                <h3 className="font-semibold text-lg">Already registered?</h3>
                 <p className="text-slate-300 text-sm mt-0.5">
-                  Vérifiez vos certificats dans le portail de vérification.
+                  Check your certificates in the verification portal.
                 </p>
               </div>
             </div>
@@ -203,7 +202,7 @@ export default function CourseDetailPage() {
               className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-[#e1b936] text-[#08182d] font-semibold hover:bg-[#f0cc58] transition-colors whitespace-nowrap"
             >
               <ShieldCheck className="w-4 h-4" />
-              Portail vérification
+              Verification portal
             </Link>
           </div>
         </div>

@@ -343,7 +343,7 @@ export async function saveCatalog(next: Course[], base: CatalogState, actor: str
     name: c.name.trim(),
     duration_days: c.duration_days,
     duration_hours: c.duration_hours,
-    category: c.category.trim() || 'Autre',
+    category: c.category.trim() || 'Other',
     image_url: c.image_url,
     price_usd: c.price_usd,
     ...(c.framework ? { framework: c.framework } : {}),

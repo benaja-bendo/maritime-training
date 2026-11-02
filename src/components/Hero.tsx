@@ -37,31 +37,30 @@ export default function Hero() {
           </h1>
 
           <p className="mt-7 text-lg sm:text-xl text-slate-300 leading-relaxed max-w-2xl">
-            École de formation maritime du Panama : programmes conformes aux standards
-            IMO pour officiers de la marine marchande, cadets et gens de mer — à
-            distance et en présentiel.
+            Maritime training school in Panama: IMO-compliant programmes for merchant
+            navy officers, cadets and seafarers — online and in person.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">
-            <Link to="/inscription" className="btn-primary">
-              S’inscrire en ligne
+            <Link to="/register" className="btn-primary">
+              Register online
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
-              to="/formations"
+              to="/courses"
               className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-white/10 backdrop-blur text-white font-semibold border border-white/20 transition-all hover:bg-white/15 active:scale-[0.98]"
             >
               <BookOpen className="w-4 h-4" />
-              Parcourir les formations
+              Browse courses
             </Link>
           </div>
 
           <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-2xl border-t border-[#6b7c91]/40 pt-6">
             {[
-              { icon: Award, value: '50+', label: 'Formations' },
-              { icon: Users, value: '2 000', label: 'Diplômés' },
-              { icon: Globe, value: '40+', label: 'Nationalités' },
-              { icon: Waves, value: '2014', label: 'Année de fondation' },
+              { icon: Award, value: '50+', label: 'Courses' },
+              { icon: Users, value: '2,000', label: 'Graduates' },
+              { icon: Globe, value: '40+', label: 'Nationalities' },
+              { icon: Waves, value: '2014', label: 'Year founded' },
             ].map((stat) => (
               <div key={stat.label} className="text-center sm:text-left">
                 <stat.icon className="w-5 h-5 text-[#e1b936] mb-2 mx-auto sm:mx-0" />

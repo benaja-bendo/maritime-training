@@ -20,41 +20,41 @@ import { SITE } from '@/config/site';
 const VALUES = [
   {
     icon: Target,
-    title: 'Rigueur',
-    text: 'Chaque programme répond ou dépasse les normes IMO, STCW et AMP. Nous ne coupons pas les coins.',
+    title: 'Rigour',
+    text: 'Every programme meets or exceeds IMO, STCW and AMP standards. We don’t cut corners.',
   },
   {
     icon: Globe,
-    title: 'Accessibilité',
-    text: 'Les formats mixtes et entièrement en ligne permettent aux gens de mer de s’entraîner autour de leurs horaires et de leurs contrats.',
+    title: 'Accessibility',
+    text: 'Blended and fully online formats let seafarers train around their schedules and their contracts.',
   },
   {
     icon: ShieldCheck,
-    title: 'Intégrité',
-    text: 'Nos certificats sont gagnés, pas délivrés. Chaque diplômé a fait preuve d’une véritable compétence.',
+    title: 'Integrity',
+    text: 'Our certificates are earned, not handed out. Every graduate has demonstrated real competence.',
   },
   {
     icon: Award,
     title: 'Excellence',
-    text: 'Nos instructeurs sont des professionnels maritimes actifs ou récemment retraités – et non des théoriciens de la classe.',
+    text: 'Our instructors are active or recently retired maritime professionals – not classroom theorists.',
   },
 ];
 
 const TIMELINE = [
-  { year: '2014', text: 'Fondée à Panama City par une équipe d’officiers maritimes expérimentés' },
-  { year: '2016', text: 'A reçu l’accréditation complète de l’Autoridad Marítima de Panamá (AMP)' },
+  { year: '2014', text: 'Founded in Panama City by a team of experienced maritime officers' },
+  { year: '2016', text: 'Received full accreditation from the Autoridad Marítima de Panamá (AMP)' },
   {
     year: '2018',
-    text: 'Lancement de notre plateforme d’apprentissage en ligne mixte, la première du genre au Panama',
+    text: 'Launched our blended online learning platform, the first of its kind in Panama',
   },
   {
     year: '2020',
-    text: 'Élargi à plus de 50 programmes certifiés OMI ; reconnaissance de l’OPITO pour les cours offshore',
+    text: 'Expanded to more than 50 IMO-certified programmes; OPITO recognition for offshore courses',
   },
-  { year: '2022', text: '2 000 diplômés certifiés atteints, dans plus de 40 nationalités' },
+  { year: '2022', text: 'Reached 2,000 certified graduates across more than 40 nationalities' },
   {
     year: '2024',
-    text: 'Lancement d’installations avancées de simulateur de pont et de salle des machines à Panama City',
+    text: 'Opened advanced bridge and engine room simulator facilities in Panama City',
   },
 ];
 
@@ -62,71 +62,71 @@ const INSTRUCTORS = [
   {
     initials: 'AM',
     name: 'Capt. Alejandro Morales',
-    role: 'Directeur de la formation — Deck',
-    credentials: 'Master Mariner (Illimité), 22 ans en mer',
-    bio: 'Le Capt. Morales détient un certificat Master Mariner illimité et a passé 22 ans en mer sur les vraquiers et les porte-conteneurs avant de rejoindre PMTS. Il dirige tous les programmes d’officiers de pont et la formation de simulateur de pont.',
+    role: 'Director of Training — Deck',
+    credentials: 'Master Mariner (Unlimited), 22 years at sea',
+    bio: 'Capt. Morales holds an unlimited Master Mariner certificate and spent 22 years at sea on bulk carriers and container ships before joining PMTS. He leads all deck officer programmes and the bridge simulator training.',
   },
   {
     initials: 'RV',
-    name: 'Chef Eng. Ricardo Vásquez',
-    role: 'Directeur de la formation — Moteur',
-    credentials: 'Ingénieur en chef (Illimité), 18 ans en mer',
-    bio: 'Chef Eng. Vásquez est un ingénieur en chef illimité qualifié avec 18 ans d’expérience dans la salle des machines à travers les pétroliers et les vraquiers. Il supervise tous les programmes d’ingénierie et le simulateur de salle des machines.',
+    name: 'Chief Eng. Ricardo Vásquez',
+    role: 'Director of Training — Engine',
+    credentials: 'Chief Engineer (Unlimited), 18 years at sea',
+    bio: 'Chief Eng. Vásquez is a qualified unlimited chief engineer with 18 years of engine room experience across tankers and bulk carriers. He oversees all engineering programmes and the engine room simulator.',
   },
   {
     initials: 'MF',
     name: 'Dr. María Fernández',
-    role: 'Responsable de la formation médicale et de sécurité',
-    credentials: 'MD, médecin-hygiéniste maritime, instructeur STCW',
-    bio: 'Dr. Fernández combine un diplôme de médecine avec une formation médicale maritime spécialisée. Elle dirige tous les programmes de soins médicaux, de premiers soins et de lutte contre les incendies au PMTS.',
+    role: 'Head of Medical and Safety Training',
+    credentials: 'MD, maritime health physician, STCW instructor',
+    bio: 'Dr. Fernández combines a medical degree with specialised maritime medical training. She leads all medical care, first aid and fire fighting programmes at PMTS.',
   },
   {
     initials: 'JD',
     name: 'Capt. Jean-Pierre Dubois',
-    role: 'Instructeur principal — Offshore & Survival',
-    credentials: 'Master Mariner, Assesseur OPITO, 15 ans offshore',
-    bio: 'Le Capt. Dubois apporte 15 ans d’expérience en plateforme offshore et détient la certification d’évaluateur OPITO. Il dirige tous les programmes de sécurité et de survie en mer.',
+    role: 'Lead Instructor — Offshore & Survival',
+    credentials: 'Master Mariner, OPITO Assessor, 15 years offshore',
+    bio: 'Capt. Dubois brings 15 years of offshore rig experience and holds OPITO assessor certification. He leads all offshore safety and sea survival programmes.',
   },
 ];
 
 const FACILITIES = [
   {
     icon: Compass,
-    title: 'Suite de simulateur de pont',
-    text: 'Simulateur de pont à mission complète avec affichage visuel à 360°, radar, ARPA, ECDIS et GMDSS – capable de reproduire tout type de navire et l’état de la mer.',
+    title: 'Bridge simulator suite',
+    text: 'Full-mission bridge simulator with a 360° visual display, radar, ARPA, ECDIS and GMDSS – able to reproduce any type of vessel and sea state.',
   },
   {
     icon: Cog,
-    title: 'Simulateur de salle de machine',
-    text: 'Simulateur de salle de machines haute fidélité couvrant les systèmes de propulsion diesel, vapeur et turbine à gaz – utilisé pour la formation de gestion des ressources de l’OMI 2.07 et du moteur.',
+    title: 'Engine room simulator',
+    text: 'High-fidelity engine room simulator covering diesel, steam and gas turbine propulsion systems – used for IMO 2.07 resource management and engine training.',
   },
   {
     icon: Flame,
-    title: 'Terrain d’entraînement de lutte contre les incendies',
-    text: 'Zone d’entraînement dédiée à la lutte contre les incendies en plein air avec des scénarios de feu en direct, des systèmes de mousse et des appareils respiratoires – utilisé pour la lutte contre les incendies avancée IMO 2.03.',
+    title: 'Fire fighting training ground',
+    text: 'Dedicated outdoor fire fighting training area with live fire scenarios, foam systems and breathing apparatus – used for IMO 2.03 advanced fire fighting.',
   },
   {
     icon: LifeBuoy,
-    title: 'Piscine de survie et sauvetage',
-    text: 'Piscine intérieure chauffée pour le radeau de sauvetage, la combinaison d’immersion et les exercices pratiques de bateau de sauvetage – utilisé pour les cours de survie IMO 1.19, 1.23 et 1.24.',
+    title: 'Survival and rescue pool',
+    text: 'Heated indoor pool for liferaft, immersion suit and lifeboat practical drills – used for the IMO 1.19, 1.23 and 1.24 survival courses.',
   },
   {
     icon: MonitorPlay,
-    title: 'Plateforme E-Learning',
-    text: 'Plateforme d’apprentissage en ligne sécurisée et conforme à la norme SCORM accessible 24h/24 et 7j/7 à partir de n’importe quel appareil — héberge tous les modules théoriques pour les programmes mixtes et entièrement en ligne.',
+    title: 'E-learning platform',
+    text: 'Secure, SCORM-compliant e-learning platform available 24/7 from any device – hosts all the theory modules for blended and fully online programmes.',
   },
   {
     icon: Stethoscope,
-    title: 'Salle de formation médicale',
-    text: 'Salle de formation médicale entièrement équipée avec mannequins, défibrillateurs et fournitures médicales pour les cours de premiers soins et de soins médicaux.',
+    title: 'Medical training room',
+    text: 'Fully equipped medical training room with manikins, defibrillators and medical supplies for the first aid and medical care courses.',
   },
 ];
 
 const ACCREDITATIONS = [
-  { code: 'AMP', name: 'Autoridad Marítima de Panamá', desc: 'Autorité maritime du Panama' },
-  { code: 'IMO', name: 'Organisation maritime internationale', desc: 'Agence spécialisée des Nations Unies' },
-  { code: 'STCW', name: 'Convention STCW', desc: 'Normes de formation, certification et surveillance' },
-  { code: 'OPITO', name: 'OPITO', desc: 'Formation de l’industrie pétrolière offshore' },
+  { code: 'AMP', name: 'Autoridad Marítima de Panamá', desc: 'Panama Maritime Authority' },
+  { code: 'IMO', name: 'International Maritime Organization', desc: 'United Nations specialised agency' },
+  { code: 'STCW', name: 'STCW Convention', desc: 'Standards of training, certification and watchkeeping' },
+  { code: 'OPITO', name: 'OPITO', desc: 'Offshore oil and gas industry training' },
 ];
 
 function SectionHead({
@@ -153,15 +153,14 @@ export default function AboutPage() {
       <section className="bg-[#172f4e] py-16 md:py-24 border-b border-[#294769]">
         <div className="container-app">
           <span className="text-[#e1b936] text-sm font-semibold uppercase tracking-wider">
-            Notre histoire
+            Our story
           </span>
           <h1 className="mt-2 text-3xl sm:text-5xl font-semibold text-white max-w-3xl">
-            À propos de {SITE.name}
+            About {SITE.name}
           </h1>
           <p className="mt-5 text-slate-300 max-w-3xl text-lg leading-relaxed">
-            Un centre de formation maritime dédié construit par les gens de mer, pour les
-            gens de mer, combinant des décennies d’expérience océanique avec la technologie
-            moderne d’apprentissage mixte.
+            A dedicated maritime training centre built by seafarers, for seafarers,
+            combining decades of experience at sea with modern blended learning technology.
           </p>
         </div>
       </section>
@@ -170,18 +169,17 @@ export default function AboutPage() {
       <section className="py-16 md:py-24 bg-[#0b1b30]">
         <div className="container-app grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
           <div className="lg:col-span-2 lg:sticky lg:top-28">
-            <span className="section-label">Notre mission</span>
+            <span className="section-label">Our mission</span>
             <h2 className="mt-2 text-3xl sm:text-4xl font-semibold text-white">
-              Une formation de classe mondiale, partout
+              World-class training, anywhere
             </h2>
             <p className="mt-5 text-slate-300 leading-relaxed">
-              {SITE.name} a été fondé dans un seul but : rendre l’éducation maritime de
-              classe mondiale accessible à tous les gens de mer, quel que soit l’endroit où
-              ils se trouvent dans le monde. Nous croyons que la formation rigoureuse et
-              reconnue internationalement ne devrait pas nécessiter des mois loin de la mer
-              – c’est pourquoi nous avons été les pionniers d’un modèle d’apprentissage
-              mixte qui combine une théorie flexible en ligne avec des sessions pratiques
-              ciblées dans notre centre de Panama.
+              {SITE.name} was founded with a single purpose: to make world-class maritime
+              education accessible to every seafarer, wherever they are in the world. We
+              believe rigorous, internationally recognised training should not require
+              months away from the sea – which is why we pioneered a blended learning model
+              that combines flexible online theory with focused practical sessions at our
+              centre in Panama.
             </p>
           </div>
 
@@ -203,25 +201,24 @@ export default function AboutPage() {
       <section className="py-16 md:py-24 bg-[#172f4e] border-y border-[#294769]">
         <div className="container-app grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           <div>
-            <span className="section-label">Notre histoire</span>
+            <span className="section-label">Our story</span>
             <h2 className="mt-2 text-3xl sm:text-4xl font-semibold text-white">
-              Né de la réalité de la vie en mer
+              Born from the reality of life at sea
             </h2>
             <p className="mt-5 text-slate-300 leading-relaxed">
-              {SITE.name} est né de la reconnaissance que l’industrie maritime avait besoin
-              d’un fournisseur de formation qui comprenait vraiment les réalités de la vie en
-              mer. Nos fondateurs – des officiers de pont et d’ingénierie expérimentés – ont
-              vu de première main à quel point il était difficile pour les gens de mer qui
-              travaillaient d’accéder à des cours de mise à jour et de mise à niveau de
-              qualité sans sacrifier leurs contrats ou leur famille. Nous avons entrepris de
-              changer cela.
+              {SITE.name} was born from the recognition that the maritime industry needed a
+              training provider that truly understood the realities of life at sea. Our
+              founders – experienced deck and engineering officers – saw first-hand how hard
+              it was for working seafarers to access quality refresher and upgrading courses
+              without sacrificing their contracts or their families. We set out to change
+              that.
             </p>
             <p className="mt-4 text-slate-300 leading-relaxed">
-              En commençant par un petit portefeuille de cours de sécurité STCW, nous sommes
-              devenus un centre de formation complet offrant plus de 50 programmes certifiés
-              IMO dans toutes les grandes disciplines maritimes. Aujourd’hui, nos diplômés
-              servent sur des navires dans le monde entier – des vraquiers et des pétroliers
-              aux plates-formes offshore et aux navires à passagers.
+              Starting with a small portfolio of STCW safety courses, we have grown into a
+              full training centre offering more than 50 IMO-certified programmes across all
+              the major maritime disciplines. Today our graduates serve on vessels around the
+              world – from bulk carriers and tankers to offshore platforms and passenger
+              ships.
             </p>
           </div>
 
@@ -240,10 +237,9 @@ export default function AboutPage() {
       {/* Instructeurs */}
       <section className="py-16 md:py-24 bg-[#0b1b30]">
         <div className="container-app">
-          <SectionHead label="Notre équipe" title="Nos instructeurs">
-            Chaque instructeur au PMTS est un professionnel du secteur maritime qualifié avec
-            une véritable expérience de la mer. Nous n’utilisons pas de théoriciens de la
-            salle de classe.
+          <SectionHead label="Our team" title="Our instructors">
+            Every PMTS instructor is a qualified maritime professional with real experience
+            at sea. We don’t use classroom theorists.
           </SectionHead>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {INSTRUCTORS.map((p) => (
@@ -271,9 +267,9 @@ export default function AboutPage() {
       {/* Installations */}
       <section className="py-16 md:py-24 bg-[#172f4e] border-y border-[#294769]">
         <div className="container-app">
-          <SectionHead label="Panama City" title="Nos installations">
-            Notre centre de formation de Panama City est équipé de simulateurs de qualité
-            professionnelle et de zones de formation pratique.
+          <SectionHead label="Panama City" title="Our facilities">
+            Our training centre in Panama City is equipped with professional-grade
+            simulators and hands-on training areas.
           </SectionHead>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {FACILITIES.map((f) => (
@@ -292,7 +288,7 @@ export default function AboutPage() {
       {/* Accréditations */}
       <section className="py-14 bg-[#08182d]">
         <div className="container-app">
-          <h2 className="text-center section-label">Accréditations et références</h2>
+          <h2 className="text-center section-label">Accreditations and references</h2>
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {ACCREDITATIONS.map((a) => (
               <div key={a.code} className="text-center px-4 py-5 border border-[#294769] rounded-sm">
@@ -309,21 +305,20 @@ export default function AboutPage() {
       <section className="py-16 md:py-20 bg-[#0b1b30] border-t border-[#294769]">
         <div className="container-app text-center max-w-2xl mx-auto">
           <h2 className="text-3xl sm:text-4xl font-semibold text-white">
-            Prêt à faire avancer votre carrière ?
+            Ready to advance your career?
           </h2>
           <p className="mt-4 text-slate-300">
-            Choisissez vos formations et inscrivez-vous en ligne, ou écrivez-nous pour toute
-            question.
+            Choose your courses and register online, or write to us with any questions.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <Link to="/inscription" className="btn-primary">
+            <Link to="/register" className="btn-primary">
               <GraduationCap className="w-4 h-4" />
-              S’inscrire en ligne
+              Register online
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link to="/contact" className="btn-secondary">
               <MessageCircle className="w-4 h-4" />
-              Nous contacter
+              Contact us
             </Link>
           </div>
         </div>

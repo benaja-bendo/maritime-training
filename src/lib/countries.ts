@@ -1,4 +1,4 @@
-// États souverains (codes ISO 3166-1 alpha-2). Les noms sont fournis par le navigateur, en français.
+// États souverains (codes ISO 3166-1 alpha-2). Les noms sont fournis par le navigateur, en anglais.
 const CODES = (
   'AF AL DZ AD AO AG AR AM AU AT AZ BS BH BD BB BY BE BZ BJ BT BO BA BW BR BN BG BF BI ' +
   'CV KH CM CA CF TD CL CN CO KM CG CD CR CI HR CU CY CZ DK DJ DM DO EC EG SV GQ ER EE ' +
@@ -10,7 +10,7 @@ const CODES = (
 ).split(' ');
 
 // Le Panama arrive en premier, les autres pays suivent par ordre alphabétique.
-export function getCountries(locale = 'fr'): string[] {
+export function getCountries(locale = 'en'): string[] {
   const names = new Intl.DisplayNames([locale], { type: 'region' });
   const list = CODES.map((code) => names.of(code)).filter(
     (n): n is string => !!n && n.length > 2,

@@ -18,10 +18,10 @@ interface SiteInfo {
 export const SITE: SiteInfo = {
   name: 'Panama Maritime Training Services',
   shortName: 'PMTS',
-  country: 'République du Panama',
+  country: 'Republic of Panama',
   tagline:
-    'Le principal centre de formation maritime du Panama – offrant des programmes conformes à l’OMI, certifiés STCW pour les officiers, les cadets et les gens de mer du monde entier.',
-  hours: 'Lundi – Vendredi, 08:00 – 17:00 (HNE)',
+    'Panama’s leading maritime training centre – offering IMO-compliant, STCW-certified programmes for officers, cadets and seafarers around the world.',
+  hours: 'Monday – Friday, 08:00 – 17:00 (EST)',
   address: 'Panama City',
   // En attente. Le client a fourni info@pmts.online, mais ce domaine appartient à un tiers
   // (enregistré en décembre 2025). Le domaine du client est p-mts.online (avec tiret).

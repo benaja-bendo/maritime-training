@@ -4,12 +4,12 @@ import LogoMark from '@/components/LogoMark';
 import { SITE } from '@/config/site';
 
 const COURSE_GROUPS = [
-  'Sécurité de base STCW',
-  'Programmes des officiers',
-  'Opérations des pétroliers',
-  'Navigation et simulateurs',
-  'Médical et lutte contre les incendies',
-  'Offshore et opérations spécialisées',
+  'Basic STCW safety',
+  'Officer programmes',
+  'Tanker operations',
+  'Navigation and simulators',
+  'Medical and fire fighting',
+  'Offshore and specialised operations',
 ];
 
 const ACCREDITATIONS = ['AMP', 'IMO', 'STCW', 'OPITO'];
@@ -31,19 +31,19 @@ export default function Footer() {
             <Ship className="w-4 h-4 text-[#e1b936]" /> Navigation
           </h4>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/" className="hover:text-[#e1b936] transition-colors">Accueil</Link></li>
-            <li><Link to="/a-propos" className="hover:text-[#e1b936] transition-colors">À propos</Link></li>
-            <li><Link to="/formations" className="hover:text-[#e1b936] transition-colors">Formations</Link></li>
-            <li><Link to="/inscription" className="hover:text-[#e1b936] transition-colors">Inscription</Link></li>
-            <li><Link to="/verification" className="hover:text-[#e1b936] transition-colors">Vérification</Link></li>
-            <li><Link to="/volontaires" className="hover:text-[#e1b936] transition-colors">Volontaires</Link></li>
+            <li><Link to="/" className="hover:text-[#e1b936] transition-colors">Home</Link></li>
+            <li><Link to="/about" className="hover:text-[#e1b936] transition-colors">About</Link></li>
+            <li><Link to="/courses" className="hover:text-[#e1b936] transition-colors">Courses</Link></li>
+            <li><Link to="/register" className="hover:text-[#e1b936] transition-colors">Registration</Link></li>
+            <li><Link to="/verification" className="hover:text-[#e1b936] transition-colors">Verification</Link></li>
+            <li><Link to="/volunteers" className="hover:text-[#e1b936] transition-colors">Volunteers</Link></li>
             <li><Link to="/contact" className="hover:text-[#e1b936] transition-colors">Contact</Link></li>
           </ul>
         </div>
 
         <div>
           <h4 className="font-semibold text-[#e1b936] mb-4 flex items-center gap-2 uppercase tracking-wider text-xs">
-            <Waves className="w-4 h-4 text-[#e1b936]" /> Formations
+            <Waves className="w-4 h-4 text-[#e1b936]" /> Courses
           </h4>
           <ul className="space-y-2 text-sm text-slate-400">
             {COURSE_GROUPS.map((g) => (
@@ -84,17 +84,17 @@ export default function Footer() {
       <div className="border-t border-[#294769]">
         <div className="container-app py-6 text-center text-sm text-slate-400 space-y-2">
           <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs uppercase tracking-widest">
-            <span className="text-slate-500">Accréditations</span>
+            <span className="text-slate-500">Accreditations</span>
             {ACCREDITATIONS.map((a) => (
               <span key={a} className="font-semibold text-[#e1b936]">{a}</span>
             ))}
           </p>
           <p>
-            © {new Date().getFullYear()} {SITE.name}. Tous droits réservés. Enregistré dans
-            la {SITE.country}.
+            © {new Date().getFullYear()} {SITE.name}. All rights reserved. Registered in
+            the {SITE.country}.
           </p>
           <p className="text-xs text-slate-500">
-            Certifié en vertu de la convention STCW et de la réglementation AMP
+            Certified under the STCW Convention and AMP regulations
           </p>
         </div>
       </div>
