@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Camera, FileUp, Plus, Save, Search, Trash2, Upload, X } from 'lucide-react';
+import { Camera, FileUp, Plus, Save, Search, Sparkles, Trash2, Upload, X } from 'lucide-react';
 import { getAllCourses } from '@/lib/data';
 import { prepareIdPhoto, PhotoError } from '@/lib/image';
 import { getCountries } from '@/lib/countries';
@@ -12,7 +12,7 @@ import {
 } from '@/lib/admin-data';
 import { mergeParsed, parseCertificateCsv } from '@/lib/csv-import';
 import type { CsvReport } from '@/lib/csv-import';
-import { certificateStatus, normalizeIdentifier } from '@/lib/verification';
+import { normalizeIdentifier, todayInPanama } from '@/lib/verification';
 import type { Course } from '@/types';
 import type { AdminCertificate, AdminStudent } from '@/types/admin';
 import { ErrorBox, Lbl, NoticeBox } from '@/pages/admin/ui';
@@ -26,6 +26,59 @@ const STATUS_BADGE = {
 
 const clone = (s: AdminStudent): AdminStudent => JSON.parse(JSON.stringify(s));
 const errMsg = (e: unknown) => (e instanceof Error ? e.message : 'Une erreur est survenue.');
+
+function getNextCertificateNumber(
+  year: number | string,
+  existingStudents: AdminStudent[],
+  currentCertificates: AdminCertificate[] = [],
+  excludeCertId?: string,
+): string {
+  const y = String(year).trim() || String(new Date().getFullYear());
+  const used = new Set<string>();
+
+  for (const s of existingStudents) {
+    for (const c of s.certificates) {
+      if (c.certificate_number && c.id !== excludeCertId) {
+        used.add(c.certificate_number.trim().toUpperCase());
+      }
+    }
+  }
+
+  for (const c of currentCertificates) {
+    if (c.certificate_number && c.id !== excludeCertId) {
+      used.add(c.certificate_number.trim().toUpperCase());
+    }
+  }
+
+  let maxSeq = 0;
+  const regex = new RegExp(`^(?:PMTS-)?${y}-(\\d+)$`, 'i');
+  for (const num of used) {
+    const match = num.match(regex);
+    if (match) {
+      const val = parseInt(match[1], 10);
+      if (val > maxSeq) maxSeq = val;
+    }
+  }
+
+  let nextSeq = maxSeq + 1;
+  let candidate = `PMTS-${y}-${String(nextSeq).padStart(4, '0')}`;
+  while (used.has(candidate.toUpperCase())) {
+    nextSeq++;
+    candidate = `PMTS-${y}-${String(nextSeq).padStart(4, '0')}`;
+  }
+
+  return candidate;
+}
+
+function getCertYear(c: AdminCertificate, fallbackYear: number): number {
+  const match = c.certificate_number.match(/\b(20\d{2})\b/);
+  if (match) return Number(match[1]);
+  if (c.completed_on) {
+    const y = parseInt(c.completed_on.split('-')[0], 10);
+    if (y && y >= 2000 && y <= 2099) return y;
+  }
+  return fallbackYear;
+}
 
 export default function AdminCertificates({ email }: { email: string }) {
   const [students, setStudents] = useState<AdminStudent[]>([]);
@@ -42,6 +95,7 @@ export default function AdminCertificates({ email }: { email: string }) {
   const [revokeReason, setRevokeReason] = useState('');
   const [showImport, setShowImport] = useState(false);
   const [photoError, setPhotoError] = useState<string | null>(null);
+  const [defaultYear, setDefaultYear] = useState<number>(() => new Date().getFullYear());
 
   const countries = useMemo(() => getCountries('fr'), []);
 
@@ -119,15 +173,63 @@ export default function AdminCertificates({ email }: { email: string }) {
   const setField = <K extends keyof AdminStudent>(k: K, v: AdminStudent[K]) =>
     setForm((f) => (f ? { ...f, [k]: v } : f));
 
-  const patchCert = (id: string, patch: Partial<AdminCertificate>) =>
+  const isCertExpired = (c: AdminCertificate) =>
+    Boolean(c.valid_until && c.valid_until < todayInPanama());
+
+  const onValidityChange = (certId: string, value: 'valid' | 'expired') => {
+    const today = todayInPanama();
+    patchCert(certId, (c) => {
+      if (value === 'expired') {
+        if (!c.valid_until || c.valid_until >= today) {
+          const d = new Date();
+          d.setDate(d.getDate() - 1);
+          return { valid_until: todayInPanama(d) };
+        }
+        return {};
+      } else {
+        if (c.valid_until && c.valid_until < today) {
+          if (c.completed_on) {
+            const [y, m, day] = c.completed_on.split('-');
+            if (y && m && day) {
+              return { valid_until: `${Number(y) + 5}-${m}-${day}` };
+            }
+          }
+          return { valid_until: '' };
+        }
+        return {};
+      }
+    });
+  };
+
+  const patchCert = (
+    id: string,
+    patch: Partial<AdminCertificate> | ((c: AdminCertificate) => Partial<AdminCertificate>),
+  ) =>
     setForm((f) =>
-      f ? { ...f, certificates: f.certificates.map((c) => (c.id === id ? { ...c, ...patch } : c)) } : f,
+      f
+        ? {
+            ...f,
+            certificates: f.certificates.map((c) => {
+              if (c.id !== id) return c;
+              const p = typeof patch === 'function' ? patch(c) : patch;
+              return { ...c, ...p };
+            }),
+          }
+        : f,
     );
 
   const addCert = () => {
     const course = catalog.find((c) => c.id === addCourse);
     if (!course || !form) return;
-    setField('certificates', [...form.certificates, newCertificate(course)]);
+    const cert = newCertificate(course);
+    cert.certificate_number = getNextCertificateNumber(
+      defaultYear,
+      students,
+      form.certificates,
+    );
+    const today = todayInPanama();
+    cert.completed_on = today.startsWith(String(defaultYear)) ? today : `${defaultYear}-01-01`;
+    setField('certificates', [...form.certificates, cert]);
     setAddCourse('');
   };
 
@@ -303,15 +405,46 @@ export default function AdminCertificates({ email }: { email: string }) {
 
             <div className="card p-5 sm:p-6 space-y-4">
               <div className="flex flex-wrap items-end gap-3 justify-between">
-                <h2 className="font-semibold text-white">Certificats</h2>
-                <div className="flex gap-2">
-                  <select className={`${inputCls} max-w-xs`} value={addCourse} onChange={(e) => setAddCourse(e.target.value)} aria-label="Formation à ajouter">
-                    <option value="">— Ajouter une formation —</option>
-                    {catalog.map((c) => (
-                      <option key={c.id} value={c.id}>{c.imo_number ? `${c.imo_number} · ` : ''}{c.name}</option>
-                    ))}
-                  </select>
-                  <button onClick={addCert} disabled={!addCourse} className="btn-secondary !py-2 !px-3 text-sm disabled:opacity-50"><Plus className="w-4 h-4" /></button>
+                <div>
+                  <h2 className="font-semibold text-white">Certificats</h2>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Numéros générés selon l’année désignée (format PMTS-AAAA-XXXX sans doublon).
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-end gap-2">
+                  <div>
+                    <label className="block text-xs font-medium text-slate-300 mb-1">Année</label>
+                    <input
+                      type="number"
+                      min="2000"
+                      max="2099"
+                      value={defaultYear}
+                      onChange={(e) => setDefaultYear(Number(e.target.value) || new Date().getFullYear())}
+                      className={`${inputCls} !w-24 text-center font-mono`}
+                      title="Année désignée pour la génération automatique du numéro de certificat"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-slate-300 mb-1">Formation</label>
+                    <select
+                      className={`${inputCls} max-w-xs`}
+                      value={addCourse}
+                      onChange={(e) => setAddCourse(e.target.value)}
+                      aria-label="Formation à ajouter"
+                    >
+                      <option value="">— Ajouter une formation —</option>
+                      {catalog.map((c) => (
+                        <option key={c.id} value={c.id}>{c.imo_number ? `${c.imo_number} · ` : ''}{c.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <button
+                    onClick={addCert}
+                    disabled={!addCourse}
+                    className="btn-secondary !py-2 !px-3 text-sm disabled:opacity-50 inline-flex items-center gap-1.5 h-[38px]"
+                  >
+                    <Plus className="w-4 h-4" /> Ajouter
+                  </button>
                 </div>
               </div>
 
@@ -321,7 +454,8 @@ export default function AdminCertificates({ email }: { email: string }) {
                 const missing = missingForPublish(c);
                 const locked = c.status !== 'draft';
                 const badge = STATUS_BADGE[c.status];
-                const live = c.status === 'published' ? certificateStatus(c.valid_until || null) : null;
+                const expired = isCertExpired(c);
+                const certYear = getCertYear(c, defaultYear);
                 return (
                   <div key={c.id} className="rounded-xl border border-[#294769] p-4 space-y-3">
                     <div className="flex flex-wrap items-center gap-2 justify-between">
@@ -329,28 +463,107 @@ export default function AdminCertificates({ email }: { email: string }) {
                         {c.course_name} {c.imo_number && <span className="ml-1 text-xs font-mono text-slate-400">IMO {c.imo_number}</span>}
                       </div>
                       <div className="flex items-center gap-2">
-                        {live === 'expired' && <span className="px-2 py-0.5 rounded text-xs bg-red-500/10 text-red-300">Expiré</span>}
+                        {expired ? (
+                          <span className="px-2 py-0.5 rounded text-xs bg-red-500/10 text-red-300 font-semibold">Expiré</span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded text-xs bg-emerald-500/10 text-emerald-300 font-semibold">En cours</span>
+                        )}
                         <span className={`px-2 py-0.5 rounded text-xs font-semibold ${badge.cls}`}>{badge.label}</span>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                      <Lbl label="N° de certificat *"><input className={inputCls} disabled={locked} value={c.certificate_number} onChange={(e) => patchCert(c.id, { certificate_number: e.target.value })} /></Lbl>
-                      <Lbl label="Obtenu le *"><input type="date" className={inputCls} disabled={locked} value={c.completed_on} onChange={(e) => patchCert(c.id, { completed_on: e.target.value })} /></Lbl>
-                      <Lbl label="Valide jusqu’au"><input type="date" className={inputCls} disabled={locked} value={c.valid_until} onChange={(e) => patchCert(c.id, { valid_until: e.target.value })} /></Lbl>
+                      <Lbl label="N° de certificat *">
+                        <div className="flex gap-1.5">
+                          <input
+                            className={`${inputCls} font-mono`}
+                            disabled={locked}
+                            value={c.certificate_number}
+                            onChange={(e) => patchCert(c.id, { certificate_number: e.target.value })}
+                            placeholder="ex: PMTS-2026-0001"
+                          />
+                          {!locked && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const nextNum = getNextCertificateNumber(
+                                  certYear,
+                                  students,
+                                  form.certificates,
+                                  c.id,
+                                );
+                                patchCert(c.id, { certificate_number: nextNum });
+                              }}
+                              className="btn-secondary !py-1.5 !px-2.5 text-xs inline-flex items-center gap-1 flex-shrink-0"
+                              title={`Régénérer automatiquement un numéro unique pour l'année ${certYear}`}
+                            >
+                              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                              <span className="hidden xl:inline">Auto</span>
+                            </button>
+                          )}
+                        </div>
+                      </Lbl>
+                      <Lbl label="Obtenu le *">
+                        <input
+                          type="date"
+                          className={inputCls}
+                          disabled={locked}
+                          value={c.completed_on}
+                          onChange={(e) => patchCert(c.id, { completed_on: e.target.value })}
+                        />
+                      </Lbl>
+                      <Lbl label="Validité *">
+                        <select
+                          className={inputCls}
+                          disabled={locked}
+                          value={expired ? 'expired' : 'valid'}
+                          onChange={(e) => onValidityChange(c.id, e.target.value as 'valid' | 'expired')}
+                        >
+                          <option value="valid">En cours</option>
+                          <option value="expired">Expiré</option>
+                        </select>
+                      </Lbl>
+                      <Lbl label="Valide jusqu’au">
+                        <input
+                          type="date"
+                          className={inputCls}
+                          disabled={locked}
+                          value={c.valid_until}
+                          onChange={(e) => patchCert(c.id, { valid_until: e.target.value })}
+                        />
+                      </Lbl>
                       <Lbl label="Mode *">
-                        <select className={inputCls} disabled={locked} value={c.mode} onChange={(e) => patchCert(c.id, { mode: e.target.value as AdminCertificate['mode'] })}>
-                          <option value="">—</option><option value="in_person">Présentiel</option><option value="online">En ligne</option><option value="blended">Mixte</option>
+                        <select
+                          className={inputCls}
+                          disabled={locked}
+                          value={c.mode}
+                          onChange={(e) => patchCert(c.id, { mode: e.target.value as AdminCertificate['mode'] })}
+                        >
+                          <option value="">—</option>
+                          <option value="in_person">Présentiel</option>
+                          <option value="online">En ligne</option>
+                          <option value="blended">Mixte</option>
                         </select>
                       </Lbl>
-                      <Lbl label="Début de session *"><input type="date" className={inputCls} disabled={locked} value={c.session_start} onChange={(e) => patchCert(c.id, { session_start: e.target.value })} /></Lbl>
-                      <Lbl label="Fin de session *"><input type="date" className={inputCls} disabled={locked} value={c.session_end} onChange={(e) => patchCert(c.id, { session_end: e.target.value })} /></Lbl>
                       <Lbl label="Résultat *">
-                        <select className={inputCls} disabled={locked} value={c.result} onChange={(e) => patchCert(c.id, { result: e.target.value as AdminCertificate['result'] })}>
-                          <option value="">—</option><option value="passed">Réussi</option>
+                        <select
+                          className={inputCls}
+                          disabled={locked}
+                          value={c.result}
+                          onChange={(e) => patchCert(c.id, { result: e.target.value as AdminCertificate['result'] })}
+                        >
+                          <option value="">—</option>
+                          <option value="passed">Réussi</option>
                         </select>
                       </Lbl>
-                      <Lbl label="Évaluateur *"><input className={inputCls} disabled={locked} value={c.assessor} onChange={(e) => patchCert(c.id, { assessor: e.target.value })} /></Lbl>
+                      <Lbl label="Évaluateur *" className="sm:col-span-2">
+                        <input
+                          className={inputCls}
+                          disabled={locked}
+                          value={c.assessor}
+                          onChange={(e) => patchCert(c.id, { assessor: e.target.value })}
+                        />
+                      </Lbl>
                     </div>
 
                     {c.status === 'draft' && (

@@ -41,8 +41,6 @@ export function missingForPublish(c: AdminCertificate, today = todayInPanama()):
   const out: string[] = [];
   if (!c.certificate_number.trim()) out.push('numéro de certificat');
   if (!c.completed_on) out.push('date d’obtention');
-  if (!c.session_start) out.push('début de session');
-  if (!c.session_end) out.push('fin de session');
   if (!c.mode) out.push('mode (présentiel, en ligne, mixte)');
   if (c.result !== 'passed') out.push('résultat « réussi »');
   if (!c.assessor.trim()) out.push('évaluateur');
