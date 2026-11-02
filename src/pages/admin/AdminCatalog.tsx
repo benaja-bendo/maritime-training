@@ -99,7 +99,7 @@ export default function AdminCatalog({ email }: { email: string }) {
       name: fresh.name.trim(),
       duration_days: toNumber(fresh.duration_days),
       duration_hours: toNumber(fresh.duration_hours),
-      category: fresh.category.trim() || 'Autre',
+      category: fresh.category.trim() || 'Other',
       image_url: fresh.image_url.trim() || null,
       price_usd: toNumber(fresh.price_usd),
       ...(fresh.industry ? { framework: 'industry' as const } : {}),

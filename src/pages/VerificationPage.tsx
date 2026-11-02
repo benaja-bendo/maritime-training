@@ -27,33 +27,34 @@ const METHODS: {
 }[] = [
   {
     id: 'student_code',
-    label: 'Identifiant étudiant',
-    field: 'Identifiant étudiant',
-    placeholder: 'Ex : STU-AB12CD34',
+    label: 'Student ID',
+    field: 'Student ID',
+    placeholder: 'e.g. STU-AB12CD34',
   },
   {
     id: 'national_id',
-    label: 'Carte d’identité',
-    field: 'Numéro de carte d’identité',
-    placeholder: 'Ex : 8-123-456',
+    label: 'ID card',
+    field: 'ID card number',
+    placeholder: 'e.g. 8-123-456',
   },
   {
     id: 'passport',
-    label: 'Passeport',
-    field: 'Numéro de passeport',
-    placeholder: 'Ex : PA1234567',
+    label: 'Passport',
+    field: 'Passport number',
+    placeholder: 'e.g. PA1234567',
   },
 ];
 
 // Les dates sont stockées au format AAAA-MM-JJ : on évite tout décalage de fuseau horaire.
+// Affichage « 1 November 2026 » : sans ambiguïté jour/mois pour un public international.
 function formatDate(iso: string): string {
   const [y, m, d] = iso.split('-').map(Number);
   if (!y || !m || !d) return iso;
-  const month = new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('fr-FR', {
+  const month = new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('en-GB', {
     month: 'long',
     timeZone: 'UTC',
   });
-  return `${d === 1 ? '1er' : d} ${month} ${y}`;
+  return `${d} ${month} ${y}`;
 }
 
 export default function VerificationPage() {
@@ -85,7 +86,7 @@ export default function VerificationPage() {
     e.preventDefault();
     clear();
     if (normalizeIdentifier(value).length < 4) {
-      setError('Saisissez le numéro complet (4 caractères minimum).');
+      setError('Enter the full number (4 characters minimum).');
       return;
     }
     setLoading(true);
@@ -97,7 +98,7 @@ export default function VerificationPage() {
       setError(
         err instanceof ServiceUnavailableError
           ? err.message
-          : 'Une erreur est survenue. Vérifiez votre connexion et réessayez.',
+          : 'Something went wrong. Check your connection and try again.',
       );
     }
     setLoading(false);
@@ -120,14 +121,14 @@ export default function VerificationPage() {
       <section className="bg-[#172f4e] py-16 md:py-20 border-b border-[#294769]">
         <div className="container-app">
           <span className="text-[#e1b936] text-sm font-semibold uppercase tracking-wider">
-            Portail officiel
+            Official portal
           </span>
           <h1 className="mt-2 text-3xl sm:text-5xl font-semibold text-white">
-            Vérification de Documents
+            Document Verification
           </h1>
           <p className="mt-4 text-slate-300 max-w-2xl text-lg">
-            Vérifiez l’authenticité des certificats d’un étudiant avec son identifiant, son
-            numéro de carte d’identité ou son numéro de passeport.
+            Check the authenticity of a student’s certificates using their student ID,
+            ID card number or passport number.
           </p>
         </div>
       </section>
@@ -140,12 +141,12 @@ export default function VerificationPage() {
                 <Clock className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="font-semibold text-white">Ouverture prochaine</h2>
+                <h2 className="font-semibold text-white">Opening soon</h2>
                 <p className="mt-1 text-sm text-slate-300 leading-relaxed">
-                  Le service de vérification en ligne ouvre prochainement : les certificats
-                  sont en cours d’enregistrement. En attendant, pour vérifier un document,{' '}
+                  The online verification service opens soon: certificates are currently
+                  being recorded. In the meantime, to verify a document,{' '}
                   <Link to="/contact" className="text-[#e1b936] hover:underline">
-                    contactez-nous
+                    contact us
                   </Link>
                   .
                 </p>
@@ -157,7 +158,7 @@ export default function VerificationPage() {
           <form onSubmit={handleSearch} className="card p-6 sm:p-8">
             <div
               role="radiogroup"
-              aria-label="Méthode de vérification"
+              aria-label="Verification method"
               className="grid grid-cols-3 gap-2 mb-5"
             >
               {METHODS.map((m) => {
@@ -205,14 +206,14 @@ export default function VerificationPage() {
               </div>
               <button type="submit" disabled={loading} className="btn-primary sm:w-auto disabled:opacity-60">
                 <ShieldCheck className="w-4 h-4" />
-                {loading ? 'Vérification…' : 'Vérifier'}
+                {loading ? 'Verifying…' : 'Verify'}
               </button>
             </div>
 
             <p className="mt-4 flex items-start gap-2 text-xs text-slate-400">
               <Lock className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-              Seuls le nom, les formations suivies et leur statut sont affichés. Le numéro saisi
-              n’est pas enregistré par ce site.
+              Only the name, the courses taken and their status are shown. The number you
+              enter is not stored by this site.
             </p>
           </form>
           )}
@@ -227,15 +228,15 @@ export default function VerificationPage() {
               </div>
               <div className="flex-1">
                 <h3 className="font-semibold text-red-200">
-                  {notFound ? 'Aucun dossier trouvé' : 'Vérification impossible'}
+                  {notFound ? 'No record found' : 'Verification failed'}
                 </h3>
                 <p className="mt-1 text-sm text-red-200/90">
                   {notFound ? (
                     <>
-                      Aucun certificat n’est associé à ce numéro. Vérifiez la saisie ou
-                      choisissez une autre méthode. En cas de doute,{' '}
+                      No certificate is linked to this number. Check what you entered or
+                      choose another method. If in doubt,{' '}
                       <Link to="/contact" className="underline hover:text-white">
-                        contactez-nous
+                        contact us
                       </Link>
                       .
                     </>
@@ -257,13 +258,13 @@ export default function VerificationPage() {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 text-[#e1b936] text-sm font-medium">
                       <BadgeCheck className="w-4 h-4" />
-                      Étudiant identifié
+                      Student identified
                     </div>
                     <h2 className="mt-1 text-2xl font-bold text-white">
                       {result.student.full_name}
                     </h2>
                     <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm text-slate-300">
-                      <span className="font-mono">ID : {result.student.student_code}</span>
+                      <span className="font-mono">ID: {result.student.student_code}</span>
                     </div>
                   </div>
                 </div>
@@ -273,20 +274,20 @@ export default function VerificationPage() {
                 <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
                   <h3 className="font-semibold text-white flex items-center gap-2">
                     <FileText className="w-5 h-5 text-[#e1b936]" />
-                    Formations suivies
+                    Courses taken
                   </h3>
                   <div className="flex flex-wrap gap-2 text-sm font-semibold">
                     <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300">
-                      {validCount} valide{validCount > 1 ? 's' : ''}
+                      {validCount} valid
                     </span>
                     {expiredCount > 0 && (
                       <span className="px-3 py-1 rounded-full bg-red-500/10 text-red-300">
-                        {expiredCount} expiré{expiredCount > 1 ? 's' : ''}
+                        {expiredCount} expired
                       </span>
                     )}
                     {revokedCount > 0 && (
                       <span className="px-3 py-1 rounded-full bg-red-500/10 text-red-300">
-                        {revokedCount} révoqué{revokedCount > 1 ? 's' : ''}
+                        {revokedCount} revoked
                       </span>
                     )}
                   </div>
@@ -294,7 +295,7 @@ export default function VerificationPage() {
 
                 {certificates.length === 0 ? (
                   <p className="text-slate-400 text-sm py-4">
-                    Aucune formation enregistrée pour cet étudiant.
+                    No course recorded for this student.
                   </p>
                 ) : (
                   <ul className="space-y-3">
@@ -322,7 +323,7 @@ export default function VerificationPage() {
                             <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-400">
                               <span className="inline-flex items-center gap-1">
                                 <Calendar className="w-3.5 h-3.5" />
-                                Obtenu le {formatDate(c.completed_on)}
+                                Completed on {formatDate(c.completed_on)}
                               </span>
                               {c.certificate_number && (
                                 <span className="inline-flex items-center gap-1 font-mono">
@@ -333,12 +334,12 @@ export default function VerificationPage() {
                             </div>
                             <p className={`mt-1.5 text-sm ${expired ? 'text-red-300' : 'text-emerald-300/90'}`}>
                               {status === 'revoked'
-                                ? 'Ce certificat a été révoqué : il n’est plus valable.'
+                                ? 'This certificate has been revoked: it is no longer valid.'
                                 : c.valid_until
                                 ? expired
-                                  ? `Expiré depuis le ${formatDate(c.valid_until)}`
-                                  : `En cours de validité jusqu’au ${formatDate(c.valid_until)}`
-                                : 'En cours de validité, sans date d’expiration'}
+                                  ? `Expired on ${formatDate(c.valid_until)}`
+                                  : `Valid until ${formatDate(c.valid_until)}`
+                                : 'Valid, no expiry date'}
                             </p>
                           </div>
                           <span
@@ -353,7 +354,7 @@ export default function VerificationPage() {
                             ) : (
                               <CheckCircle2 className="w-4 h-4" />
                             )}
-                            {status === 'revoked' ? 'Révoqué' : status === 'expired' ? 'Expiré' : 'Valide'}
+                            {status === 'revoked' ? 'Revoked' : status === 'expired' ? 'Expired' : 'Valid'}
                           </span>
                         </li>
                       );
@@ -363,12 +364,12 @@ export default function VerificationPage() {
               </div>
 
               <p className="text-xs text-slate-400">
-                Situation au {formatDate(result.checkedOn)}. Un certificat reste valide jusqu’à la
-                fin de sa date d’échéance.
+                Status as of {formatDate(result.checkedOn)}. A certificate remains valid through the
+                end of its expiry date.
               </p>
 
               <button onClick={reset} className="btn-secondary w-full sm:w-auto">
-                Nouvelle vérification
+                New verification
               </button>
             </div>
           )}

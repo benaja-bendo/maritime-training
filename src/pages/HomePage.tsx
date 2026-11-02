@@ -11,13 +11,13 @@ export default function HomePage() {
       <section className="py-20 md:py-28 bg-[#172f4e]">
         <div className="container-app">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <span className="section-label">Nos services</span>
+            <span className="section-label">Our services</span>
             <h2 className="mt-2 text-3xl sm:text-4xl font-semibold text-white">
-              Tout votre parcours maritime en un seul lieu
+              Your whole maritime journey in one place
             </h2>
             <p className="mt-4 text-slate-300">
-              Consultez le catalogue, inscrivez-vous en ligne, vérifiez vos documents
-              et rejoignez notre réseau de volontaires.
+              Browse the catalogue, register online, verify your documents
+              and join our network of volunteers.
             </p>
           </div>
 
@@ -25,31 +25,31 @@ export default function HomePage() {
             {[
               {
                 icon: BookOpen,
-                to: '/formations',
-                title: 'Catalogue de formations',
-                desc: 'Plus de 50 cours certifiés STCW et MLC, de la sécurité de base au grade d’officier.',
-                cta: 'Voir les formations',
+                to: '/courses',
+                title: 'Course catalogue',
+                desc: 'Over 50 STCW and MLC certified courses, from basic safety to officer grade.',
+                cta: 'View courses',
               },
               {
                 icon: GraduationCap,
-                to: '/inscription',
-                title: 'Inscription en ligne',
-                desc: 'Choisissez vos modules, consultez les tarifs et réglez une avance pour finaliser votre inscription.',
-                cta: 'S’inscrire',
+                to: '/register',
+                title: 'Online registration',
+                desc: 'Choose your modules, see the prices and pay a deposit to complete your registration.',
+                cta: 'Register',
               },
               {
                 icon: ShieldCheck,
                 to: '/verification',
-                title: 'Vérification de documents',
-                desc: 'Entrez l’identifiant, le numéro de pièce d’identité ou de passeport pour consulter les certificats et leur statut.',
-                cta: 'Vérifier un document',
+                title: 'Document verification',
+                desc: 'Enter the student ID, ID card or passport number to look up certificates and their status.',
+                cta: 'Verify a document',
               },
               {
                 icon: HeartHandshake,
-                to: '/volontaires',
-                title: 'Inscription volontaires',
-                desc: 'Partagez votre expérience maritime en devenant instructeur volontaire.',
-                cta: 'Devenir volontaire',
+                to: '/volunteers',
+                title: 'Volunteer registration',
+                desc: 'Share your maritime experience by becoming a volunteer instructor.',
+                cta: 'Become a volunteer',
               },
             ].map((card) => (
               <Link
@@ -77,10 +77,10 @@ export default function HomePage() {
         <div className="container-app">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
-              { icon: Award, value: '50+', label: 'Formations' },
-              { icon: Users, value: '2 000', label: 'Diplômés' },
-              { icon: Globe, value: '40+', label: 'Nationalités' },
-              { icon: Waves, value: '2014', label: 'Année de fondation' },
+              { icon: Award, value: '50+', label: 'Courses' },
+              { icon: Users, value: '2,000', label: 'Graduates' },
+              { icon: Globe, value: '40+', label: 'Nationalities' },
+              { icon: Waves, value: '2014', label: 'Year founded' },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
                 <stat.icon className="w-6 h-6 text-[#e1b936] mb-3 mx-auto" />
@@ -95,22 +95,22 @@ export default function HomePage() {
       {/* CTA */}
       <section className="py-20 md:py-28 bg-[#0b1b30] border-t border-[#294769]">
         <div className="container-app text-center max-w-2xl mx-auto">
-          <span className="section-label">Portail officiel</span>
+          <span className="section-label">Official portal</span>
           <h2 className="mt-2 text-3xl sm:text-4xl font-semibold text-white">
-            Vérifiez un certificat en ligne
+            Verify a certificate online
           </h2>
           <p className="mt-4 text-slate-300">
-            Retrouvez les formations d’un étudiant et le statut de ses certificats
-            (valide ou expiré) avec son identifiant, sa carte d’identité ou son passeport.
+            Look up a student’s courses and the status of their certificates
+            (valid or expired) using their student ID, ID card or passport.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link to="/verification" className="btn-primary">
               <Search className="w-4 h-4" />
-              Accéder au portail
+              Go to the portal
             </Link>
-            <Link to="/formations" className="btn-secondary">
+            <Link to="/courses" className="btn-secondary">
               <BookOpen className="w-4 h-4" />
-              Parcourir le catalogue
+              Browse the catalogue
             </Link>
           </div>
         </div>

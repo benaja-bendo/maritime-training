@@ -4,11 +4,11 @@ import { Menu, X, GraduationCap } from 'lucide-react';
 import LogoMark from '@/components/LogoMark';
 
 const links = [
-  { to: '/', label: 'Accueil' },
-  { to: '/a-propos', label: 'À propos' },
-  { to: '/formations', label: 'Formations' },
-  { to: '/verification', label: 'Vérification' },
-  { to: '/volontaires', label: 'Volontaires' },
+  { to: '/', label: 'Home' },
+  { to: '/about', label: 'About' },
+  { to: '/courses', label: 'Courses' },
+  { to: '/verification', label: 'Verification' },
+  { to: '/volunteers', label: 'Volunteers' },
   { to: '/contact', label: 'Contact' },
 ];
 
@@ -39,7 +39,7 @@ export default function Header() {
       }`}
     >
       <div className="container-app flex items-center justify-between h-16 md:h-20">
-        <Link to="/" className="flex items-center gap-3 group" aria-label="Panama Maritime Training Services, accueil">
+        <Link to="/" className="flex items-center gap-3 group" aria-label="Panama Maritime Training Services, home">
           <LogoMark className="h-11 md:h-14 transition-transform group-hover:scale-105" />
           <span className="font-semibold text-sm md:text-[15px] text-white leading-tight">
             Panama Maritime<br />Training Services
@@ -65,9 +65,9 @@ export default function Header() {
           })}
         </nav>
 
-        <Link to="/inscription" className="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 rounded-sm bg-[#e1b936] text-[#08182d] text-sm font-bold hover:bg-[#f0cc58] transition-colors">
+        <Link to="/register" className="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 rounded-sm bg-[#e1b936] text-[#08182d] text-sm font-bold hover:bg-[#f0cc58] transition-colors">
           <GraduationCap className="w-4 h-4" />
-          S'inscrire
+          Register
         </Link>
 
         <button
@@ -93,12 +93,12 @@ export default function Header() {
               </Link>
             ))}
             <Link
-              to="/inscription"
+              to="/register"
               onClick={() => setOpen(false)}
               className="btn-primary mt-2"
             >
               <GraduationCap className="w-4 h-4" />
-              S'inscrire
+              Register
             </Link>
           </nav>
         </div>

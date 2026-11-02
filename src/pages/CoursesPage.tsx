@@ -42,13 +42,13 @@ export default function CoursesPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [category, setCategory] = useState('Toutes');
+  const [category, setCategory] = useState('All');
 
   const categories = useMemo(() => {
     const present = new Set(courses.map((c) => c.category));
     const known = CATEGORY_ORDER.filter((c) => present.has(c));
     const others = [...present].filter((c) => !CATEGORY_ORDER.includes(c)).sort();
-    return ['Toutes', ...known, ...others];
+    return ['All', ...known, ...others];
   }, [courses]);
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function CoursesPage() {
       const matchesSearch =
         c.name.toLowerCase().includes(search.toLowerCase()) ||
         (c.imo_number ?? '').toLowerCase().includes(search.toLowerCase());
-      const matchesCategory = category === 'Toutes' || c.category === category;
+      const matchesCategory = category === 'All' || c.category === category;
       return matchesSearch && matchesCategory;
     });
   }, [courses, search, category]);
@@ -81,11 +81,11 @@ export default function CoursesPage() {
             Catalogue
           </span>
           <h1 className="mt-2 text-3xl sm:text-5xl font-semibold text-white">
-            Nos Formations Maritimes
+            Our Maritime Courses
           </h1>
           <p className="mt-4 text-slate-300 max-w-2xl text-lg">
-            Plus de 50 cours : formations STCW et MLC, du certificat de base à la
-            formation d’officier chef, et formations offshore et spécialisées.
+            Over 50 courses: STCW and MLC training, from the basic certificate to
+            chief officer level, plus offshore and specialised courses.
           </p>
         </div>
       </section>
@@ -98,7 +98,7 @@ export default function CoursesPage() {
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
               <input
                 type="text"
-                placeholder="Rechercher par nom ou numéro IMO…"
+                placeholder="Search by name or IMO number…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="input-field pl-11"
@@ -113,7 +113,7 @@ export default function CoursesPage() {
               >
                 {categories.map((cat) => (
                   <option key={cat} value={cat}>
-                    {cat === 'Toutes' ? 'Toutes les catégories' : cat}
+                    {cat === 'All' ? 'All categories' : cat}
                   </option>
                 ))}
               </select>
@@ -121,7 +121,7 @@ export default function CoursesPage() {
           </div>
 
           <div className="mb-6 text-sm text-slate-500">
-            {loading ? 'Chargement…' : `${filtered.length} formation(s) trouvée(s)`}
+            {loading ? 'Loading…' : `${filtered.length} ${filtered.length === 1 ? 'course' : 'courses'} found`}
           </div>
 
           {loading ? (
@@ -135,7 +135,7 @@ export default function CoursesPage() {
               {filtered.map((course) => (
                 <Link
                   key={course.id}
-                  to={`/formations/${course.id}`}
+                  to={`/courses/${course.id}`}
                   className="card overflow-hidden flex flex-col group"
                 >
                   <div className="relative h-44 overflow-hidden bg-[#102641]">
@@ -182,7 +182,7 @@ export default function CoursesPage() {
                     </div>
 
                     <span className="mt-4 inline-flex items-center gap-1.5 text-[#e1b936] font-semibold text-sm group-hover:gap-2.5 transition-all">
-                      Détails
+                      Details
                       <ArrowRight className="w-4 h-4" />
                     </span>
                   </div>
@@ -194,7 +194,7 @@ export default function CoursesPage() {
           {!loading && filtered.length === 0 && (
             <div className="text-center py-16 text-slate-400">
               <BookOpen className="w-10 h-10 mx-auto mb-3 opacity-40" />
-              <p>Aucune formation ne correspond à votre recherche.</p>
+              <p>No course matches your search.</p>
             </div>
           )}
         </div>

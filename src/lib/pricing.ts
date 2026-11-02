@@ -7,12 +7,12 @@ export const DEPOSIT_RATE = 0.5;
 // Pack complet BST : les quatre formations de base prises ensemble coûtent moins cher
 // que la somme de leurs prix. La remise s'applique quand les quatre sont sélectionnées.
 export const BST_PACK = {
-  label: 'Pack complet BST',
+  label: 'Complete BST Pack',
   imoNumbers: ['1.13', '1.19', '1.20', '1.21'],
   price: 395,
 };
 
-const usd = new Intl.NumberFormat('fr-FR', {
+const usd = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
   currencyDisplay: 'code',
@@ -20,7 +20,7 @@ const usd = new Intl.NumberFormat('fr-FR', {
 
 export const formatUsd = (amount: number) => usd.format(amount);
 
-export const depositLabel = `${Math.round(DEPOSIT_RATE * 100)} %`;
+export const depositLabel = `${Math.round(DEPOSIT_RATE * 100)}%`;
 
 type Priced = Pick<Course, 'imo_number' | 'price_usd'>;
 

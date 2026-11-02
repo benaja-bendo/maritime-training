@@ -1,7 +1,7 @@
 # Panama Maritime Training Services (PMTS)
 
 Site web d'une école de formation maritime du Panama (cours STCW / MLC), réalisé pour un client externe.
-Interface **en français**. Le code (identifiants, types) est en anglais.
+Le **site public est en anglais** (depuis le 2026-11-02, anglais britannique comme le catalogue : « Specialised », « programme »). L'espace d'administration `/admin` reste **en français** (outil interne du personnel). Le code (identifiants, types) est en anglais ; les commentaires de code et ce fichier sont en français.
 
 - Production : https://maritime-training-app.web.app (Firebase Hosting)
 - Dépôt : https://github.com/benaja-bendo/maritime-training — **public**
@@ -28,24 +28,24 @@ Avant de livrer un changement : `typecheck`, `lint` et `build` doivent passer.
 
 Mise en route sur un nouveau poste : `npm ci`, puis créer `.env` à partir de `.env.example`
 (valeurs : `firebase apps:sdkconfig WEB 1:797540641529:web:ae1a42e0c039b951531028`). Sans `.env`,
-le site fonctionne mais l'inscription répond « pas encore disponible ».
+le site fonctionne mais l'inscription répond « not available yet ».
 
 ## Structure
 
-- `src/App.tsx` : routes (`/`, `/a-propos`, `/formations`, `/formations/:id`, `/inscription`, `/verification`, `/volontaires`, `/contact`).
+- `src/App.tsx` : routes (`/`, `/about`, `/courses`, `/courses/:id`, `/register`, `/verification`, `/volunteers`, `/contact`). Les anciennes adresses françaises (`/a-propos`, `/formations`, `/formations/:id`, `/inscription`, `/volontaires`) redirigent vers les nouvelles, query string conservée (liens déjà partagés). La page d'inscription lit `?course=<id>` et, pour les anciens liens, `?cours=<id>`.
 - `src/pages/` : une page par route. `src/components/` : Header, Footer, Hero, Layout, ScrollToTop. Le contenu de `AboutPage` et `ContactPage` (textes du client) est en tête de fichier, sous forme de tableaux.
 - `src/components/LogoMark.tsx` : écusson du logo (`public/logo-mark-sm.webp`), utilisé dans l'en-tête, le pied de page et l'administration. Le nom reste écrit en texte à côté (net à toute taille, lisible par les lecteurs d'écran).
 - `design/` : logo du client (`logo-source.jpg`, fichier JPEG 1536×1024 reçu le 2026-10-29), script `build-logo.py` qui le détoure (fond bleu nuit rendu transparent, bords reconstitués sans liseré) et produit `public/logo-mark-sm.webp`, `public/icon-*.png`, `public/favicon.ico`, `public/og-image.jpg` et les maîtres transparents `design/logo-mark.png` et `design/logo-complet.png`. Relancer `python3 design/build-logo.py` (Pillow, NumPy, SciPy) si le client envoie un meilleur fichier, de préférence un SVG.
 - `src/config/site.ts` : **nom, pays, slogan, adresse, horaires, téléphone, WhatsApp, e-mail, instructions de paiement**. Un champ à `null` n'est pas affiché (en-tête de page Contact, pied de page).
 - `src/lib/data.ts` : **seul point d'accès aux données**. Les pages n'importent rien d'autre pour lire ou écrire.
 - `src/lib/pricing.ts` : taux d'avance (`DEPOSIT_RATE`), pack BST (`BST_PACK`), calcul en centimes, format USD.
-- `src/lib/format.ts` : durées en français (virgule décimale, « 0,5 jour », « 13,25 h »). À utiliser pour tout affichage de durée.
+- `src/lib/format.ts` : durées en anglais (point décimal, « 0.5 days », « 1 day », « 13.25 h »). À utiliser pour tout affichage de durée.
 - `src/lib/verification.ts` : normalisation des numéros, clé de recherche (SHA-256), statut d'un certificat (valide / expiré / révoqué).
 - `src/lib/certificates.ts` (règles de publication, sans Firebase), `src/lib/csv-import.ts` (lecture et contrôle d'un CSV), `src/lib/admin-data.ts` et `src/lib/auth.ts` (accès Firestore et connexion de l'administration).
 - `src/pages/admin/` : espace d'administration, chargé à part (`/admin`). `public/modele-certificats.csv` : modèle d'import.
 - `src/lib/image.ts` : traitement de la photo d'identité. `src/lib/countries.ts` : liste des pays (français, Panama en tête).
 - `src/lib/firebase.ts` : initialisation Firebase, chargée à la demande (import dynamique) pour ne pas alourdir les autres pages.
-- `src/data/courses.ts` : **liste d'origine** des 63 formations (51 STCW/MLC de la liste du client + 12 formations offshore et spécialisées, `framework: 'industry'`). Depuis le 2026-10-29 le catalogue vivant est dans Firestore (`catalog/courses`, modifié depuis `/admin` > Formations) : ce fichier ne sert plus que de **secours** (base vide, hors ligne) et d'amorce (la première modification depuis `/admin` enregistre toute la liste). `src/lib/catalog.ts` lit le catalogue (API REST de Firestore, sans charger le SDK Firebase, une requête par visite). `src/data/positions.ts` : 22 fonctions à bord et leurs formations.
+- `src/data/courses.ts` : **liste d'origine** des 63 formations (51 STCW/MLC de la liste du client + 12 formations offshore et spécialisées, `framework: 'industry'`). Depuis le 2026-10-29 le catalogue vivant est dans Firestore (`catalog/courses`, modifié depuis `/admin` > Formations) : ce fichier ne sert plus que de **secours** (base vide, hors ligne) et d'amorce (la première modification depuis `/admin` enregistre toute la liste). `src/lib/catalog.ts` lit le catalogue (API REST de Firestore, sans charger le SDK Firebase, une requête par visite). `src/data/positions.ts` : 22 fonctions à bord et leurs formations (non versionné jusqu'au 2026-11-02 : le `.gitignore` ignorait tout dossier `data/` ; il n'ignore plus que `/data/` à la racine).
 - `src/types/index.ts` : modèles. `firestore.rules` : règles de sécurité Firestore.
 - `src/index.css` : classes utilitaires du design (`container-app`, `btn-primary`, `btn-secondary`, `card`, `input-field`, `section-label`, `gold-rule`).
 
@@ -55,17 +55,17 @@ le site fonctionne mais l'inscription répond « pas encore disponible ».
 - Icônes : `lucide-react` uniquement. Ne pas ajouter de dépendance UI sans raison.
 - Style : Tailwind + les classes de `src/index.css`. Palette : fond `#0b1b30`, bandeaux `#172f4e`, bordures `#294769`, accent or `#e1b936` (hover `#f0cc58`). Sur fond sombre, libellés en `text-slate-200`.
 - Dans le texte JSX, écrire les apostrophes typographiques directement (`’`). La séquence d'échappement unicode n'y est **pas** interprétée et s'afficherait telle quelle (bug déjà corrigé une fois).
-- Messages d'erreur côté utilisateur en français. Monnaie : dollar américain (USD), devise du Panama.
+- Textes et messages d'erreur du site public en anglais (pas de système d'internationalisation : les textes sont écrits dans les pages). Monnaie : dollar américain (USD), devise du Panama, affichée « USD 1,380.00 ».
 - Le nom de l'organisme vient de `SITE.name`, sauf dans l'en-tête et le pied de page où il est écrit sur deux lignes.
 
-## Inscription en ligne (`/inscription`)
+## Inscription en ligne (`/register`)
 
 Parcours voulu par le client : le candidat remplit le formulaire (nom, prénoms, e-mail, nationalité, CNI **ou** passeport + numéro, photo d'identité, choix des formations). Le prix de chaque formation s'affiche à la sélection, avec le total, l'**avance** (`DEPOSIT_RATE`) et le **solde**. L'inscription n'est finalisée qu'après paiement de l'avance ; le solde est payé après la formation, pour recevoir les documents.
 
-- **Fonction à bord** (étape 3, facultative) : le candidat choisit son poste ; les formations correspondantes sont cochées (en tête de liste, marquées « Recommandée »), il peut en retirer ou en ajouter. Changer de fonction remplace les formations de l'ancienne fonction mais garde celles que le candidat a cochées lui-même. Certaines formations sont proposées « selon votre cas » (non cochées). Les titres et licences délivrés hors de nos formations (brevet d'officier, licence de pilotage...) sont rappelés au candidat sans être vendus (`prerequisites`). Tant qu'une formation n'a pas de prix, le total et l'avance ne sont pas calculés (« tarif à confirmer ») : 8 fonctions sont concernées (foreur, gréeur, grutier, pilote ROV, DPO, cuisinier, officier mécanicien, ETO, opérateur radio). Le libellé choisi est stocké dans `position` (≤ 100 caractères, champ optionnel des règles) et affiché dans l'administration. Pour modifier une fonction : `src/data/positions.ts` (référence = numéro IMO, ou début du nom pour les formations sans numéro).
+- **Fonction à bord** (étape 3, facultative) : le candidat choisit son poste ; les formations correspondantes sont cochées (en tête de liste, marquées « Recommended for your role »), il peut en retirer ou en ajouter. Changer de fonction remplace les formations de l'ancienne fonction mais garde celles que le candidat a cochées lui-même. Certaines formations sont proposées « Depending on your situation » (non cochées). Les titres et licences délivrés hors de nos formations (brevet d'officier, licence de pilotage...) sont rappelés au candidat sans être vendus (`prerequisites`). Tant qu'une formation n'a pas de prix, le total et l'avance ne sont pas calculés (« Price to be confirmed ») : 8 fonctions sont concernées (foreur, gréeur, grutier, pilote ROV, DPO, cuisinier, officier mécanicien, ETO, opérateur radio). Le libellé choisi est stocké dans `position` (≤ 100 caractères, champ optionnel des règles) et affiché dans l'administration. Pour modifier une fonction : `src/data/positions.ts` (référence = numéro IMO, ou début du nom pour les formations sans numéro).
 - `submitRegistration` crée un document `registrations/PMTS-XXXXXXXX` (référence aléatoire, affichée au candidat) avec `status: 'pending_deposit'`.
 - Les montants stockés (`quote_total_usd`, `quote_deposit_usd`, `quote_discount_usd`) sont **indicatifs** : le personnel recalcule à partir des tarifs en vigueur. `quote_discount_usd` est optionnel dans les règles (compatibilité avec les anciennes pages ouvertes).
-- **Tarifs** : liste fournie par le client le 2026-10-28, appliquée à 49 formations (`price_usd` : liste d'origine dans `src/data/courses.ts`, modifiable ensuite dans `/admin` > Formations). **Pack complet BST** à 395 USD (1.13 + 1.19 + 1.20 + 1.21, soit 440 USD à l'unité) : remise automatique quand les quatre sont cochées, bouton « Ajouter le pack » sur la page Inscription. Le pack n'est pas une formation du catalogue.
+- **Tarifs** : liste fournie par le client le 2026-10-28, appliquée à 49 formations (`price_usd` : liste d'origine dans `src/data/courses.ts`, modifiable ensuite dans `/admin` > Formations). **Complete BST Pack** (`BST_PACK.label`) à 395 USD (1.13 + 1.19 + 1.20 + 1.21, soit 440 USD à l'unité) : remise automatique quand les quatre sont cochées, bouton « Add the pack » sur la page d'inscription. Le pack n'est pas une formation du catalogue.
 - **Photo** : recadrée en 420×540 (35×45 mm) et compressée en JPEG dans le navigateur, stockée en base64 dans le document (champ `photo_data_url`). Choix fait pour rester sur la formule gratuite, car Cloud Storage exige la formule Blaze. À revoir si le volume augmente.
 - **Sécurité** (`firestore.rules`) : le public peut **créer** un dossier (forme et tailles validées), jamais le lire, le modifier ni le supprimer. Tout le reste est fermé. Vérifié depuis l'extérieur : lecture, liste, modification, suppression et écriture hors schéma renvoient 403.
 - Le personnel consulte et traite les dossiers dans l'espace `/admin` (onglet Inscriptions) ou dans la console Firebase (Firestore > `registrations`). Pas encore de notification par e-mail.
@@ -74,13 +74,13 @@ Parcours voulu par le client : le candidat remplit le formulaire (nom, prénoms,
 
 ## Vérification des certificats (`/verification`)
 
-Trois méthodes de recherche : identifiant étudiant, numéro de carte d'identité, numéro de passeport. Le résultat affiche le nom, l'identifiant et les formations suivies, chacune avec son statut : **Valide** (« en cours de validité », jusqu'à sa date d'échéance incluse, ou sans échéance), **Expiré** (échéance dépassée, à la date du jour au Panama) ou **Révoqué**. Ni photo, ni date de naissance, ni nationalité, ni numéro de pièce ne sont affichés.
+Trois méthodes de recherche : identifiant étudiant, numéro de carte d'identité, numéro de passeport. Le résultat affiche le nom, l'identifiant et les formations suivies, chacune avec son statut : **Valid** (« en cours de validité », jusqu'à sa date d'échéance incluse, ou sans échéance), **Expired** (échéance dépassée, à la date du jour au Panama) ou **Revoked**. Dates affichées « 1 November 2026 ». Ni photo, ni date de naissance, ni nationalité, ni numéro de pièce ne sont affichés.
 
 **Modèle Firestore** : le public ne peut lire qu'UN document précis, jamais lister ; l'écriture est réservée au personnel (voir ci-dessous).
 - `certificate_keys/{sha256}` → `{ student_id, audit_id }`. La clé est l'empreinte de `méthode:numéro normalisé` (majuscules, sans accents, espaces ni tirets : « 8-123-456 » = « 8123456 »). Aucun numéro en clair.
 - `students/{id aléatoire}` → version **publique** : `student_code, full_name, certificates[]` (certificats publiés ou révoqués seulement).
 - `admin_students/{id}` → dossier de **travail** du personnel : brouillons, numéros de pièce, notes. Jamais public.
-- `site_status/verification` → `{ open: true }`, écrit à la première publication. **Tant qu'il est absent, la page affiche « Ouverture prochaine »** : une base vide répondrait « aucun dossier » à de vrais diplômés.
+- `site_status/verification` → `{ open: true }`, écrit à la première publication. **Tant qu'il est absent, la page affiche « Opening soon »** : une base vide répondrait « aucun dossier » à de vrais diplômés.
 
 **Limites connues** : un numéro de pièce ou un identifiant fonctionne comme un mot de passe faible. Sans serveur, rien ne limite le nombre d'essais. Les identifiants générés (`STU-` + 8 caractères aléatoires) résistent, pas des numéros de carte prévisibles. À renforcer avec **App Check** avant une large diffusion. Les données élèves de l'ancien prototype ne sont pas migrées.
 
@@ -119,7 +119,7 @@ Page interne (non liée depuis le site, `noindex`), chargée à part. Onglets : 
 | `findStudent`, `isVerificationOpen` (page Vérification) | **Branché sur Firestore** (`certificate_keys`, `students`, `site_status`) |
 | `submitVolunteer` (page Volontaires) | Lève `ServiceUnavailableError` : pas encore branché |
 
-`submitVolunteer` affiche volontairement « pas encore disponible ». Ne pas la faire répondre « envoyé » sans backend. Pour la brancher : remplacer le corps de la fonction (signature et page inchangées) et ajouter la collection dans `firestore.rules`.
+`submitVolunteer` affiche volontairement « Volunteer applications cannot be submitted yet. ». Ne pas la faire répondre « envoyé » sans backend. Pour la brancher : remplacer le corps de la fonction (signature et page inchangées) et ajouter la collection dans `firestore.rules`.
 
 ## Dépôt public : règles strictes
 
@@ -144,7 +144,7 @@ Le CLI Firebase est installé et connecté sur le poste du développeur. `fireba
   - **Quasi-doublons** conservés à la demande du client : « Rating as Able Seafarer for Deck / Engine » et « Able Seafare Deck / Able Seafarer Engine » (même durée 5 jours / 40 h, même prix 450 USD).
   - **Fautes dans les noms** : « Seafare » (Able Seafare Deck), « Seafares » (Security Training For Seafares…), « Assesor » (Train The Simulator And Assesor).
   - **Intitulés incohérents** : « Updating » (7.01, 7.03, 7.04) et « Upgrading » (7.02) pour des cours de la même série. Durées très longues (105 à 196 jours) pour ces cours, à vérifier.
-- **Données de certificats** : à fournir par le client (nom, n° de carte d'identité et/ou passeport, formation, n° de certificat, dates d'obtention et d'échéance), puis à importer (voir « Vérification »). Il a parlé de « valide » ou « en cours de validité » : les deux mots sont traités comme un seul statut (**Valide**), l'autre étant **Expiré**. Si un autre statut est voulu (ex. formation en cours, certificat révoqué), le dire.
+- **Données de certificats** : à fournir par le client (nom, n° de carte d'identité et/ou passeport, formation, n° de certificat, dates d'obtention et d'échéance), puis à importer (voir « Vérification »). Il a parlé de « valide » ou « en cours de validité » : les deux mots sont traités comme un seul statut (**Valid**), l'autre étant **Expired**. Si un autre statut est voulu (ex. formation en cours, certificat révoqué), le dire.
 - **Espace d'administration** : le client a demandé (note vocale du 2026-10-29) à inscrire lui-même des personnes et à choisir leurs certificats. Après clarification relayée (usage légitime, besoin de maîtriser l'outil pendant les tests), il a été construit **avec les garde-fous ci-dessus** (brouillon, publication conditionnée à des preuves de session, journal). Ne pas les assouplir sans nouvelle clarification : ce sont des certificats de sécurité maritime. À faire : activer Google, créer les comptes `admins` (e-mails à fournir).
 - **Mode de paiement** de l'avance et du solde (virement, mobile money, carte...).
 - **E-mail de contact** : le client a fourni `info@pmts.online`, mais **`pmts.online` appartient à un tiers** (enregistré le 2025-12-04, site actif). Son domaine est `p-mts.online` (avec tiret). Mettre `SITE.email` uniquement quand une boîte existe réellement (ex. `info@p-mts.online`, à créer : il faudra un service de messagerie).
@@ -154,13 +154,12 @@ Le CLI Firebase est installé et connecté sur le poste du développeur. `fireba
 - **FAQ** (page Contact) : le client a fourni les questions sans réponses. Les réponses actuelles sont provisoires, rédigées à partir des informations déjà données (parcours d'inscription, plateforme en ligne) et renvoient vers le formulaire pour le reste. À faire valider ou remplacer, surtout : modes de paiement, délai d'obtention du certificat, reconnaissance internationale, réservations de groupe.
 - **Pied de page** : la liste « Offshore & BOSIET » fournie par le client n'a **pas été reprise** : elle n'existait pas dans le catalogue de 51 cours. Depuis le 2026-10-29 douze formations offshore et spécialisées existent (voir plus haut) et le pied de page a un groupe « Offshore et opérations spécialisées » ; la liste exacte du client reste à reprendre si besoin.
 - **Pages légales manquantes** : « Politique de confidentialité », « Conditions d'utilisation » et « Certifications » sont citées par le client mais n'existent pas. La politique de confidentialité est nécessaire dès maintenant puisque le site collecte des pièces d'identité et des photos.
-- **Langue** : le site est en français ; le Panama est hispanophone, une version espagnole ou anglaise est peut-être attendue.
+- **Langue** : le site public est passé en anglais le 2026-11-02 (demande du développeur ; à faire valider par le client). Les textes de `AboutPage` / `ContactPage` (FAQ) viennent de traductions françaises du client : leur anglais a été rétabli à partir du français, à relire. L'administration est restée en français. Le Panama est hispanophone : une version espagnole supposerait d'extraire les textes des pages (aujourd'hui en dur). Les noms de pays du formulaire d'inscription viennent de `Intl.DisplayNames('en')` : les dossiers enregistrés avant le 2026-11-02 portent des noms français (« Allemagne »), les nouveaux des noms anglais (« Germany »).
 
 ## Points connus
 
 - Favicon, icône d'écran d'accueil et image de partage (`og-image.jpg`, aperçu WhatsApp) viennent du logo. L'URL de l'image de partage dans `index.html` (`og:image`) est écrite en dur sur `https://maritime-training-app.web.app` : **à changer quand un nom de domaine sera branché** (les aperçus exigent une URL absolue).
 - Les images des formations sont des liens directs vers Pexels (pas hébergées ici).
-- Le titre du bandeau d'accueil « Advance Your Maritime Career » est en anglais.
 - Sur la page Volontaires, les libellés du formulaire sont en `text-slate-700` sur fond sombre (faible contraste).
 - `npm audit` : les alertes « production » viennent de `@grpc/grpc-js`, utilisé seulement par le build Node du SDK Firebase. Il n'est pas dans le code livré aux visiteurs (vérifié : aucune occurrence dans `dist/`). Ne pas lancer `npm audit fix --force` : il rétrograderait Firebase en version 9. Les autres alertes concernent les outils de développement.
 

@@ -17,7 +17,8 @@ firebase-debug.log*
 firebase-export-*/
 
 # Données personnelles et clés : ne jamais versionner
-data/
+# (ancré à la racine : `src/data/` contient du code, pas des données personnelles)
+/data/
 serviceAccount*.json
 *-firebase-adminsdk-*.json
 

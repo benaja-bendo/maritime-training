@@ -17,23 +17,23 @@ export class PhotoError extends Error {
 
 export async function prepareIdPhoto(file: File): Promise<string> {
   if (!/^image\/(jpeg|png|webp)$/.test(file.type)) {
-    throw new PhotoError('Format non accepté. Utilisez une photo JPG, PNG ou WebP.');
+    throw new PhotoError('Unsupported format. Please use a JPG, PNG or WebP photo.');
   }
   if (file.size > MAX_INPUT_BYTES) {
-    throw new PhotoError('La photo dépasse 8 Mo. Choisissez un fichier plus léger.');
+    throw new PhotoError('The photo is larger than 8 MB. Please choose a smaller file.');
   }
 
   let bitmap: ImageBitmap;
   try {
     bitmap = await createImageBitmap(file);
   } catch {
-    throw new PhotoError('Impossible de lire cette image. Essayez un autre fichier.');
+    throw new PhotoError('This image could not be read. Please try another file.');
   }
 
   if (bitmap.width < MIN_WIDTH || bitmap.height < MIN_HEIGHT) {
     bitmap.close();
     throw new PhotoError(
-      `Photo trop petite (minimum ${MIN_WIDTH} × ${MIN_HEIGHT} pixels).`,
+      `Photo too small (minimum ${MIN_WIDTH} × ${MIN_HEIGHT} pixels).`,
     );
   }
 
@@ -43,7 +43,7 @@ export async function prepareIdPhoto(file: File): Promise<string> {
   const ctx = canvas.getContext('2d');
   if (!ctx) {
     bitmap.close();
-    throw new PhotoError("Votre navigateur ne permet pas de traiter l'image.");
+    throw new PhotoError('Your browser cannot process this image.');
   }
 
   // Fond blanc : un PNG transparent deviendrait noir une fois converti en JPEG.
@@ -62,5 +62,5 @@ export async function prepareIdPhoto(file: File): Promise<string> {
     const dataUrl = canvas.toDataURL('image/jpeg', quality);
     if (dataUrl.length <= MAX_OUTPUT_CHARS) return dataUrl;
   }
-  throw new PhotoError('La photo est trop lourde après traitement. Essayez-en une autre.');
+  throw new PhotoError('The photo is still too large after processing. Please try another one.');
 }

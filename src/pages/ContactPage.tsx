@@ -19,38 +19,38 @@ import { SITE } from '@/config/site';
 
 const FAQ: { q: string; a: ReactNode }[] = [
   {
-    q: 'Comment puis-je m’inscrire à un cours ?',
+    q: 'How do I register for a course?',
     a: (
       <>
-        Rendez-vous sur la page{' '}
-        <Link to="/inscription" className="text-[#e1b936] hover:underline">
-          Inscription
-        </Link>
-        , choisissez vos formations et remplissez le formulaire avec vos informations et
-        votre photo d’identité. Votre inscription est finalisée dès le règlement de
-        l’avance de {depositLabel}. Le solde est à régler après la formation.
+        Go to the{' '}
+        <Link to="/register" className="text-[#e1b936] hover:underline">
+          Registration
+        </Link>{' '}
+        page, choose your courses and fill in the form with your details and your ID
+        photo. Your registration is finalised once the {depositLabel} deposit has been
+        paid. The balance is payable after the course.
       </>
     ),
   },
   {
-    q: 'Comment les cours en ligne sont-ils dispensés ?',
-    a: 'Les modules théoriques sont hébergés sur notre plateforme d’apprentissage en ligne sécurisée, accessible 24h/24 et 7j/7 depuis n’importe quel appareil. Les programmes mixtes y ajoutent des sessions pratiques ciblées dans notre centre de Panama City.',
+    q: 'How are the online courses delivered?',
+    a: 'The theory modules are hosted on our secure online learning platform, available 24/7 from any device. Blended programmes add focused practical sessions at our centre in Panama City.',
   },
   {
-    q: 'Les certificats Panama sont-ils valables à l’international ?',
-    a: 'Chaque programme répond ou dépasse les normes IMO, STCW et AMP. Pour toute question sur la reconnaissance de votre certificat par un pays ou un armateur précis, écrivez-nous via le formulaire ci-dessus.',
+    q: 'Are Panama certificates valid internationally?',
+    a: 'Every programme meets or exceeds IMO, STCW and AMP standards. For any question about whether a specific country or shipowner recognises your certificate, write to us using the form above.',
   },
   {
-    q: 'Quels modes de paiement acceptez-vous ?',
-    a: 'Les modalités de règlement de l’avance vous sont communiquées par notre équipe après votre pré-inscription. Pour toute question avant de vous inscrire, écrivez-nous via le formulaire ci-dessus.',
+    q: 'Which payment methods do you accept?',
+    a: 'Our team will send you the deposit payment instructions after your pre-registration. If you have any questions before registering, write to us using the form above.',
   },
   {
-    q: 'Mon entreprise peut-elle réserver une formation pour un groupe ?',
-    a: 'Écrivez-nous via le formulaire ci-dessus en précisant les formations souhaitées, le nombre de participants et les dates envisagées : notre équipe vous répondra.',
+    q: 'Can my company book a course for a group?',
+    a: 'Write to us using the form above, stating the courses you want, the number of participants and your preferred dates: our team will get back to you.',
   },
   {
-    q: 'Combien de temps faut-il pour recevoir mon certificat ?',
-    a: 'Vos documents vous sont remis une fois la formation terminée et le solde réglé. Pour connaître le délai, contactez-nous.',
+    q: 'How long does it take to receive my certificate?',
+    a: 'Your documents are issued once the course is finished and the balance has been paid. To find out the timeframe, contact us.',
   },
 ];
 
@@ -77,7 +77,7 @@ export default function ContactPage() {
       setError(
         err instanceof ServiceUnavailableError
           ? err.message
-          : 'Une erreur est survenue lors de l’envoi. Vérifiez votre connexion et réessayez.',
+          : 'Something went wrong while sending. Check your connection and try again.',
       );
     }
     setLoading(false);
@@ -90,15 +90,14 @@ export default function ContactPage() {
       <section className="bg-[#172f4e] py-16 md:py-20 border-b border-[#294769]">
         <div className="container-app">
           <span className="text-[#e1b936] text-sm font-semibold uppercase tracking-wider">
-            Entrez en contact
+            Get in touch
           </span>
           <h1 className="mt-2 text-3xl sm:text-5xl font-semibold text-white">
-            Contactez-nous
+            Contact Us
           </h1>
           <p className="mt-4 text-slate-300 max-w-2xl text-lg">
-            Notre équipe est là pour vous aider à choisir le bon programme, organiser une
-            session pratique ou répondre à toutes les questions sur l’inscription et la
-            certification.
+            Our team is here to help you choose the right programme, arrange a practical
+            session or answer any question about registration and certification.
           </p>
         </div>
       </section>
@@ -107,12 +106,12 @@ export default function ContactPage() {
         <div className="container-app grid grid-cols-1 lg:grid-cols-5 gap-10 items-start">
           {/* Bureau */}
           <div className="lg:col-span-2 card p-6 sm:p-8">
-            <h2 className="text-xl font-semibold text-white mb-6">Notre bureau</h2>
+            <h2 className="text-xl font-semibold text-white mb-6">Our office</h2>
             <ul className="space-y-6">
               <li className="flex items-start gap-4">
                 <MapPin className="w-5 h-5 text-[#e1b936] mt-0.5 shrink-0" />
                 <div>
-                  <div className="text-xs uppercase tracking-wider text-slate-400">Adresse</div>
+                  <div className="text-xs uppercase tracking-wider text-slate-400">Address</div>
                   <div className="text-slate-100">
                     {SITE.address ? `${SITE.address}, ${SITE.country}` : SITE.country}
                   </div>
@@ -133,7 +132,7 @@ export default function ContactPage() {
                 <li className="flex items-start gap-4">
                   <Phone className="w-5 h-5 text-[#e1b936] mt-0.5 shrink-0" />
                   <div>
-                    <div className="text-xs uppercase tracking-wider text-slate-400">Téléphone</div>
+                    <div className="text-xs uppercase tracking-wider text-slate-400">Phone</div>
                     <a href={`tel:${SITE.phone.replace(/\s/g, '')}`} className="text-slate-100 hover:text-[#e1b936]">
                       {SITE.phone}
                     </a>
@@ -144,7 +143,7 @@ export default function ContactPage() {
                 <li className="flex items-start gap-4">
                   <Clock className="w-5 h-5 text-[#e1b936] mt-0.5 shrink-0" />
                   <div>
-                    <div className="text-xs uppercase tracking-wider text-slate-400">Heures de bureau</div>
+                    <div className="text-xs uppercase tracking-wider text-slate-400">Office hours</div>
                     <div className="text-slate-100">{SITE.hours}</div>
                   </div>
                 </li>
@@ -153,7 +152,7 @@ export default function ContactPage() {
                 <li className="flex items-start gap-4">
                   <MessageCircle className="w-5 h-5 text-[#e1b936] mt-0.5 shrink-0" />
                   <div>
-                    <div className="text-xs uppercase tracking-wider text-slate-400">Support WhatsApp</div>
+                    <div className="text-xs uppercase tracking-wider text-slate-400">WhatsApp support</div>
                     <a
                       href={`https://wa.me/${whatsappDigits}`}
                       target="_blank"
@@ -175,28 +174,27 @@ export default function ContactPage() {
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 mb-5">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
-                <h2 className="text-xl font-bold text-white">Message envoyé</h2>
+                <h2 className="text-xl font-bold text-white">Message sent</h2>
                 <p className="mt-2 text-slate-300 max-w-sm mx-auto">
-                  Merci. Nous vous répondrons dans un délai d’un jour ouvrable.
+                  Thank you. We will reply within one working day.
                 </p>
                 <button onClick={() => setSent(false)} className="btn-secondary mt-6">
-                  Envoyer un autre message
+                  Send another message
                 </button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <h2 className="text-xl font-semibold text-white">Envoyez-nous un message</h2>
+                  <h2 className="text-xl font-semibold text-white">Send us a message</h2>
                   <p className="mt-1 text-sm text-slate-300">
-                    Remplissez le formulaire ci-dessous et nous vous répondrons dans un
-                    délai d’un jour ouvrable.
+                    Fill in the form below and we will reply within one working day.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label htmlFor="c_name" className="block text-sm font-medium text-slate-200 mb-1.5">
-                      Nom complet *
+                      Full name *
                     </label>
                     <div className="relative">
                       <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
@@ -214,7 +212,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <label htmlFor="c_email" className="block text-sm font-medium text-slate-200 mb-1.5">
-                      Adresse électronique *
+                      Email address *
                     </label>
                     <div className="relative">
                       <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
@@ -227,7 +225,7 @@ export default function ContactPage() {
                         value={form.email}
                         onChange={(e) => update('email', e.target.value)}
                         className="input-field pl-10"
-                        placeholder="nom@exemple.com"
+                        placeholder="name@example.com"
                       />
                     </div>
                   </div>
@@ -235,7 +233,7 @@ export default function ContactPage() {
 
                 <div>
                   <label htmlFor="c_subject" className="block text-sm font-medium text-slate-200 mb-1.5">
-                    Sujet
+                    Subject
                   </label>
                   <input
                     id="c_subject"
@@ -270,12 +268,12 @@ export default function ContactPage() {
                   {loading ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      Envoi en cours…
+                      Sending…
                     </>
                   ) : (
                     <>
                       <Send className="w-4 h-4" />
-                      Envoyer un message
+                      Send message
                     </>
                   )}
                 </button>
@@ -289,9 +287,9 @@ export default function ContactPage() {
       <section className="py-12 md:py-16 bg-[#172f4e] border-t border-[#294769]">
         <div className="container-app max-w-3xl">
           <div className="text-center mb-10">
-            <span className="section-label">Questions fréquentes</span>
+            <span className="section-label">Common questions</span>
             <h2 className="mt-2 text-3xl sm:text-4xl font-semibold text-white">
-              Foire aux questions
+              Frequently Asked Questions
             </h2>
           </div>
           <div className="space-y-3">
