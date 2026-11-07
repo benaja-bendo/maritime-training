@@ -17,6 +17,7 @@ import { getDb } from '@/lib/firebase';
 import { describeChanges as describeCatalogChanges, parseCourses, resetCatalogCache } from '@/lib/catalog';
 import { emptyStudent, missingForPublish, newCertificate } from '@/lib/certificates';
 import { lookupKey, normalizeIdentifier, todayInPanama } from '@/lib/verification';
+import type { VerificationMethod } from '@/lib/verification';
 import type { Course } from '@/types';
 import type {
   AdminCertificate,
@@ -171,10 +172,13 @@ export async function saveAdminStudent(
             ['student_code', code],
             ['national_id', ident.national_id],
             ['passport', ident.passport],
+            ...merged.certificates
+              .filter((c) => c.status !== 'draft' && c.certificate_number)
+              .map((c) => ['certificate_number', c.certificate_number] as const),
           ] as const
         )
           .filter(([, v]) => normalizeIdentifier(v))
-          .map(async ([method, v]) => ({ hash: await lookupKey(method, v) })),
+          .map(async ([method, v]) => ({ hash: await lookupKey(method as VerificationMethod, v) })),
       )
     : [];
 
@@ -196,10 +200,13 @@ export async function saveAdminStudent(
           ['student_code', prev.student_code],
           ['national_id', prev.national_id],
           ['passport', prev.passport],
+          ...(prev.certificates ?? [])
+            .filter((c) => c.status !== 'draft' && c.certificate_number)
+            .map((c) => ['certificate_number', c.certificate_number] as const),
         ] as const
       )
         .filter(([, v]) => normalizeIdentifier(v))
-        .map(async ([method, v]) => lookupKey(method, v)),
+        .map(async ([method, v]) => lookupKey(method as VerificationMethod, v)),
     );
     const keep = new Set(wanted.map((w) => w.hash));
     obsolete.push(...old.filter((h) => !keep.has(h)));

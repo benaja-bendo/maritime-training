@@ -1,7 +1,7 @@
 // Logique partagée entre le site public et l'espace d'administration.
 // Syntaxe TypeScript « effaçable » uniquement (pas d'enum), pour pouvoir l'exécuter aussi avec Node.
 
-export type VerificationMethod = 'student_code' | 'national_id' | 'passport';
+export type VerificationMethod = 'national_id' | 'passport' | 'student_code' | 'certificate_number';
 export type CertificateStatus = 'valid' | 'expired' | 'revoked';
 
 // Majuscules, sans accents, sans espaces ni tirets : « 8-123-456 » et « 8123456 » donnent la même clé.

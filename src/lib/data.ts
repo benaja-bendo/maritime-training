@@ -55,7 +55,25 @@ export async function findStudent(
 
   const key = await lookupKey(method, value);
   const alias = await withTimeout(getDoc(doc(db, 'certificate_keys', key)), 15_000);
-  const studentId = alias.exists() ? str(alias.data().student_id) : null;
+  let studentId = alias.exists() ? str(alias.data().student_id) : null;
+
+  // Fallbacks : recherche multi-clés si la clé principale n'a pas répondu
+  if (!studentId && method === 'national_id') {
+    // 1. Tenter par code étudiant
+    const keyStudent = await lookupKey('student_code', value);
+    const snapStudent = await withTimeout(getDoc(doc(db, 'certificate_keys', keyStudent)), 15_000);
+    if (snapStudent.exists()) {
+      studentId = str(snapStudent.data().student_id);
+    } else {
+      // 2. Tenter par numéro de certificat
+      const keyCert = await lookupKey('certificate_number', value);
+      const snapCert = await withTimeout(getDoc(doc(db, 'certificate_keys', keyCert)), 15_000);
+      if (snapCert.exists()) {
+        studentId = str(snapCert.data().student_id);
+      }
+    }
+  }
+
   if (!studentId) return null;
 
   const snap = await withTimeout(getDoc(doc(db, 'students', studentId)), 15_000);

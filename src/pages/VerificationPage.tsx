@@ -26,16 +26,10 @@ const METHODS: {
   placeholder: string;
 }[] = [
   {
-    id: 'student_code',
-    label: 'Student ID',
-    field: 'Student ID',
-    placeholder: 'e.g. STU-AB12CD34',
-  },
-  {
     id: 'national_id',
-    label: 'ID card',
-    field: 'ID card number',
-    placeholder: 'e.g. 8-123-456',
+    label: 'ID Document No',
+    field: 'ID Document number',
+    placeholder: 'e.g. 8-123-456 or document number',
   },
   {
     id: 'passport',
@@ -58,7 +52,7 @@ function formatDate(iso: string): string {
 }
 
 export default function VerificationPage() {
-  const [method, setMethod] = useState<VerificationMethod>('student_code');
+  const [method, setMethod] = useState<VerificationMethod>('national_id');
   const [value, setValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{ student: VerifiedStudent; checkedOn: string } | null>(
@@ -127,8 +121,8 @@ export default function VerificationPage() {
             Document Verification
           </h1>
           <p className="mt-4 text-slate-300 max-w-2xl text-lg">
-            Check the authenticity of a student’s certificates using their student ID,
-            ID card number or passport number.
+            Check the authenticity of a student’s certificates using their ID document number
+            or passport number.
           </p>
         </div>
       </section>
@@ -159,7 +153,7 @@ export default function VerificationPage() {
             <div
               role="radiogroup"
               aria-label="Verification method"
-              className="grid grid-cols-3 gap-2 mb-5"
+              className="grid grid-cols-2 gap-2 mb-5"
             >
               {METHODS.map((m) => {
                 const on = m.id === method;
