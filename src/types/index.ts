@@ -11,6 +11,12 @@ export interface Course {
   framework?: 'industry';
   /** Masquée du site (catalogue, inscription) par l'administration ; reste connue des dossiers existants. */
   hidden?: boolean;
+  /**
+   * Identifiants des cours constituant les modules de cette formation (ex : BST).
+   * Quand ce champ est renseigné, l'ajout de la formation dans un dossier propose d'ajouter
+   * chaque module individuellement plutôt qu'un certificat groupé.
+   */
+  module_course_ids?: string[];
 }
 
 export interface Volunteer {

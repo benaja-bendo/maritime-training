@@ -55,6 +55,9 @@ export function parseCourse(x: unknown): Course | null {
   };
   if (o.framework === 'industry') course.framework = 'industry';
   if (o.hidden === true) course.hidden = true;
+  if (Array.isArray(o.module_course_ids)) {
+    course.module_course_ids = (o.module_course_ids as unknown[]).map(text).filter(Boolean);
+  }
   return course;
 }
 
@@ -92,7 +95,24 @@ let pending: Promise<Course[]> | null = null;
 
 /** Toutes les formations, masquées comprises. Une seule lecture par chargement de page. */
 export function loadCatalog(): Promise<Course[]> {
-  pending ??= fetchRemote().then((remote) => remote ?? COURSES);
+  pending ??= fetchRemote().then((remote) => {
+    if (!remote) return COURSES;
+    const existingIds = new Set(remote.map((c) => c.id));
+    const existingNames = new Set(remote.map((c) => c.name.toLowerCase().trim()));
+    const missing = COURSES.filter(
+      (c) => !existingIds.has(c.id) && !existingNames.has(c.name.toLowerCase().trim()),
+    );
+    const combined = [...remote, ...missing];
+    const bundleMap = new Map(
+      COURSES.filter((c) => c.module_course_ids?.length).map((c) => [c.id, c.module_course_ids]),
+    );
+    for (const c of combined) {
+      if (!c.module_course_ids && bundleMap.has(c.id)) {
+        c.module_course_ids = bundleMap.get(c.id);
+      }
+    }
+    return combined;
+  });
   return pending;
 }
 

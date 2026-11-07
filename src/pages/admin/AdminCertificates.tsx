@@ -1,6 +1,7 @@
-﻿import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Camera, FileUp, Plus, Save, Search, Sparkles, Trash2, Upload, X } from 'lucide-react';
 import { getAllCourses } from '@/lib/data';
+import { COURSES } from '@/data/courses';
 import { prepareIdPhoto, PhotoError } from '@/lib/image';
 import { getCountries } from '@/lib/countries';
 import {
@@ -151,7 +152,19 @@ export default function AdminCertificates({ email }: { email: string }) {
 
   useEffect(() => {
     refresh();
-    getAllCourses().then(setCatalog);
+    getAllCourses().then((courses) => {
+      const hasBST = courses.some(
+        (c) => c.name.toLowerCase().includes('basic safety training') || c.id === 'bst-bundle-stcw-vi-1',
+      );
+      if (!hasBST) {
+        const bst = COURSES.find((c) => c.id === 'bst-bundle-stcw-vi-1');
+        if (bst) {
+          setCatalog([bst, ...courses]);
+          return;
+        }
+      }
+      setCatalog(courses);
+    });
   }, [refresh]);
 
   const filtered = useMemo(() => {
@@ -258,21 +271,54 @@ export default function AdminCertificates({ email }: { email: string }) {
         : f,
     );
 
+  /** Crée et ajoute un ou plusieurs certificats (bundle BST → 4 modules). */
   const addCert = () => {
     const course = catalog.find((c) => c.id === addCourse);
     if (!course || !form) return;
-    const cert = newCertificate(course);
-    cert.certificate_number = getNextCertificateNumber(
-      defaultYear,
-      defaultMonth,
-      students,
-      form.certificates,
-    );
+
     const today = todayInPanama();
-    cert.completed_on = today.startsWith(String(defaultYear))
+    const completedOn = today.startsWith(String(defaultYear))
       ? today
       : `${defaultYear}-${defaultMonth}-01`;
-    setField('certificates', [...form.certificates, cert]);
+
+    const isBST =
+      course.id === 'bst-bundle-stcw-vi-1' ||
+      course.name.toLowerCase().includes('basic safety training');
+
+    const moduleIds =
+      course.module_course_ids && course.module_course_ids.length > 0
+        ? course.module_course_ids
+        : isBST
+          ? [
+              '2dacd0c1-0e5e-4b8d-ba76-3fbbfd24b942', // Elementary First Aid
+              'c296411c-a883-4c15-addf-6641fe92d3ab', // Personal Survival Techniques at Sea
+              'a6d1ab3b-3f0a-47c1-9733-f4deff52c7bc', // Fire Prevention And Fire Fighting
+              'dba61102-d2f7-4365-ac5c-d31478616373', // Personal Safety And Social Responsibilities
+            ]
+          : null;
+
+    const moduleCourses = moduleIds
+      ? moduleIds
+          .map((mid) => catalog.find((c) => c.id === mid))
+          .filter((c): c is NonNullable<typeof c> => c !== undefined)
+      : null;
+
+    const coursesToAdd = moduleCourses && moduleCourses.length > 0 ? moduleCourses : [course];
+    const newCerts = [...form.certificates];
+
+    for (const c of coursesToAdd) {
+      const cert = newCertificate(c);
+      cert.certificate_number = getNextCertificateNumber(
+        defaultYear,
+        defaultMonth,
+        students,
+        newCerts,
+      );
+      cert.completed_on = completedOn;
+      newCerts.push(cert);
+    }
+
+    setField('certificates', newCerts);
     setAddCourse('');
   };
 
@@ -489,9 +535,29 @@ export default function AdminCertificates({ email }: { email: string }) {
                       aria-label="Formation à ajouter"
                     >
                       <option value="">— Ajouter une formation —</option>
-                      {catalog.map((c) => (
-                        <option key={c.id} value={c.id}>{c.imo_number ? `${c.imo_number} · ` : ''}{c.name}</option>
-                      ))}
+                      {/* BST mis en avant au début de liste */}
+                      {catalog
+                        .filter(
+                          (c) =>
+                            c.id === 'bst-bundle-stcw-vi-1' ||
+                            c.name.toLowerCase().includes('basic safety training'),
+                        )
+                        .map((c) => (
+                          <option key={c.id} value={c.id}>
+                            ★ {c.name} (Pack 4 modules STCW)
+                          </option>
+                        ))}
+                      {catalog
+                        .filter(
+                          (c) =>
+                            c.id !== 'bst-bundle-stcw-vi-1' &&
+                            !c.name.toLowerCase().includes('basic safety training'),
+                        )
+                        .map((c) => (
+                          <option key={c.id} value={c.id}>
+                            {c.imo_number ? `${c.imo_number} · ` : ''}{c.name}
+                          </option>
+                        ))}
                     </select>
                   </div>
                   <button
@@ -499,10 +565,85 @@ export default function AdminCertificates({ email }: { email: string }) {
                     disabled={!addCourse}
                     className="btn-secondary !py-2 !px-3 text-sm disabled:opacity-50 inline-flex items-center gap-1.5 h-[38px]"
                   >
-                    <Plus className="w-4 h-4" /> Ajouter
+                    <Plus className="w-4 h-4" />
+                    {addCourse === 'bst-bundle-stcw-vi-1' ||
+                    catalog.find((c) => c.id === addCourse)?.name.toLowerCase().includes('basic safety training')
+                      ? 'Ajouter les 4 modules BST'
+                      : 'Ajouter'}
                   </button>
                 </div>
               </div>
+
+              {/* Énumération détaillée des modules quand Basic Safety Training (BST) est sélectionné */}
+              {(() => {
+                const sel = catalog.find((c) => c.id === addCourse);
+                if (!sel) return null;
+                const isBST =
+                  sel.id === 'bst-bundle-stcw-vi-1' ||
+                  sel.name.toLowerCase().includes('basic safety training');
+                if (!isBST && !sel.module_course_ids?.length) return null;
+
+                const moduleIds = sel.module_course_ids || [
+                  '2dacd0c1-0e5e-4b8d-ba76-3fbbfd24b942',
+                  'c296411c-a883-4c15-addf-6641fe92d3ab',
+                  'a6d1ab3b-3f0a-47c1-9733-f4deff52c7bc',
+                  'dba61102-d2f7-4365-ac5c-d31478616373',
+                ];
+
+                const modules = moduleIds
+                  .map((mid) => catalog.find((c) => c.id === mid))
+                  .filter((c): c is NonNullable<typeof c> => c !== undefined);
+
+                return (
+                  <div className="rounded-xl border border-amber-500/40 bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-[#0b1b30] p-4 space-y-3 shadow-md">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="p-1.5 rounded-lg bg-amber-500/20 text-[#e1b936]">
+                          <Sparkles className="w-4 h-4" />
+                        </span>
+                        <div>
+                          <h4 className="text-sm font-semibold text-white">
+                            Basic Safety Training (BST) — STCW A-VI/1
+                          </h4>
+                          <p className="text-xs text-amber-200/90">
+                            Cette formation se compose des <strong>4 modules</strong> suivants :
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-xs px-2.5 py-1 rounded-full bg-amber-400/20 text-amber-300 font-semibold border border-amber-400/30">
+                        4 modules STCW
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                      {modules.map((m, idx) => (
+                        <div
+                          key={m.id}
+                          className="flex items-center gap-3 rounded-lg border border-[#294769] bg-[#0b1b30]/90 p-3 text-xs text-slate-200 hover:border-amber-500/40 transition-colors"
+                        >
+                          <span className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center font-bold text-xs shrink-0 border border-amber-500/30">
+                            {idx + 1}
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            <div className="font-semibold text-white text-sm truncate">{m.name}</div>
+                            {m.imo_number && (
+                              <div className="text-[11px] font-mono text-slate-400">
+                                IMO Model Course {m.imo_number}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1 border-t border-[#294769]/60 text-[11px] text-slate-400">
+                      <span>
+                        💡 En cliquant sur « <strong>Ajouter les 4 modules BST</strong> », les 4 certificats modulaires seront automatiquement créés avec des numéros séquentiels uniques (départ 43289, année {defaultYear}, mois {defaultMonth}).
+                      </span>
+                    </div>
+                  </div>
+                );
+              })()}
 
               {form.certificates.length === 0 && <p className="text-sm text-slate-400">Aucun certificat.</p>}
 

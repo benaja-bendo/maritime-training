@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "maritime-training-app",
     "public": "dist",
     "ignore": [
       "firebase.json",

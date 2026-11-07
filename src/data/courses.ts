@@ -1,10 +1,29 @@
 import type { Course } from '@/types';
 
-// Catalogue des formations (63 cours), exporté de l'ancienne base de données.
+// Catalogue des formations (64 cours), exporté de l'ancienne base de données.
 // 51 formations STCW/MLC (liste du client) + 12 formations offshore et spécialisées (`framework: 'industry'`,
 // ajoutées le 2026-10-29 depuis la liste des fonctions) : leurs prix et leurs durées restent à fournir.
+// + 1 formation bundle BST (Basic Safety Training, ajoutée le 2026-11-04).
 // Source de vérité provisoire, en attendant la migration vers Firestore.
 export const COURSES: Course[] = [
+  // ─── Basic Safety Training (BST) ─── bundle de 4 modules STCW ───────────────
+  {
+    id: 'bst-bundle-stcw-vi-1',
+    imo_number: null,
+    name: 'Basic Safety Training (BST)',
+    duration_days: 7,
+    duration_hours: 57,
+    category: 'Basic Safety',
+    image_url: 'https://images.pexels.com/photos/28282296/pexels-photo-28282296.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    price_usd: 440,
+    // Modules STCW composant le BST (STCW Convention, Reg. VI/1)
+    module_course_ids: [
+      '2dacd0c1-0e5e-4b8d-ba76-3fbbfd24b942', // Elementary First Aid (1.13)
+      'c296411c-a883-4c15-addf-6641fe92d3ab', // Personal Survival Techniques at Sea (1.19)
+      'a6d1ab3b-3f0a-47c1-9733-f4deff52c7bc', // Fire Prevention And Fire Fighting (1.20)
+      'dba61102-d2f7-4365-ac5c-d31478616373', // Personal Safety And Social Responsibilities (1.21)
+    ],
+  },
   {
     id: '8aeede39-306f-44f6-b879-1baab649b54e',
     imo_number: null,
