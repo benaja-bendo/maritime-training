@@ -35,7 +35,7 @@ function validate(courses: Course[]): string | null {
     for (const [label, v] of [['prix', c.price_usd], ['durée en jours', c.duration_days], ['durée en heures', c.duration_hours]] as const) {
       if (v !== null && (!Number.isFinite(v) || v < 0)) return `« ${name} » : ${label} invalide.`;
     }
-    if (c.image_url && !/^(https:\/\/|\/)/.test(c.image_url)) return `« ${name} » : l’adresse de l’image doit commencer par https://.`;
+    if (c.image_url && !/^(https:\/\/|\/|data:image\/jpeg;base64,)/.test(c.image_url)) return `« ${name} » : l’adresse de l’image doit commencer par https://.`;
   }
   return null;
 }
@@ -287,7 +287,7 @@ export default function AdminCatalog({ email }: { email: string }) {
                             <input className={inputCls} value={c.imo_number ?? ''} maxLength={12} onChange={(e) => patch(c.id, { imo_number: e.target.value.trim() || null })} />
                           </Lbl>
                           <Lbl label="Image (adresse https://)" className="sm:col-span-2">
-                            <input className={inputCls} value={c.image_url ?? ''} maxLength={400} onChange={(e) => patch(c.id, { image_url: e.target.value.trim() || null })} />
+                            <input className={inputCls} value={c.image_url?.startsWith('data:') ? '(image téléversée)' : c.image_url ?? ''} readOnly={!!c.image_url?.startsWith('data:')} maxLength={400} onChange={(e) => patch(c.id, { image_url: e.target.value.trim() || null })} />
                           </Lbl>
                           <label className="sm:col-span-3 flex items-center gap-2 text-sm text-slate-300">
                             <input type="checkbox" className="accent-[#e1b936]" checked={c.framework === 'industry'} onChange={(e) => patch(c.id, { framework: e.target.checked ? 'industry' : undefined })} />

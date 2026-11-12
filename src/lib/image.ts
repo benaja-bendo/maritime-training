@@ -119,3 +119,43 @@ export async function prepareIdDocument(file: File): Promise<string> {
   }
   throw new PhotoError('The image is still too large after processing. Please try another one.');
 }
+
+// Image d'une formation téléversée depuis l'administration : recadrée en 3:2 et stockée en JPEG
+// dans le catalogue Firestore (un seul document de 1 Mo pour toutes les formations, lu à chaque
+// visite du site) : d'où des images légères, ~45 Ko au plus.
+const COURSE_MAX_CHARS = 60_000;
+
+export async function prepareCourseImage(file: File): Promise<string> {
+  if (!/^image\/(jpeg|png|webp)$/.test(file.type)) {
+    throw new PhotoError('Unsupported format. Please use a JPG, PNG or WebP image.');
+  }
+  if (file.size > MAX_INPUT_BYTES) throw new PhotoError('The image is larger than 8 MB.');
+  let bitmap: ImageBitmap;
+  try {
+    bitmap = await createImageBitmap(file);
+  } catch {
+    throw new PhotoError('This image could not be read. Please try another file.');
+  }
+  for (const [w, h] of [[640, 427], [480, 320], [360, 240]]) {
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) break;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, w, h);
+    const scale = Math.max(w / bitmap.width, h / bitmap.height);
+    const sw = w / scale;
+    const sh = h / scale;
+    ctx.drawImage(bitmap, (bitmap.width - sw) / 2, (bitmap.height - sh) / 2, sw, sh, 0, 0, w, h);
+    for (const quality of [0.8, 0.7, 0.6, 0.5]) {
+      const dataUrl = canvas.toDataURL('image/jpeg', quality);
+      if (dataUrl.length <= COURSE_MAX_CHARS) {
+        bitmap.close();
+        return dataUrl;
+      }
+    }
+  }
+  bitmap.close();
+  throw new PhotoError('The image is still too large after processing. Please try another one.');
+}

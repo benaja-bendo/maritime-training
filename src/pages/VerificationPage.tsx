@@ -112,6 +112,16 @@ export default function VerificationPage() {
   const certificates = result?.student.certificates ?? [];
   const today = result?.checkedOn ?? todayInPanama();
   const statusOf = (c: Certificate) => certificateStatus(c.valid_until, today, c.revoked);
+  // Les modules d'une formation groupée (BST) partagent un numéro : ils s'affichent ensemble.
+  const groups: { title: string | null; number: string | null; items: { c: Certificate; i: number }[] }[] = [];
+  certificates.forEach((c, i) => {
+    const g = c.bundle && c.certificate_number
+      ? groups.find((x) => x.title === c.bundle && x.number === c.certificate_number)
+      : undefined;
+    if (g) g.items.push({ c, i });
+    else if (c.bundle && c.certificate_number) groups.push({ title: c.bundle, number: c.certificate_number, items: [{ c, i }] });
+    else groups.push({ title: null, number: null, items: [{ c, i }] });
+  });
   const validCount = certificates.filter((c) => statusOf(c) === 'valid').length;
   const expiredCount = certificates.filter((c) => statusOf(c) === 'expired').length;
 
@@ -300,66 +310,83 @@ export default function VerificationPage() {
                     No course recorded for this student.
                   </p>
                 ) : (
-                  <ul className="space-y-3">
-                    {certificates.map((c, i) => {
-                      const status = statusOf(c);
-                      const expired = status !== 'valid';
-                      return (
-                        <li
-                          key={`${c.certificate_number ?? c.course_name}-${i}`}
-                          className={`flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-xl border transition-colors ${
-                            expired
-                              ? 'border-red-400/30 bg-red-500/5'
-                              : 'border-[#294769] hover:border-[#e1b936]/50 hover:bg-[#172f4e]'
-                          }`}
-                        >
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="font-semibold text-white">{c.course_name}</span>
-                              {c.imo_number && (
-                                <span className="px-2 py-0.5 rounded-md bg-white/10 text-slate-200 text-xs font-mono">
-                                  IMO {c.imo_number}
+                  <div className="space-y-5">
+                    {groups.map((g, gi) => {
+                      const items = (
+                        <ul className="space-y-3">
+                          {g.items.map(({ c, i }) => {
+                            const status = statusOf(c);
+                            const expired = status !== 'valid';
+                            return (
+                              <li
+                                key={`${c.certificate_number ?? c.course_name}-${c.course_name}-${i}`}
+                                className={`flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-xl border transition-colors ${
+                                  expired
+                                    ? 'border-red-400/30 bg-red-500/5'
+                                    : 'border-[#294769] hover:border-[#e1b936]/50 hover:bg-[#172f4e]'
+                                }`}
+                              >
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2 flex-wrap">
+                                    <span className="font-semibold text-white">{c.course_name}</span>
+                                    {c.imo_number && (
+                                      <span className="px-2 py-0.5 rounded-md bg-white/10 text-slate-200 text-xs font-mono">
+                                        IMO {c.imo_number}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-400">
+                                    <span className="inline-flex items-center gap-1">
+                                      <Calendar className="w-3.5 h-3.5" />
+                                      Completed on {formatDate(c.completed_on)}
+                                    </span>
+                                    {c.certificate_number && (
+                                      <span className="inline-flex items-center gap-1 font-mono">
+                                        <Hash className="w-3.5 h-3.5" />
+                                        {c.certificate_number}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <p className={`mt-1.5 text-sm ${expired ? 'text-red-300' : 'text-emerald-300/90'}`}>
+                                    {c.valid_until
+                                      ? expired
+                                        ? `Expired on ${formatDate(c.valid_until)}`
+                                        : `Valid until ${formatDate(c.valid_until)}`
+                                      : 'Valid, no expiry date'}
+                                  </p>
+                                </div>
+                                <span
+                                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold w-fit ${
+                                    expired
+                                      ? 'bg-red-500/10 text-red-300'
+                                      : 'bg-emerald-500/10 text-emerald-300'
+                                  }`}
+                                >
+                                  {expired ? (
+                                    <XCircle className="w-4 h-4" />
+                                  ) : (
+                                    <CheckCircle2 className="w-4 h-4" />
+                                  )}
+                                  {status === 'expired' ? 'Expired' : 'Valid'}
                                 </span>
-                              )}
-                            </div>
-                            <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-400">
-                              <span className="inline-flex items-center gap-1">
-                                <Calendar className="w-3.5 h-3.5" />
-                                Completed on {formatDate(c.completed_on)}
-                              </span>
-                              {c.certificate_number && (
-                                <span className="inline-flex items-center gap-1 font-mono">
-                                  <Hash className="w-3.5 h-3.5" />
-                                  {c.certificate_number}
-                                </span>
-                              )}
-                            </div>
-                            <p className={`mt-1.5 text-sm ${expired ? 'text-red-300' : 'text-emerald-300/90'}`}>
-                              {c.valid_until
-                                ? expired
-                                  ? `Expired on ${formatDate(c.valid_until)}`
-                                  : `Valid until ${formatDate(c.valid_until)}`
-                                : 'Valid, no expiry date'}
-                            </p>
-                          </div>
-                          <span
-                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold w-fit ${
-                              expired
-                                ? 'bg-red-500/10 text-red-300'
-                                : 'bg-emerald-500/10 text-emerald-300'
-                            }`}
-                          >
-                            {expired ? (
-                              <XCircle className="w-4 h-4" />
-                            ) : (
-                              <CheckCircle2 className="w-4 h-4" />
-                            )}
-                            {status === 'expired' ? 'Expired' : 'Valid'}
-                          </span>
-                        </li>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      );
+                      return g.title ? (
+                        <div key={`g-${gi}`} className="rounded-xl border border-[#e1b936]/40 p-4">
+                          <p className="font-semibold text-white">{g.title}</p>
+                          <p className="mb-3 text-sm text-slate-400">
+                            Certificate No. <span className="font-mono">{g.number}</span> · {g.items.length} modules
+                          </p>
+                          {items}
+                        </div>
+                      ) : (
+                        <div key={`g-${gi}`}>{items}</div>
                       );
                     })}
-                  </ul>
+                  </div>
                 )}
               </div>
 

@@ -81,6 +81,8 @@ export interface Certificate {
   completed_on: string;
   valid_until: string | null;
   revoked: boolean;
+  /** Formation groupée dont ce certificat est un module (ex. BST), sinon null. */
+  bundle: string | null;
 }
 
 export interface VerifiedStudent {

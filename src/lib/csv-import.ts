@@ -358,6 +358,7 @@ export function mergeParsed(
           revoked_reason: '',
           published_by: '',
           published_on: '',
+          bundle: '',
         };
         base.certificates.push(cert);
       }

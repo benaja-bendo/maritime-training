@@ -34,6 +34,7 @@ export const newCertificate = (course: {
   revoked_reason: '',
   published_by: '',
   published_on: '',
+  bundle: '',
 });
 
 // Ce qu'il faut renseigner avant qu'un certificat puisse être vu du public.

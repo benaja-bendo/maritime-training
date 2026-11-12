@@ -17,6 +17,7 @@ import { normalizeIdentifier, todayInPanama } from '@/lib/verification';
 import type { Course } from '@/types';
 import type { AdminCertificate, AdminStudent } from '@/types/admin';
 import { ErrorBox, Lbl, NoticeBox } from '@/pages/admin/ui';
+import CourseImagesPanel from '@/pages/admin/CourseImagesPanel';
 import { inputCls } from '@/pages/admin/ui-helpers';
 
 const STATUS_BADGE = {
@@ -306,14 +307,15 @@ export default function AdminCertificates({ email }: { email: string }) {
     const coursesToAdd = moduleCourses && moduleCourses.length > 0 ? moduleCourses : [course];
     const newCerts = [...form.certificates];
 
+    // BST : un seul numéro pour les 4 modules, qui le partagent (le portail les affiche ensemble).
+    const isBundle = coursesToAdd.length > 1;
+    const sharedNumber = getNextCertificateNumber(defaultYear, defaultMonth, students, newCerts);
     for (const c of coursesToAdd) {
       const cert = newCertificate(c);
-      cert.certificate_number = getNextCertificateNumber(
-        defaultYear,
-        defaultMonth,
-        students,
-        newCerts,
-      );
+      cert.certificate_number = isBundle
+        ? sharedNumber
+        : getNextCertificateNumber(defaultYear, defaultMonth, students, newCerts);
+      if (isBundle) cert.bundle = course.name;
       cert.completed_on = completedOn;
       newCerts.push(cert);
     }
@@ -329,6 +331,18 @@ export default function AdminCertificates({ email }: { email: string }) {
       'publication',
       'Certificat publié : il est maintenant visible dans la vérification.',
     );
+
+  /** Supprime un certificat publié ou révoqué (action journalisée, retrait immédiat du portail). */
+  const removeCert = (c: AdminCertificate) => {
+    if (!form) return;
+    const label = `« ${c.course_name} »${c.certificate_number ? ` n° ${c.certificate_number}` : ''}`;
+    if (!window.confirm(`Supprimer définitivement le certificat ${label} ? Il disparaîtra du portail de vérification. Action irréversible (inscrite au journal).`)) return;
+    return persist(
+      { ...form, certificates: form.certificates.filter((x) => x.id !== c.id) },
+      'suppression de certificat',
+      'Certificat supprimé.',
+    );
+  };
 
   const revoke = (id: string) =>
     form &&
@@ -410,6 +424,8 @@ export default function AdminCertificates({ email }: { email: string }) {
             onClose={() => setShowImport(false)}
           />
         )}
+
+        <CourseImagesPanel email={email} />
 
         {error && <ErrorBox>{error}</ErrorBox>}
         {notice && <NoticeBox>{notice}</NoticeBox>}
@@ -649,7 +665,7 @@ export default function AdminCertificates({ email }: { email: string }) {
 
               {form.certificates.map((c) => {
                 const missing = missingForPublish(c);
-                const locked = c.status !== 'draft';
+                const locked = c.status === 'revoked';
                 const badge = STATUS_BADGE[c.status];
                 const expired = isCertExpired(c);
                 const { year: certYear, month: certMonth } = getCertYearAndMonth(c, defaultYear, defaultMonth);
@@ -783,7 +799,10 @@ export default function AdminCertificates({ email }: { email: string }) {
                     )}
                     {c.status === 'published' && (
                       <div className="text-sm">
-                        <p className="text-xs text-slate-400 mb-2">Publié le {c.published_on} par {c.published_by}. Un certificat publié ne se modifie plus : on le révoque.</p>
+                        <p className="text-xs text-slate-400 mb-2">
+                          Publié le {c.published_on} par {c.published_by}. Les modifications sont visibles du public dès l’enregistrement de la fiche, et inscrites au journal.
+                          {c.bundle && ` Module de « ${c.bundle} » : les 4 modules partagent le même numéro.`}
+                        </p>
                         {revokeId === c.id ? (
                           <div className="flex flex-wrap gap-2 items-end">
                             <Lbl label="Motif de la révocation *" className="flex-1 min-w-[16rem]"><input className={inputCls} value={revokeReason} onChange={(e) => setRevokeReason(e.target.value)} /></Lbl>
@@ -791,11 +810,23 @@ export default function AdminCertificates({ email }: { email: string }) {
                             <button onClick={() => setRevokeId(null)} className="btn-secondary !py-2 !px-3 text-sm"><X className="w-4 h-4" /></button>
                           </div>
                         ) : (
-                          <button onClick={() => { setRevokeId(c.id); setRevokeReason(''); }} className="text-sm text-red-300 hover:underline">Révoquer ce certificat</button>
+                          <div className="flex flex-wrap gap-4">
+                            <button onClick={() => { setRevokeId(c.id); setRevokeReason(''); }} className="text-sm text-red-300 hover:underline">Révoquer ce certificat</button>
+                            <button disabled={busy} onClick={() => removeCert(c)} className="inline-flex items-center gap-1 text-sm text-red-300 hover:underline">
+                              <Trash2 className="w-4 h-4" /> Supprimer ce certificat
+                            </button>
+                          </div>
                         )}
                       </div>
                     )}
-                    {c.status === 'revoked' && <p className="text-xs text-red-300">Révoqué : {c.revoked_reason}</p>}
+                    {c.status === 'revoked' && (
+                      <div className="flex flex-wrap items-center gap-4">
+                        <p className="text-xs text-red-300">Révoqué : {c.revoked_reason}</p>
+                        <button disabled={busy} onClick={() => removeCert(c)} className="inline-flex items-center gap-1 text-sm text-red-300 hover:underline">
+                          <Trash2 className="w-4 h-4" /> Supprimer ce certificat
+                        </button>
+                      </div>
+                    )}
                   </div>
                 );
               })}

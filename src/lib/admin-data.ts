@@ -73,6 +73,7 @@ function toStudent(id: string, d: Record<string, unknown>): AdminStudent {
         revoked_reason: str(c.revoked_reason),
         published_by: str(c.published_by),
         published_on: str(c.published_on),
+        bundle: str(c.bundle),
       } satisfies AdminCertificate;
     }),
   };
@@ -109,10 +110,15 @@ function describeChanges(prev: AdminStudent | null, next: AdminStudent): string 
     else if (old.status !== c.status) {
       if (c.status === 'published') parts.push(`PUBLICATION ${label}`);
       else if (c.status === 'revoked') parts.push(`RÉVOCATION ${label} : ${c.revoked_reason}`);
-    } else if (JSON.stringify(old) !== JSON.stringify(c)) parts.push(`modification du brouillon ${label}`);
+    } else if (JSON.stringify(old) !== JSON.stringify(c)) {
+      parts.push(`${c.status === 'published' ? 'MODIFICATION du certificat publié' : 'modification du brouillon'} ${label}`);
+    }
     before.delete(c.id);
   }
-  for (const c of before.values()) parts.push(`suppression du brouillon « ${c.course_name} »`);
+  for (const c of before.values()) {
+    const l = `« ${c.course_name} »${c.certificate_number ? ` n° ${c.certificate_number}` : ''}`;
+    parts.push(c.status === 'draft' ? `suppression du brouillon ${l}` : `SUPPRESSION du certificat ${c.status === 'published' ? 'publié' : 'révoqué'} ${l}`);
+  }
   return (parts.join(' ; ') || 'enregistrement sans changement').slice(0, 1900);
 }
 
@@ -141,8 +147,15 @@ export async function saveAdminStudent(
   const stamped = next.certificates.map((c) => {
     const old = before.get(c.id);
     if (old && old.status !== 'draft') {
-      // Un certificat publié ou révoqué ne change plus, sauf sa révocation.
-      if (c.status === 'published' && old.status === 'published') return old;
+      // Un certificat publié reste modifiable (les mêmes contrôles qu'à la publication s'appliquent) ;
+      // un certificat révoqué ne change plus. Chaque modification est inscrite au journal.
+      if (c.status === 'published' && old.status === 'published') {
+        const missing = missingForPublish(c, today);
+        if (missing.length) {
+          throw new Error(`« ${c.course_name} » ne peut pas être enregistré : ${missing.join(', ')}.`);
+        }
+        return { ...c, published_by: old.published_by, published_on: old.published_on };
+      }
       if (c.status === 'revoked' && old.status === 'published') {
         if (!c.revoked_reason.trim()) throw new Error('Indiquez le motif de la révocation.');
         return { ...old, status: 'revoked' as const, revoked_reason: c.revoked_reason.trim() };
@@ -164,7 +177,10 @@ export async function saveAdminStudent(
   const code = next.student_code.trim() || newStudentCode();
   const merged: AdminStudent = { ...next, id, full_name, student_code: code, ...ident, certificates: stamped };
 
-  const isPublic = merged.certificates.some((c) => c.status !== 'draft');
+  // Une fiche déjà publique reste écrite (même sans certificat) pour que ses anciens certificats disparaissent.
+  const isPublic =
+    merged.certificates.some((c) => c.status !== 'draft') ||
+    (prev?.certificates ?? []).some((c) => c.status !== 'draft');
   const wanted = isPublic
     ? await Promise.all(
         (
@@ -181,10 +197,13 @@ export async function saveAdminStudent(
           .map(async ([method, v]) => ({ hash: await lookupKey(method as VerificationMethod, v) })),
       )
     : [];
+  // Un numéro partagé (BST : 4 modules) ne donne qu'une clé.
+  const seenHash = new Set<string>();
+  const wantedUnique = wanted.filter((w) => !seenHash.has(w.hash) && seenHash.add(w.hash));
 
   // Chaque clé doit pointer vers ce dossier ou être libre.
   const missingKeys: string[] = [];
-  for (const { hash } of wanted) {
+  for (const { hash } of wantedUnique) {
     const snap = await getDoc(doc(db, 'certificate_keys', hash));
     if (snap.exists() && snap.data().student_id !== id) {
       throw new Error('Un de ces numéros est déjà associé à un autre dossier.');
@@ -208,7 +227,7 @@ export async function saveAdminStudent(
         .filter(([, v]) => normalizeIdentifier(v))
         .map(async ([method, v]) => lookupKey(method as VerificationMethod, v)),
     );
-    const keep = new Set(wanted.map((w) => w.hash));
+    const keep = new Set(wantedUnique.map((w) => w.hash));
     obsolete.push(...old.filter((h) => !keep.has(h)));
   }
 
@@ -244,6 +263,7 @@ export async function saveAdminStudent(
           completed_on: c.completed_on,
           valid_until: c.valid_until || null,
           revoked: c.status === 'revoked',
+          bundle: c.bundle || null,
         })),
       audit_id: auditRef.id,
       updated_at: serverTimestamp(),
@@ -364,6 +384,7 @@ export async function saveCatalog(next: Course[], base: CatalogState, actor: str
     price_usd: c.price_usd,
     ...(c.framework ? { framework: c.framework } : {}),
     ...(c.hidden ? { hidden: true } : {}),
+    ...(c.module_course_ids?.length ? { module_course_ids: c.module_course_ids } : {}),
   }));
   await runTransaction(db, async (tx) => {
     const current = await tx.get(ref);

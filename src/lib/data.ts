@@ -79,6 +79,7 @@ export async function findStudent(
         completed_on: completed,
         valid_until: str(r.valid_until),
         revoked: r.revoked === true,
+        bundle: str(r.bundle),
       };
     })
     .filter((c): c is NonNullable<typeof c> => c !== null)

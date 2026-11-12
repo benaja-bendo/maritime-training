@@ -19,6 +19,8 @@ export interface AdminCertificate {
   revoked_reason: string;
   published_by: string;
   published_on: string;
+  /** Nom de la formation groupée (ex. BST) quand ce certificat est un module : tous partagent un même numéro. */
+  bundle: string;
 }
 
 // Dossier de travail du personnel (collection admin_students) : contient les brouillons,
