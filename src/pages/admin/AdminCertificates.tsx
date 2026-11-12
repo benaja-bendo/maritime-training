@@ -324,13 +324,38 @@ export default function AdminCertificates({ email }: { email: string }) {
     setAddCourse('');
   };
 
-  const publish = (id: string) =>
-    form &&
-    persist(
-      { ...form, certificates: form.certificates.map((c) => (c.id === id ? { ...c, status: 'published' } : c)) },
-      'publication',
-      'Certificat publié : il est maintenant visible dans la vérification.',
+  /** Les modules d'une formation groupée (BST) qui partagent le numéro de ce certificat. */
+  const siblingsOf = (c: AdminCertificate) =>
+    form && c.bundle
+      ? form.certificates.filter(
+          (x) => x.bundle === c.bundle && x.certificate_number === c.certificate_number && x.status !== 'revoked',
+        )
+      : [c];
+
+  /** Change le numéro ; pour un BST, les 4 modules gardent le même numéro. */
+  const setNumber = (c: AdminCertificate, value: string) => {
+    const ids = new Set(siblingsOf(c).filter((x) => x.status !== 'published' || x.id === c.id).map((x) => x.id));
+    ids.add(c.id);
+    setForm((f) =>
+      f ? { ...f, certificates: f.certificates.map((x) => (ids.has(x.id) ? { ...x, certificate_number: value } : x)) } : f,
     );
+  };
+
+  // Publier un module de BST publie les 4 d'un coup (ils partagent un numéro) ; tous doivent être complets.
+  const publish = (id: string) => {
+    if (!form) return;
+    const target = form.certificates.find((c) => c.id === id);
+    if (!target) return;
+    const ids = new Set(siblingsOf(target).filter((x) => x.status === 'draft').map((x) => x.id));
+    ids.add(id);
+    return persist(
+      { ...form, certificates: form.certificates.map((c) => (ids.has(c.id) ? { ...c, status: 'published' as const } : c)) },
+      'publication',
+      ids.size > 1
+        ? `${ids.size} certificats publiés (même numéro) : ils sont visibles dans la vérification.`
+        : 'Certificat publié : il est maintenant visible dans la vérification.',
+    );
+  };
 
   /** Supprime un certificat publié ou révoqué (action journalisée, retrait immédiat du portail). */
   const removeCert = (c: AdminCertificate) => {
@@ -664,7 +689,9 @@ export default function AdminCertificates({ email }: { email: string }) {
               {form.certificates.length === 0 && <p className="text-sm text-slate-400">Aucun certificat.</p>}
 
               {form.certificates.map((c) => {
-                const missing = missingForPublish(c);
+                const missing = siblingsOf(c)
+                  .filter((x) => x.status === 'draft' || x.id === c.id)
+                  .flatMap((x) => missingForPublish(x).map((m) => (x.id === c.id ? m : `${x.course_name} : ${m}`)));
                 const locked = c.status === 'revoked';
                 const badge = STATUS_BADGE[c.status];
                 const expired = isCertExpired(c);
@@ -692,7 +719,7 @@ export default function AdminCertificates({ email }: { email: string }) {
                             className={`${inputCls} font-mono`}
                             disabled={locked}
                             value={c.certificate_number}
-                            onChange={(e) => patchCert(c.id, { certificate_number: e.target.value })}
+                            onChange={(e) => setNumber(c, e.target.value)}
                             placeholder="ex: PMTS-2026-11-43289"
                           />
                           {!locked && (
@@ -706,7 +733,7 @@ export default function AdminCertificates({ email }: { email: string }) {
                                   form.certificates,
                                   c.id,
                                 );
-                                patchCert(c.id, { certificate_number: nextNum });
+                                setNumber(c, nextNum);
                               }}
                               className="btn-secondary !py-1.5 !px-2.5 text-xs inline-flex items-center gap-1 flex-shrink-0"
                               title={`Régénérer automatiquement un numéro unique pour ${certYear}-${certMonth}`}
