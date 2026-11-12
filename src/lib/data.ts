@@ -39,7 +39,7 @@ export async function getCourse(id: string): Promise<Course | null> {
 
 const str = (v: unknown): string | null => (typeof v === 'string' && v ? v : null);
 
-// Recherche un étudiant par identifiant, numéro de carte d'identité ou numéro de passeport.
+// Recherche un étudiant par numéro de certificat, de pièce d'identité ou de passeport.
 // Deux lectures par document exact (jamais de liste) : la clé (empreinte du numéro) renvoie
 // l'identifiant du dossier, puis le dossier public. Renvoie null si aucun dossier n'existe.
 export async function findStudent(
@@ -55,25 +55,7 @@ export async function findStudent(
 
   const key = await lookupKey(method, value);
   const alias = await withTimeout(getDoc(doc(db, 'certificate_keys', key)), 15_000);
-  let studentId = alias.exists() ? str(alias.data().student_id) : null;
-
-  // Fallbacks : recherche multi-clés si la clé principale n'a pas répondu
-  if (!studentId && method === 'national_id') {
-    // 1. Tenter par code étudiant
-    const keyStudent = await lookupKey('student_code', value);
-    const snapStudent = await withTimeout(getDoc(doc(db, 'certificate_keys', keyStudent)), 15_000);
-    if (snapStudent.exists()) {
-      studentId = str(snapStudent.data().student_id);
-    } else {
-      // 2. Tenter par numéro de certificat
-      const keyCert = await lookupKey('certificate_number', value);
-      const snapCert = await withTimeout(getDoc(doc(db, 'certificate_keys', keyCert)), 15_000);
-      if (snapCert.exists()) {
-        studentId = str(snapCert.data().student_id);
-      }
-    }
-  }
-
+  const studentId = alias.exists() ? str(alias.data().student_id) : null;
   if (!studentId) return null;
 
   const snap = await withTimeout(getDoc(doc(db, 'students', studentId)), 15_000);
@@ -100,9 +82,17 @@ export async function findStudent(
       };
     })
     .filter((c): c is NonNullable<typeof c> => c !== null)
+    // Les certificats révoqués ne sont jamais montrés au public (demande du client, 2026-11-12) :
+    // une personne qui n'a plus aucun certificat ni valide ni expiré est « introuvable ».
+    .filter((c) => !c.revoked)
     .sort((a, b) => b.completed_on.localeCompare(a.completed_on));
+  if (certificates.length === 0) return null;
 
-  return { student_code: code, full_name: fullName, certificates };
+  const photo = typeof d.photo_data_url === 'string' && d.photo_data_url.startsWith('data:image/jpeg;base64,')
+    ? d.photo_data_url
+    : null;
+
+  return { student_code: code, full_name: fullName, photo_data_url: photo, certificates };
 }
 
 // La vérification n'ouvre qu'une fois les certificats importés : le script d'import écrit
@@ -166,7 +156,9 @@ export async function submitRegistration(
       nationality: input.nationality,
       id_type: input.id_type,
       id_number: input.id_number.trim(),
+      birth_date: input.birth_date,
       photo_data_url: input.photo_data_url,
+      ...(input.id_document_data_url ? { id_document_data_url: input.id_document_data_url } : {}),
       ...(input.position ? { position: input.position } : {}),
       courses: input.courses.map((c) => ({
         id: c.id,

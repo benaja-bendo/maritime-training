@@ -64,3 +64,58 @@ export async function prepareIdPhoto(file: File): Promise<string> {
   }
   throw new PhotoError('The photo is still too large after processing. Please try another one.');
 }
+
+// Copie de la pièce d'identité ou du passeport (facultative) : PDF ou image. Elle est stockée dans le
+// document Firestore (limite 1 Mo, photo comprise), d'où le plafond de 500 Ko après traitement.
+const DOC_MAX_BYTES = 500 * 1024;
+const DOC_MAX_SIDE = 1600;
+
+function readAsDataUrl(file: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(new PhotoError('This file could not be read. Please try another one.'));
+    reader.readAsDataURL(file);
+  });
+}
+
+export async function prepareIdDocument(file: File): Promise<string> {
+  if (file.type === 'application/pdf') {
+    if (file.size > DOC_MAX_BYTES) {
+      throw new PhotoError(
+        'This PDF is larger than 500 KB. Compress it, or upload a photo or scan as an image (JPG, PNG or WebP): images are reduced automatically.',
+      );
+    }
+    return readAsDataUrl(file);
+  }
+  if (!/^image\/(jpeg|png|webp)$/.test(file.type)) {
+    throw new PhotoError('Unsupported format. Please use a PDF, JPG, PNG or WebP file.');
+  }
+  if (file.size > MAX_INPUT_BYTES) {
+    throw new PhotoError('The file is larger than 8 MB. Please choose a smaller one.');
+  }
+  let bitmap: ImageBitmap;
+  try {
+    bitmap = await createImageBitmap(file);
+  } catch {
+    throw new PhotoError('This image could not be read. Please try another file.');
+  }
+  const scale = Math.min(1, DOC_MAX_SIDE / Math.max(bitmap.width, bitmap.height));
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.round(bitmap.width * scale);
+  canvas.height = Math.round(bitmap.height * scale);
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    bitmap.close();
+    throw new PhotoError('Your browser cannot process this image.');
+  }
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+  for (const quality of [0.85, 0.7, 0.55, 0.4]) {
+    const dataUrl = canvas.toDataURL('image/jpeg', quality);
+    if (dataUrl.length <= Math.floor((DOC_MAX_BYTES * 4) / 3)) return dataUrl;
+  }
+  throw new PhotoError('The image is still too large after processing. Please try another one.');
+}

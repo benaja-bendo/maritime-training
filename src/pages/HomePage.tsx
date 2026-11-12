@@ -41,7 +41,7 @@ export default function HomePage() {
                 icon: ShieldCheck,
                 to: '/verification',
                 title: 'Document verification',
-                desc: 'Enter the ID document number or passport number to look up certificates and their status.',
+                desc: 'Enter the certificate number, ID card number or passport number to look up certificates and their status.',
                 cta: 'Verify a document',
               },
               {
@@ -101,7 +101,7 @@ export default function HomePage() {
           </h2>
           <p className="mt-4 text-slate-300">
             Look up a student’s courses and the status of their certificates
-            (valid or expired) using their ID document number or passport.
+            (valid or expired) using their certificate number, ID card or passport.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link to="/verification" className="btn-primary">

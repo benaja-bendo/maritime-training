@@ -8,7 +8,7 @@ import {
 } from '@/lib/data';
 import { BST_PACK, computeQuote, depositLabel, findBstPack, formatUsd } from '@/lib/pricing';
 import { formatDays } from '@/lib/format';
-import { prepareIdPhoto, PhotoError } from '@/lib/image';
+import { prepareIdDocument, prepareIdPhoto, PhotoError } from '@/lib/image';
 import { getCountries } from '@/lib/countries';
 import { POSITION_GROUPS, getPosition, resolveRef, resolveRefs } from '@/data/positions';
 import { SITE } from '@/config/site';
@@ -19,6 +19,7 @@ import {
   Globe,
   FileText,
   Camera,
+  CalendarDays,
   Search,
   Loader2,
   Send,
@@ -57,9 +58,12 @@ const EMPTY_FORM = {
   first_names: '',
   email: '',
   nationality: '',
+  birth_date: '',
   id_type: 'national_id' as IdType,
   id_number: '',
 };
+
+const todayIso = () => new Date().toISOString().slice(0, 10);
 
 function Field({
   label,
@@ -120,6 +124,8 @@ export default function RegistrationPage() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [photo, setPhoto] = useState<string | null>(null);
   const [photoError, setPhotoError] = useState<string | null>(null);
+  const [idDoc, setIdDoc] = useState<{ name: string; dataUrl: string } | null>(null);
+  const [idDocError, setIdDocError] = useState<string | null>(null);
   const [consent, setConsent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -224,6 +230,19 @@ export default function RegistrationPage() {
     }
   };
 
+  const onIdDoc = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    setIdDocError(null);
+    try {
+      setIdDoc({ name: file.name, dataUrl: await prepareIdDocument(file) });
+    } catch (err) {
+      setIdDoc(null);
+      setIdDocError(err instanceof PhotoError ? err.message : 'This file could not be processed.');
+    }
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (chosen.length === 0) {
@@ -238,12 +257,17 @@ export default function RegistrationPage() {
       setError('Add your ID photo.');
       return;
     }
+    if (!/^(19|20)\d{2}-\d{2}-\d{2}$/.test(form.birth_date) || form.birth_date > todayIso()) {
+      setError('Enter a valid date of birth.');
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
       const receipt = await submitRegistration({
         ...form,
         photo_data_url: photo,
+        ...(idDoc ? { id_document_data_url: idDoc.dataUrl } : {}),
         position: position?.label,
         courses: chosen.map(({ id, name, imo_number, price_usd }) => ({
           id,
@@ -435,6 +459,19 @@ export default function RegistrationPage() {
                           placeholder="name@example.com"
                         />
                       </Field>
+                      <Field label="Date of birth *" htmlFor="birth_date" icon={CalendarDays}>
+                        <input
+                          id="birth_date"
+                          type="date"
+                          required
+                          min="1900-01-01"
+                          max={todayIso()}
+                          autoComplete="bday"
+                          value={form.birth_date}
+                          onChange={(e) => update('birth_date', e.target.value)}
+                          className="input-field pl-10"
+                        />
+                      </Field>
                       <Field label="Nationality *" htmlFor="nationality" icon={Globe}>
                         <select
                           id="nationality"
@@ -528,6 +565,41 @@ export default function RegistrationPage() {
                             <p className="mt-2 text-red-300">{photoError}</p>
                           )}
                         </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-6">
+                      <span className="block text-sm font-medium text-slate-200 mb-1.5">
+                        Copy of your {form.id_type === 'passport' ? 'passport' : 'ID card'} (optional)
+                      </span>
+                      <div className="text-sm text-slate-300">
+                        <label className="btn-secondary cursor-pointer">
+                          <FileText className="w-4 h-4" />
+                          {idDoc ? 'Change file' : 'Choose a file'}
+                          <input
+                            type="file"
+                            accept="application/pdf,image/jpeg,image/png,image/webp"
+                            onChange={onIdDoc}
+                            className="sr-only"
+                          />
+                        </label>
+                        {idDoc && (
+                          <span className="ml-3 inline-flex items-center gap-2 text-slate-200">
+                            {idDoc.name}
+                            <button
+                              type="button"
+                              onClick={() => setIdDoc(null)}
+                              className="text-slate-400 hover:text-white"
+                              aria-label="Remove the file"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </span>
+                        )}
+                        <p className="mt-3 text-slate-400">
+                          PDF up to 500 KB, or a JPG, PNG or WebP scan or photo (reduced automatically).
+                        </p>
+                        {idDocError && <p className="mt-2 text-red-300">{idDocError}</p>}
                       </div>
                     </div>
                   </div>
@@ -781,7 +853,7 @@ export default function RegistrationPage() {
                       className="mt-0.5 h-4 w-4 shrink-0 accent-[#e1b936]"
                     />
                     <span>
-                      I agree that my personal data (identity, ID document number, photo)
+                      I agree that my personal data (identity, date of birth, ID document number, photo and any ID copy)
                       may be used by {SITE.name} to process my registration, prepare my
                       training documents and enable the online verification of my
                       certificates (name and courses taken). *

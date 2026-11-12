@@ -26,10 +26,16 @@ const METHODS: {
   placeholder: string;
 }[] = [
   {
+    id: 'certificate_number',
+    label: 'Certificate No',
+    field: 'Certificate number',
+    placeholder: 'e.g. PMTS-2026-11-43289',
+  },
+  {
     id: 'national_id',
-    label: 'ID Document No',
-    field: 'ID Document number',
-    placeholder: 'e.g. 8-123-456 or document number',
+    label: 'ID card',
+    field: 'ID card number',
+    placeholder: 'e.g. 8-123-456',
   },
   {
     id: 'passport',
@@ -52,7 +58,7 @@ function formatDate(iso: string): string {
 }
 
 export default function VerificationPage() {
-  const [method, setMethod] = useState<VerificationMethod>('national_id');
+  const [method, setMethod] = useState<VerificationMethod>('certificate_number');
   const [value, setValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{ student: VerifiedStudent; checkedOn: string } | null>(
@@ -108,7 +114,6 @@ export default function VerificationPage() {
   const statusOf = (c: Certificate) => certificateStatus(c.valid_until, today, c.revoked);
   const validCount = certificates.filter((c) => statusOf(c) === 'valid').length;
   const expiredCount = certificates.filter((c) => statusOf(c) === 'expired').length;
-  const revokedCount = certificates.filter((c) => statusOf(c) === 'revoked').length;
 
   return (
     <div className="pt-16 md:pt-20">
@@ -121,8 +126,8 @@ export default function VerificationPage() {
             Document Verification
           </h1>
           <p className="mt-4 text-slate-300 max-w-2xl text-lg">
-            Check the authenticity of a student’s certificates using their ID document number
-            or passport number.
+            Check the authenticity of a student’s certificates using their certificate number,
+            ID card number or passport number.
           </p>
         </div>
       </section>
@@ -153,7 +158,7 @@ export default function VerificationPage() {
             <div
               role="radiogroup"
               aria-label="Verification method"
-              className="grid grid-cols-2 gap-2 mb-5"
+              className="grid grid-cols-3 gap-2 mb-5"
             >
               {METHODS.map((m) => {
                 const on = m.id === method;
@@ -206,7 +211,7 @@ export default function VerificationPage() {
 
             <p className="mt-4 flex items-start gap-2 text-xs text-slate-400">
               <Lock className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-              Only the name, the courses taken and their status are shown. The number you
+              Only the name, photo, courses taken and their status are shown. The number you
               enter is not stored by this site.
             </p>
           </form>
@@ -246,9 +251,17 @@ export default function VerificationPage() {
             <div className="mt-6 space-y-6">
               <div className="card p-6 sm:p-8 bg-gradient-to-br from-[#08182d] to-[#172f4e]">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-                  <div className="flex items-center justify-center w-20 h-20 rounded-2xl bg-white/10 text-[#e1b936] shrink-0">
-                    <User className="w-9 h-9" />
-                  </div>
+                  {result.student.photo_data_url ? (
+                    <img
+                      src={result.student.photo_data_url}
+                      alt={`Photo of ${result.student.full_name}`}
+                      className="w-28 aspect-[7/9] rounded-lg object-cover border border-[#385371] shrink-0"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center w-20 h-20 rounded-2xl bg-white/10 text-[#e1b936] shrink-0">
+                      <User className="w-9 h-9" />
+                    </div>
+                  )}
                   <div className="flex-1">
                     <div className="flex items-center gap-2 text-[#e1b936] text-sm font-medium">
                       <BadgeCheck className="w-4 h-4" />
@@ -277,11 +290,6 @@ export default function VerificationPage() {
                     {expiredCount > 0 && (
                       <span className="px-3 py-1 rounded-full bg-red-500/10 text-red-300">
                         {expiredCount} expired
-                      </span>
-                    )}
-                    {revokedCount > 0 && (
-                      <span className="px-3 py-1 rounded-full bg-red-500/10 text-red-300">
-                        {revokedCount} revoked
                       </span>
                     )}
                   </div>
@@ -327,9 +335,7 @@ export default function VerificationPage() {
                               )}
                             </div>
                             <p className={`mt-1.5 text-sm ${expired ? 'text-red-300' : 'text-emerald-300/90'}`}>
-                              {status === 'revoked'
-                                ? 'This certificate has been revoked: it is no longer valid.'
-                                : c.valid_until
+                              {c.valid_until
                                 ? expired
                                   ? `Expired on ${formatDate(c.valid_until)}`
                                   : `Valid until ${formatDate(c.valid_until)}`
@@ -348,7 +354,7 @@ export default function VerificationPage() {
                             ) : (
                               <CheckCircle2 className="w-4 h-4" />
                             )}
-                            {status === 'revoked' ? 'Revoked' : status === 'expired' ? 'Expired' : 'Valid'}
+                            {status === 'expired' ? 'Expired' : 'Valid'}
                           </span>
                         </li>
                       );

@@ -94,6 +94,16 @@ export default function AdminRegistrations({ email }: { email: string }) {
                       {r.photo_data_url && <img src={r.photo_data_url} alt="Photo d’identité" className="w-28 aspect-[7/9] object-cover rounded-sm border border-[#385371]" />}
                       <p className="text-slate-200">{r.email}</p>
                       <p className="text-slate-300">{r.nationality}</p>
+                      {r.birth_date && <p className="text-slate-300">Né(e) le : <span className="text-white">{r.birth_date}</span></p>}
+                      {r.id_document_data_url && (
+                        <a
+                          href={r.id_document_data_url}
+                          download={`${r.reference}-piece-identite.${r.id_document_data_url.startsWith('data:application/pdf') ? 'pdf' : 'jpg'}`}
+                          className="inline-block text-[#e1b936] underline"
+                        >
+                          Télécharger la copie de la pièce
+                        </a>
+                      )}
                       <p className="text-slate-300">{r.id_type === 'passport' ? 'Passeport' : 'Carte d’identité'} : <span className="font-mono">{r.id_number}</span></p>
                       {r.position && <p className="text-slate-300">Fonction : <span className="text-white">{r.position}</span></p>}
                     </div>

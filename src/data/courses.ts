@@ -1,11 +1,122 @@
 import type { Course } from '@/types';
 
-// Catalogue des formations (64 cours), exporté de l'ancienne base de données.
+// Catalogue des formations (74 cours), exporté de l'ancienne base de données.
 // 51 formations STCW/MLC (liste du client) + 12 formations offshore et spécialisées (`framework: 'industry'`,
 // ajoutées le 2026-10-29 depuis la liste des fonctions) : leurs prix et leurs durées restent à fournir.
 // + 1 formation bundle BST (Basic Safety Training, ajoutée le 2026-11-04).
 // Source de vérité provisoire, en attendant la migration vers Firestore.
 export const COURSES: Course[] = [
+  // ─── Management HSE et offshore, ajoutés le 2026-11-12 (tarifs du client, une entrée par mode) ───
+  {
+    id: 'baa0b668-4f3c-498f-a4c9-8af311df6832',
+    imo_number: null,
+    name: 'NEBOSH IGC (International General Certificate) – Online',
+    duration_days: 10,
+    duration_hours: 80,
+    category: 'HSE Management',
+    image_url: 'https://images.pexels.com/photos/16420237/pexels-photo-16420237.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    price_usd: 950,
+    framework: 'industry',
+  },
+  {
+    id: '20f22a81-4162-43d0-aa3f-606493be9e4b',
+    imo_number: null,
+    name: 'NEBOSH IGC (International General Certificate) – In person',
+    duration_days: 12,
+    duration_hours: 96,
+    category: 'HSE Management',
+    image_url: 'https://images.pexels.com/photos/34965713/pexels-photo-34965713.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    price_usd: 1500,
+    framework: 'industry',
+  },
+  {
+    id: 'fc722491-658d-4bbb-a098-ca1e52e43635',
+    imo_number: null,
+    name: 'ISM Code Internal Auditor – Online',
+    duration_days: 0.5,
+    duration_hours: 4,
+    category: 'HSE Management',
+    image_url: 'https://images.pexels.com/photos/4974912/pexels-photo-4974912.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    price_usd: 165,
+    framework: 'industry',
+  },
+  {
+    id: 'fa8eae50-04cd-47f0-b4b3-ff38eb85dd67',
+    imo_number: null,
+    name: 'ISM Code Internal Auditor – In person',
+    duration_days: 2,
+    duration_hours: 16,
+    category: 'HSE Management',
+    image_url: 'https://images.pexels.com/photos/8989470/pexels-photo-8989470.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    price_usd: 550,
+    framework: 'industry',
+  },
+  {
+    id: '6f2a0f83-7f4a-49e3-a9cb-897982c75217',
+    imo_number: null,
+    name: 'ISO 45001 / 14001 Internal Auditor – Online',
+    duration_days: 3,
+    duration_hours: 24,
+    category: 'HSE Management',
+    image_url: 'https://images.pexels.com/photos/7971328/pexels-photo-7971328.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    price_usd: 450,
+    framework: 'industry',
+  },
+  {
+    id: 'd5f6ead4-638d-4d41-8d83-ff7c9b45c01a',
+    imo_number: null,
+    name: 'ISO 45001 / 14001 Internal Auditor – In person',
+    duration_days: 3,
+    duration_hours: 24,
+    category: 'HSE Management',
+    image_url: 'https://images.pexels.com/photos/7178310/pexels-photo-7178310.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    price_usd: 700,
+    framework: 'industry',
+  },
+  {
+    id: '3e4f315f-8547-4e2d-afb5-f642fa463842',
+    imo_number: null,
+    name: 'Risk Assessment, JSA & Permit to Work (PTW) – Online',
+    duration_days: 1,
+    duration_hours: 8,
+    category: 'HSE Management',
+    image_url: 'https://images.pexels.com/photos/7821675/pexels-photo-7821675.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    price_usd: 200,
+    framework: 'industry',
+  },
+  {
+    id: '56d90c38-a637-476a-9ffa-285a9fe5942f',
+    imo_number: null,
+    name: 'Risk Assessment, JSA & Permit to Work (PTW) – In person',
+    duration_days: 1,
+    duration_hours: 8,
+    category: 'HSE Management',
+    image_url: 'https://images.pexels.com/photos/209717/pexels-photo-209717.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    price_usd: 350,
+    framework: 'industry',
+  },
+  {
+    id: '70eb7900-41df-4f86-b61c-0a995bb243a4',
+    imo_number: null,
+    name: 'H2S Awareness – Online',
+    duration_days: 0.5,
+    duration_hours: 4,
+    category: 'Offshore',
+    image_url: 'https://images.pexels.com/photos/14844017/pexels-photo-14844017.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    price_usd: 100,
+    framework: 'industry',
+  },
+  {
+    id: '05c461cd-3e1c-4aa6-bce9-4ead095d05b4',
+    imo_number: null,
+    name: 'H2S Awareness – In person',
+    duration_days: 1,
+    duration_hours: 8,
+    category: 'Offshore',
+    image_url: 'https://images.pexels.com/photos/14664519/pexels-photo-14664519.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    price_usd: 180,
+    framework: 'industry',
+  },
   // ─── Basic Safety Training (BST) ─── bundle de 4 modules STCW ───────────────
   {
     id: 'bst-bundle-stcw-vi-1',
@@ -14,7 +125,7 @@ export const COURSES: Course[] = [
     duration_days: 7,
     duration_hours: 57,
     category: 'Basic Safety',
-    image_url: 'https://images.pexels.com/photos/28282296/pexels-photo-28282296.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    image_url: 'https://images.pexels.com/photos/28703860/pexels-photo-28703860.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
     price_usd: 440,
     // Modules STCW composant le BST (STCW Convention, Reg. VI/1)
     module_course_ids: [
@@ -101,7 +212,7 @@ export const COURSES: Course[] = [
     duration_days: null,
     duration_hours: null,
     category: 'Offshore',
-    image_url: null,
+    image_url: 'https://images.pexels.com/photos/14367433/pexels-photo-14367433.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
     price_usd: null, // prix et durée à confirmer par le client
     framework: 'industry',
   },
@@ -129,11 +240,11 @@ export const COURSES: Course[] = [
     id: '34e1e9a4-557a-452a-b036-8a3748c9fd07',
     imo_number: null,
     name: 'BOSIET with EBS / CA-EBS (Offshore Survival)',
-    duration_days: null,
-    duration_hours: null,
+    duration_days: 3,
+    duration_hours: 21,
     category: 'Offshore',
-    image_url: null,
-    price_usd: null, // prix et durée à confirmer par le client
+    image_url: 'https://images.pexels.com/photos/32651303/pexels-photo-32651303.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    price_usd: 1150, // in person only (centre avec simulateur), tarif client du 2026-11
     framework: 'industry',
   },
   {
@@ -153,7 +264,7 @@ export const COURSES: Course[] = [
     duration_days: null,
     duration_hours: null,
     category: 'Communications',
-    image_url: null,
+    image_url: 'https://images.pexels.com/photos/5161816/pexels-photo-5161816.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
     price_usd: null, // prix et durée à confirmer par le client
     framework: 'industry',
   },
@@ -234,7 +345,7 @@ export const COURSES: Course[] = [
     duration_days: null,
     duration_hours: null,
     category: 'Catering',
-    image_url: null,
+    image_url: 'https://images.pexels.com/photos/5779747/pexels-photo-5779747.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
     price_usd: null, // prix et durée à confirmer par le client
     framework: 'industry',
   },
@@ -255,7 +366,7 @@ export const COURSES: Course[] = [
     duration_days: null,
     duration_hours: null,
     category: 'Specialised Operations',
-    image_url: null,
+    image_url: 'https://images.pexels.com/photos/27433337/pexels-photo-27433337.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
     price_usd: null, // prix et durée à confirmer par le client
     framework: 'industry',
   },
@@ -266,7 +377,7 @@ export const COURSES: Course[] = [
     duration_days: null,
     duration_hours: null,
     category: 'Offshore',
-    image_url: null,
+    image_url: 'https://images.pexels.com/photos/35979809/pexels-photo-35979809.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
     price_usd: null, // prix et durée à confirmer par le client
     framework: 'industry',
   },
@@ -277,7 +388,7 @@ export const COURSES: Course[] = [
     duration_days: null,
     duration_hours: null,
     category: 'Specialised Operations',
-    image_url: null,
+    image_url: 'https://images.pexels.com/photos/7869244/pexels-photo-7869244.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
     price_usd: null, // prix et durée à confirmer par le client
     framework: 'industry',
   },
@@ -288,7 +399,7 @@ export const COURSES: Course[] = [
     duration_days: null,
     duration_hours: null,
     category: 'Offshore',
-    image_url: null,
+    image_url: 'https://images.pexels.com/photos/7910062/pexels-photo-7910062.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
     price_usd: null, // prix et durée à confirmer par le client
     framework: 'industry',
   },
@@ -339,7 +450,7 @@ export const COURSES: Course[] = [
     duration_days: null,
     duration_hours: null,
     category: 'Offshore',
-    image_url: null,
+    image_url: 'https://images.pexels.com/photos/15970032/pexels-photo-15970032.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
     price_usd: null, // prix et durée à confirmer par le client
     framework: 'industry',
   },
@@ -350,7 +461,7 @@ export const COURSES: Course[] = [
     duration_days: null,
     duration_hours: null,
     category: 'Specialised Operations',
-    image_url: null,
+    image_url: 'https://images.pexels.com/photos/33270055/pexels-photo-33270055.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
     price_usd: null, // prix et durée à confirmer par le client
     framework: 'industry',
   },
@@ -361,7 +472,7 @@ export const COURSES: Course[] = [
     duration_days: null,
     duration_hours: null,
     category: 'Specialised Operations',
-    image_url: null,
+    image_url: 'https://images.pexels.com/photos/39486752/pexels-photo-39486752.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
     price_usd: null, // prix et durée à confirmer par le client
     framework: 'industry',
   },
@@ -372,7 +483,7 @@ export const COURSES: Course[] = [
     duration_days: null,
     duration_hours: null,
     category: 'Offshore',
-    image_url: null,
+    image_url: 'https://images.pexels.com/photos/11139595/pexels-photo-11139595.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
     price_usd: null, // prix et durée à confirmer par le client
     framework: 'industry',
   },

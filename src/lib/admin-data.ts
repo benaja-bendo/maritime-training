@@ -173,7 +173,7 @@ export async function saveAdminStudent(
             ['national_id', ident.national_id],
             ['passport', ident.passport],
             ...merged.certificates
-              .filter((c) => c.status !== 'draft' && c.certificate_number)
+              .filter((c) => c.status === 'published' && c.certificate_number)
               .map((c) => ['certificate_number', c.certificate_number] as const),
           ] as const
         )
@@ -232,8 +232,11 @@ export async function saveAdminStudent(
     batch.set(doc(db, 'students', id), {
       student_code: code,
       full_name,
+      // Photo affichée sur le portail de vérification (accord du client, 2026-11-12).
+      photo_data_url: merged.photo_data_url || null,
+      // Les certificats révoqués ne sont plus publiés : le portail ne les montre pas.
       certificates: merged.certificates
-        .filter((c) => c.status !== 'draft')
+        .filter((c) => c.status === 'published')
         .map((c) => ({
           course_name: c.course_name,
           imo_number: c.imo_number,
@@ -274,7 +277,9 @@ export async function listRegistrations(): Promise<AdminRegistration[]> {
       nationality: str(x.nationality),
       id_type: x.id_type === 'passport' ? 'passport' : 'national_id',
       id_number: str(x.id_number),
+      birth_date: str(x.birth_date),
       photo_data_url: str(x.photo_data_url),
+      id_document_data_url: str(x.id_document_data_url),
       position: str(x.position),
       courses: courses.map((c) => {
         const r = (c ?? {}) as Record<string, unknown>;

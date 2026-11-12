@@ -52,7 +52,11 @@ export interface RegistrationInput {
   nationality: string;
   id_type: IdType;
   id_number: string;
+  /** Date de naissance, AAAA-MM-JJ (obligatoire). */
+  birth_date: string;
   photo_data_url: string;
+  /** Copie de la pièce (PDF ou image JPEG), facultative, en data URL. */
+  id_document_data_url?: string;
   /** Fonction à bord choisie (libellé), facultatif. */
   position?: string;
   courses: Pick<Course, 'id' | 'name' | 'imo_number' | 'price_usd'>[];
@@ -82,5 +86,7 @@ export interface Certificate {
 export interface VerifiedStudent {
   student_code: string;
   full_name: string;
+  /** Photo d'identité (JPEG 420×540) enregistrée par le personnel, si elle existe. */
+  photo_data_url: string | null;
   certificates: Certificate[];
 }

@@ -59,7 +59,9 @@ export interface AdminRegistration {
   nationality: string;
   id_type: IdType;
   id_number: string;
+  birth_date: string;
   photo_data_url: string;
+  id_document_data_url: string;
   position: string;
   courses: { id: string; name: string; imo_number: string | null; price_usd: number | null }[];
   quote_total_usd: number | null;

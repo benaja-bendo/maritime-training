@@ -34,6 +34,7 @@ const CATEGORY_ORDER = [
   'Leadership',
   'Crowd & Crisis',
   'Yacht',
+  'HSE Management',
   'Offshore',
   'Specialised Operations',
 ];
