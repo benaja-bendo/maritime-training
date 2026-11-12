@@ -8,7 +8,7 @@ import type {
 } from '@/types';
 import { loadCatalog } from '@/lib/catalog';
 import { computeQuote, DEPOSIT_RATE } from '@/lib/pricing';
-import { lookupKey } from '@/lib/verification';
+import { lookupKey, normalizeIdentifier } from '@/lib/verification';
 import type { VerificationMethod } from '@/lib/verification';
 
 // Couche d'accès aux données : les pages n'importent que ce fichier.
@@ -86,6 +86,14 @@ export async function findStudent(
     // Les certificats révoqués ne sont jamais montrés au public (demande du client, 2026-11-12) :
     // une personne qui n'a plus aucun certificat ni valide ni expiré est « introuvable ».
     .filter((c) => !c.revoked)
+    // Par numéro de certificat : uniquement le certificat qui porte ce numéro (pour le BST, ses 4
+    // modules partagent le numéro). Par pièce d'identité ou passeport : tous les cours de la personne.
+    .filter(
+      (c) =>
+        method !== 'certificate_number' ||
+        (c.certificate_number !== null &&
+          normalizeIdentifier(c.certificate_number) === normalizeIdentifier(value)),
+    )
     .sort((a, b) => b.completed_on.localeCompare(a.completed_on));
   if (certificates.length === 0) return null;
 
