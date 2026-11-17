@@ -10,7 +10,8 @@ interface SiteInfo {
   address: string | null;
   phone: string | null;
   whatsapp: string | null;
-  email: string | null;
+  /** Adresses e-mail de contact. */
+  emails: string[];
   // Texte expliquant comment régler l'avance (virement, mobile money, etc.).
   paymentInstructions: string | null;
 }
@@ -23,9 +24,7 @@ export const SITE: SiteInfo = {
     'Panama’s leading maritime training centre – offering IMO-compliant, STCW-certified programmes for officers, cadets and seafarers around the world.',
   hours: 'Monday – Friday, 08:00 – 17:00 (EST)',
   address: 'Panama City',
-  // En attente. Le client a fourni info@pmts.online, mais ce domaine appartient à un tiers
-  // (enregistré en décembre 2025). Le domaine du client est p-mts.online (avec tiret).
-  email: null,
+  emails: ['contact.admin@p-mts.online', 'contact@p-mts.online'],
   // En attente. Numéros fournis : +507 000 000 (invalide) et +507 6000 0000 (semble factice).
   phone: null,
   whatsapp: null,

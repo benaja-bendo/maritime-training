@@ -117,14 +117,18 @@ export default function ContactPage() {
                   </div>
                 </div>
               </li>
-              {SITE.email && (
+              {SITE.emails.length > 0 && (
                 <li className="flex items-start gap-4">
                   <Mail className="w-5 h-5 text-[#e1b936] mt-0.5 shrink-0" />
                   <div>
                     <div className="text-xs uppercase tracking-wider text-slate-400">E-mail</div>
-                    <a href={`mailto:${SITE.email}`} className="text-slate-100 hover:text-[#e1b936]">
-                      {SITE.email}
-                    </a>
+                    <div className="flex flex-col gap-1">
+                      {SITE.emails.map((e) => (
+                        <a key={e} href={`mailto:${e}`} className="text-slate-100 hover:text-[#e1b936]">
+                          {e}
+                        </a>
+                      ))}
+                    </div>
                   </div>
                 </li>
               )}

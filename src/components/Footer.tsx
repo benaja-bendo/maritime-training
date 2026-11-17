@@ -65,10 +65,16 @@ export default function Footer() {
                 <span>{SITE.phone}</span>
               </li>
             )}
-            {SITE.email && (
-              <li className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-[#e1b936] shrink-0" />
-                <span>{SITE.email}</span>
+            {SITE.emails.length > 0 && (
+              <li className="flex items-start gap-2">
+                <Mail className="w-4 h-4 text-[#e1b936] mt-0.5 shrink-0" />
+                <div className="flex flex-col gap-0.5">
+                  {SITE.emails.map((e) => (
+                    <a key={e} href={`mailto:${e}`} className="hover:text-[#e1b936] transition-colors">
+                      {e}
+                    </a>
+                  ))}
+                </div>
               </li>
             )}
             {SITE.hours && (
