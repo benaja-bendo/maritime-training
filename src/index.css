@@ -9,7 +9,7 @@
     scroll-behavior: smooth;
   }
   body {
-    @apply bg-[#0b1b30] text-slate-100 antialiased;
+    @apply bg-slate-50 text-slate-800 antialiased;
     font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   }
   h1, h2, h3, h4 {
@@ -22,23 +22,34 @@
     @apply max-w-7xl mx-auto px-5 sm:px-8 lg:px-10;
   }
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-sm bg-[#e1b936] text-[#08182d] font-bold transition-all hover:bg-[#f0cc58] active:scale-[0.98];
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-[#e1b936] text-[#08182d] font-bold shadow-sm transition-all hover:bg-[#ebd06c] hover:shadow-md active:scale-[0.98];
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-sm bg-transparent text-white font-semibold border border-slate-500 transition-all hover:border-[#e1b936] hover:text-[#e1b936] active:scale-[0.98];
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-white text-slate-700 font-semibold border border-slate-300 shadow-sm transition-all hover:border-[#e1b936] hover:text-[#08182d] hover:bg-slate-50 active:scale-[0.98];
   }
   .card {
-    @apply bg-[#102641] rounded-sm border border-[#294769] shadow-none transition-all hover:border-[#e1b936]/60;
+    @apply bg-white/95 backdrop-blur-sm rounded-xl border border-slate-200/90 shadow-sm transition-all hover:border-[#e1b936]/70 hover:shadow-md text-slate-800;
   }
   .input-field {
-    @apply w-full px-4 py-3 rounded-sm border border-[#385371] bg-[#102641] text-white placeholder-slate-400 transition-colors focus:border-[#e1b936] focus:ring-1 focus:ring-[#e1b936]/40 outline-none;
+    @apply w-full px-4 py-3 rounded-lg border border-slate-300 bg-white text-slate-900 placeholder-slate-400 transition-colors focus:border-[#e1b936] focus:ring-2 focus:ring-[#e1b936]/30 outline-none;
   }
   .section-label {
-    @apply text-[#e1b936] text-xs font-bold uppercase tracking-[0.16em];
+    @apply text-amber-600 text-xs font-bold uppercase tracking-[0.18em];
   }
   .gold-rule {
     @apply inline-block w-10 h-px bg-[#e1b936] align-middle;
   }
+}
+
+/* Styles spécifiques pour l'espace d'administration afin de conserver son contraste */
+.admin-root .card {
+  @apply bg-[#102641] rounded-sm border border-[#294769] shadow-none hover:border-[#e1b936]/60 text-slate-100;
+}
+.admin-root .input-field {
+  @apply bg-[#102641] text-white border-[#385371] placeholder-slate-400 focus:border-[#e1b936];
+}
+.admin-root .btn-secondary {
+  @apply bg-transparent text-white border-slate-500 hover:border-[#e1b936] hover:text-[#e1b936];
 }
 
 .prose h2, .prose h3 {

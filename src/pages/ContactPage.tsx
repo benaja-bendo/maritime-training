@@ -23,7 +23,7 @@ const FAQ: { q: string; a: ReactNode }[] = [
     a: (
       <>
         Go to the{' '}
-        <Link to="/register" className="text-[#e1b936] hover:underline">
+        <Link to="/register" className="text-amber-700 font-semibold hover:underline">
           Registration
         </Link>{' '}
         page, choose your courses and fill in the form with your details and your ID
@@ -87,44 +87,64 @@ export default function ContactPage() {
 
   return (
     <div className="pt-16 md:pt-20">
-      <section className="bg-[#172f4e] py-16 md:py-20 border-b border-[#294769]">
-        <div className="container-app">
-          <span className="text-[#e1b936] text-sm font-semibold uppercase tracking-wider">
-            Get in touch
-          </span>
-          <h1 className="mt-2 text-3xl sm:text-5xl font-semibold text-white">
+      {/* Page Header Banner */}
+      <section className="relative py-16 md:py-20 overflow-hidden bg-white border-b border-slate-200">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-15 pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('https://images.pexels.com/photos/6499021/pexels-photo-6499021.jpeg?auto=compress&cs=tinysrgb&h=800&w=1600')",
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-sky-50/80 pointer-events-none" />
+
+        <div className="container-app relative z-10">
+          <span className="section-label">Get in touch</span>
+          <h1 className="mt-2 text-3xl sm:text-5xl font-semibold text-slate-900">
             Contact Us
           </h1>
-          <p className="mt-4 text-slate-300 max-w-2xl text-lg">
+          <p className="mt-4 text-slate-600 max-w-2xl text-lg">
             Our team is here to help you choose the right programme, arrange a practical
             session or answer any question about registration and certification.
           </p>
         </div>
       </section>
 
-      <section className="py-12 md:py-16 bg-[#0b1b30]">
-        <div className="container-app grid grid-cols-1 lg:grid-cols-5 gap-10 items-start">
+      {/* Office & Form Section */}
+      <section className="relative py-12 md:py-16 overflow-hidden bg-slate-50">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('https://images.pexels.com/photos/18340568/pexels-photo-18340568.jpeg?auto=compress&cs=tinysrgb&h=1200&w=1800')",
+          }}
+        />
+        <div className="absolute inset-0 bg-slate-50/93 pointer-events-none" />
+
+        <div className="container-app relative z-10 grid grid-cols-1 lg:grid-cols-5 gap-10 items-start">
           {/* Bureau */}
-          <div className="lg:col-span-2 card p-6 sm:p-8">
-            <h2 className="text-xl font-semibold text-white mb-6">Our office</h2>
+          <div className="lg:col-span-2 card p-6 sm:p-8 bg-white border border-slate-200 shadow-md rounded-2xl">
+            <h2 className="text-xl font-bold text-slate-900 mb-6 pb-2 border-b border-slate-100">
+              Our office
+            </h2>
             <ul className="space-y-6">
               <li className="flex items-start gap-4">
-                <MapPin className="w-5 h-5 text-[#e1b936] mt-0.5 shrink-0" />
+                <MapPin className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
                 <div>
-                  <div className="text-xs uppercase tracking-wider text-slate-400">Address</div>
-                  <div className="text-slate-100">
+                  <div className="text-xs uppercase tracking-wider text-slate-500 font-bold">Address</div>
+                  <div className="text-slate-800 font-medium mt-0.5">
                     {SITE.address ? `${SITE.address}, ${SITE.country}` : SITE.country}
                   </div>
                 </div>
               </li>
               {SITE.emails.length > 0 && (
                 <li className="flex items-start gap-4">
-                  <Mail className="w-5 h-5 text-[#e1b936] mt-0.5 shrink-0" />
+                  <Mail className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
                   <div>
-                    <div className="text-xs uppercase tracking-wider text-slate-400">E-mail</div>
-                    <div className="flex flex-col gap-1">
+                    <div className="text-xs uppercase tracking-wider text-slate-500 font-bold">E-mail</div>
+                    <div className="flex flex-col gap-1 mt-0.5">
                       {SITE.emails.map((e) => (
-                        <a key={e} href={`mailto:${e}`} className="text-slate-100 hover:text-[#e1b936]">
+                        <a key={e} href={`mailto:${e}`} className="text-slate-800 font-medium hover:text-amber-700 transition-colors">
                           {e}
                         </a>
                       ))}
@@ -134,10 +154,10 @@ export default function ContactPage() {
               )}
               {SITE.phone && (
                 <li className="flex items-start gap-4">
-                  <Phone className="w-5 h-5 text-[#e1b936] mt-0.5 shrink-0" />
+                  <Phone className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
                   <div>
-                    <div className="text-xs uppercase tracking-wider text-slate-400">Phone</div>
-                    <a href={`tel:${SITE.phone.replace(/\s/g, '')}`} className="text-slate-100 hover:text-[#e1b936]">
+                    <div className="text-xs uppercase tracking-wider text-slate-500 font-bold">Phone</div>
+                    <a href={`tel:${SITE.phone.replace(/\s/g, '')}`} className="text-slate-800 font-medium hover:text-amber-700 transition-colors mt-0.5 inline-block">
                       {SITE.phone}
                     </a>
                   </div>
@@ -145,23 +165,23 @@ export default function ContactPage() {
               )}
               {SITE.hours && (
                 <li className="flex items-start gap-4">
-                  <Clock className="w-5 h-5 text-[#e1b936] mt-0.5 shrink-0" />
+                  <Clock className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
                   <div>
-                    <div className="text-xs uppercase tracking-wider text-slate-400">Office hours</div>
-                    <div className="text-slate-100">{SITE.hours}</div>
+                    <div className="text-xs uppercase tracking-wider text-slate-500 font-bold">Office hours</div>
+                    <div className="text-slate-800 font-medium mt-0.5">{SITE.hours}</div>
                   </div>
                 </li>
               )}
               {SITE.whatsapp && whatsappDigits && (
                 <li className="flex items-start gap-4">
-                  <MessageCircle className="w-5 h-5 text-[#e1b936] mt-0.5 shrink-0" />
+                  <MessageCircle className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
                   <div>
-                    <div className="text-xs uppercase tracking-wider text-slate-400">WhatsApp support</div>
+                    <div className="text-xs uppercase tracking-wider text-slate-500 font-bold">WhatsApp support</div>
                     <a
                       href={`https://wa.me/${whatsappDigits}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-slate-100 hover:text-[#e1b936]"
+                      className="text-slate-800 font-medium hover:text-amber-700 transition-colors mt-0.5 inline-block"
                     >
                       {SITE.whatsapp}
                     </a>
@@ -172,14 +192,14 @@ export default function ContactPage() {
           </div>
 
           {/* Formulaire */}
-          <div className="lg:col-span-3 card p-6 sm:p-8">
+          <div className="lg:col-span-3 card p-6 sm:p-8 bg-white border border-slate-200 shadow-lg rounded-2xl">
             {sent ? (
               <div className="py-10 text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 mb-5">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 mb-5">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
-                <h2 className="text-xl font-bold text-white">Message sent</h2>
-                <p className="mt-2 text-slate-300 max-w-sm mx-auto">
+                <h2 className="text-2xl font-bold text-slate-900">Message sent</h2>
+                <p className="mt-2 text-slate-600 max-w-sm mx-auto">
                   Thank you. We will reply within one working day.
                 </p>
                 <button onClick={() => setSent(false)} className="btn-secondary mt-6">
@@ -189,15 +209,15 @@ export default function ContactPage() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <h2 className="text-xl font-semibold text-white">Send us a message</h2>
-                  <p className="mt-1 text-sm text-slate-300">
+                  <h2 className="text-2xl font-bold text-slate-900">Send us a message</h2>
+                  <p className="mt-1 text-sm text-slate-600">
                     Fill in the form below and we will reply within one working day.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label htmlFor="c_name" className="block text-sm font-medium text-slate-200 mb-1.5">
+                    <label htmlFor="c_name" className="block text-sm font-semibold text-slate-700 mb-1.5">
                       Full name *
                     </label>
                     <div className="relative">
@@ -215,7 +235,7 @@ export default function ContactPage() {
                     </div>
                   </div>
                   <div>
-                    <label htmlFor="c_email" className="block text-sm font-medium text-slate-200 mb-1.5">
+                    <label htmlFor="c_email" className="block text-sm font-semibold text-slate-700 mb-1.5">
                       Email address *
                     </label>
                     <div className="relative">
@@ -236,7 +256,7 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="c_subject" className="block text-sm font-medium text-slate-200 mb-1.5">
+                  <label htmlFor="c_subject" className="block text-sm font-semibold text-slate-700 mb-1.5">
                     Subject
                   </label>
                   <input
@@ -250,7 +270,7 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="c_message" className="block text-sm font-medium text-slate-200 mb-1.5">
+                  <label htmlFor="c_message" className="block text-sm font-semibold text-slate-700 mb-1.5">
                     Message *
                   </label>
                   <textarea
@@ -265,10 +285,10 @@ export default function ContactPage() {
                 </div>
 
                 {error && (
-                  <p className="text-sm text-red-300 bg-red-500/10 px-4 py-3 rounded-lg">{error}</p>
+                  <p className="text-sm text-red-800 bg-red-50 border border-red-200 px-4 py-3 rounded-xl font-medium">{error}</p>
                 )}
 
-                <button type="submit" disabled={loading} className="btn-primary w-full sm:w-auto disabled:opacity-60">
+                <button type="submit" disabled={loading} className="btn-primary w-full sm:w-auto disabled:opacity-60 shadow-md">
                   {loading ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
@@ -288,22 +308,31 @@ export default function ContactPage() {
       </section>
 
       {/* FAQ */}
-      <section className="py-12 md:py-16 bg-[#172f4e] border-t border-[#294769]">
-        <div className="container-app max-w-3xl">
+      <section className="relative py-12 md:py-16 overflow-hidden bg-white border-t border-slate-200">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('https://images.pexels.com/photos/5779747/pexels-photo-5779747.jpeg?auto=compress&cs=tinysrgb&h=800&w=1600')",
+          }}
+        />
+        <div className="absolute inset-0 bg-white/92 pointer-events-none" />
+
+        <div className="container-app relative z-10 max-w-3xl">
           <div className="text-center mb-10">
             <span className="section-label">Common questions</span>
-            <h2 className="mt-2 text-3xl sm:text-4xl font-semibold text-white">
+            <h2 className="mt-2 text-3xl sm:text-4xl font-semibold text-slate-900">
               Frequently Asked Questions
             </h2>
           </div>
           <div className="space-y-3">
             {FAQ.map((item) => (
-              <details key={item.q} className="card group">
-                <summary className="flex items-center justify-between gap-4 p-5 cursor-pointer list-none font-semibold text-white [&::-webkit-details-marker]:hidden">
+              <details key={item.q} className="card group bg-white border border-slate-200 shadow-sm rounded-xl overflow-hidden hover:border-amber-400/60 transition-all">
+                <summary className="flex items-center justify-between gap-4 p-5 cursor-pointer list-none font-semibold text-slate-900 [&::-webkit-details-marker]:hidden select-none">
                   {item.q}
-                  <ChevronDown className="w-5 h-5 shrink-0 text-[#e1b936] transition-transform group-open:rotate-180" />
+                  <ChevronDown className="w-5 h-5 shrink-0 text-amber-600 transition-transform group-open:rotate-180" />
                 </summary>
-                <div className="px-5 pb-5 text-sm text-slate-300 leading-relaxed">{item.a}</div>
+                <div className="px-5 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">{item.a}</div>
               </details>
             ))}
           </div>

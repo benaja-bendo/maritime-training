@@ -78,35 +78,53 @@ export default function VolunteersPage() {
 
   return (
     <div className="pt-16 md:pt-20">
-      <section className="bg-[#172f4e] py-16 md:py-20 border-b border-[#294769]">
-        <div className="container-app">
-          <span className="text-[#e1b936] text-sm font-semibold uppercase tracking-wider">
-            Join us
-          </span>
-          <h1 className="mt-2 text-3xl sm:text-5xl font-semibold text-white">
+      {/* Page Header Banner */}
+      <section className="relative py-16 md:py-20 overflow-hidden bg-white border-b border-slate-200">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-15 pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('https://images.pexels.com/photos/34104787/pexels-photo-34104787.jpeg?auto=compress&cs=tinysrgb&h=800&w=1600')",
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-sky-50/80 pointer-events-none" />
+
+        <div className="container-app relative z-10">
+          <span className="section-label">Join us</span>
+          <h1 className="mt-2 text-3xl sm:text-5xl font-semibold text-slate-900">
             Volunteer Registration
           </h1>
-          <p className="mt-4 text-slate-300 max-w-2xl text-lg">
+          <p className="mt-4 text-slate-600 max-w-2xl text-lg">
             Share your maritime experience by becoming a volunteer instructor at
             our academy.
           </p>
         </div>
       </section>
 
-      <section className="py-12 md:py-16 bg-[#0b1b30]">
-        <div className="container-app">
+      {/* Main Content Section */}
+      <section className="relative py-12 md:py-16 overflow-hidden bg-slate-50">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('https://images.pexels.com/photos/10290624/pexels-photo-10290624.jpeg?auto=compress&cs=tinysrgb&h=1200&w=1800')",
+          }}
+        />
+        <div className="absolute inset-0 bg-slate-50/93 pointer-events-none" />
+
+        <div className="container-app relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             <div className="lg:sticky lg:top-28">
-              <h2 className="text-2xl font-bold text-white mb-4">
+              <h2 className="text-3xl font-bold text-slate-900 mb-4">
                 Why join us?
               </h2>
-              <p className="text-slate-300 leading-relaxed">
+              <p className="text-slate-600 leading-relaxed text-base">
                 Do you have maritime experience and the desire to pass on your
                 knowledge? Become a volunteer instructor at our academy and help train
                 the next generation of seafarers.
               </p>
 
-              <div className="mt-8 space-y-5">
+              <div className="mt-8 space-y-4">
                 {[
                   {
                     icon: HeartHandshake,
@@ -124,27 +142,27 @@ export default function VolunteersPage() {
                     desc: 'Your sessions are credited and added to your professional record.',
                   },
                 ].map((item) => (
-                  <div key={item.title} className="flex items-start gap-4">
-                    <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-[#e1b936] text-[#08182d] shrink-0">
+                  <div key={item.title} className="flex items-start gap-4 p-4 rounded-xl bg-white/90 border border-slate-200/90 shadow-sm">
+                    <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-amber-50 text-amber-700 shrink-0">
                       <item.icon className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-white">{item.title}</h3>
-                      <p className="mt-0.5 text-sm text-slate-300">{item.desc}</p>
+                      <h3 className="font-bold text-slate-900">{item.title}</h3>
+                      <p className="mt-0.5 text-sm text-slate-600">{item.desc}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="card p-6 sm:p-8">
+            <div className="card p-6 sm:p-8 bg-white border border-slate-200 shadow-lg rounded-2xl">
               {success ? (
                 <div className="py-12 text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 mb-5">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 mb-5">
                     <CheckCircle2 className="w-8 h-8" />
                   </div>
-                  <h3 className="text-xl font-bold text-white">Registration sent!</h3>
-                  <p className="mt-2 text-slate-300 max-w-sm mx-auto">
+                  <h3 className="text-2xl font-bold text-slate-900">Registration sent!</h3>
+                  <p className="mt-2 text-slate-600 max-w-sm mx-auto">
                     Thank you for your interest. Our team will contact you in the
                     coming days to finalise your registration.
                   </p>
@@ -157,12 +175,12 @@ export default function VolunteersPage() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">
-                  <h3 className="font-semibold text-white text-lg">
+                  <h3 className="font-bold text-slate-900 text-xl pb-2 border-b border-slate-100">
                     Volunteer application
                   </h3>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                       Full name *
                     </label>
                     <div className="relative">
@@ -180,7 +198,7 @@ export default function VolunteersPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                      <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                         Email *
                       </label>
                       <div className="relative">
@@ -196,7 +214,7 @@ export default function VolunteersPage() {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                      <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                         Phone
                       </label>
                       <div className="relative">
@@ -213,7 +231,7 @@ export default function VolunteersPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                       Desired role
                     </label>
                     <select
@@ -229,7 +247,7 @@ export default function VolunteersPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                       Maritime experience
                     </label>
                     <div className="relative">
@@ -245,7 +263,7 @@ export default function VolunteersPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                       Message
                     </label>
                     <div className="relative">
@@ -261,7 +279,7 @@ export default function VolunteersPage() {
                   </div>
 
                   {error && (
-                    <p className="text-sm text-red-300 bg-red-500/10 px-4 py-3 rounded-lg">
+                    <p className="text-sm text-red-800 bg-red-50 border border-red-200 px-4 py-3 rounded-xl font-medium">
                       {error}
                     </p>
                   )}
@@ -269,7 +287,7 @@ export default function VolunteersPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="btn-primary w-full disabled:opacity-60"
+                    className="btn-primary w-full disabled:opacity-60 shadow-md"
                   >
                     {loading ? (
                       <>

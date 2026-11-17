@@ -78,7 +78,7 @@ function Field({
 }) {
   return (
     <div>
-      <label htmlFor={htmlFor} className="block text-sm font-medium text-slate-200 mb-1.5">
+      <label htmlFor={htmlFor} className="block text-sm font-semibold text-slate-700 mb-1.5">
         {label}
       </label>
       <div className="relative">
@@ -93,8 +93,8 @@ function Field({
 
 function SectionTitle({ n, title }: { n: number; title: string }) {
   return (
-    <h2 className="flex items-center gap-3 text-lg font-semibold text-white mb-5">
-      <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[#e1b936] text-[#08182d] text-sm font-bold">
+    <h2 className="flex items-center gap-3 text-lg font-bold text-slate-900 mb-5">
+      <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[#e1b936] text-[#08182d] text-sm font-bold shadow-sm">
         {n}
       </span>
       {title}
@@ -104,11 +104,11 @@ function SectionTitle({ n, title }: { n: number; title: string }) {
 
 function PriceTag({ course }: { course: Pick<Course, 'price_usd'> }) {
   return course.price_usd != null ? (
-    <span className="font-semibold text-[#e1b936] whitespace-nowrap">
+    <span className="font-bold text-amber-700 whitespace-nowrap">
       {formatUsd(course.price_usd)}
     </span>
   ) : (
-    <span className="text-xs text-slate-400 whitespace-nowrap">Price to be confirmed</span>
+    <span className="text-xs text-slate-500 whitespace-nowrap">Price to be confirmed</span>
   );
 }
 
@@ -290,51 +290,69 @@ export default function RegistrationPage() {
 
   return (
     <div className="pt-16 md:pt-20">
-      <section className="bg-[#172f4e] py-16 md:py-20 border-b border-[#294769]">
-        <div className="container-app">
-          <span className="text-[#e1b936] text-sm font-semibold uppercase tracking-wider">
-            Online training
-          </span>
-          <h1 className="mt-2 text-3xl sm:text-5xl font-semibold text-white">
+      {/* Page Header Banner */}
+      <section className="relative py-16 md:py-20 overflow-hidden bg-white border-b border-slate-200">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-15 pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('https://images.pexels.com/photos/39043586/pexels-photo-39043586.jpeg?auto=compress&cs=tinysrgb&h=800&w=1600')",
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-amber-50/80 pointer-events-none" />
+
+        <div className="container-app relative z-10">
+          <span className="section-label">Online training</span>
+          <h1 className="mt-2 text-3xl sm:text-5xl font-semibold text-slate-900">
             Course Registration
           </h1>
-          <p className="mt-4 text-slate-300 max-w-2xl text-lg">
+          <p className="mt-4 text-slate-600 max-w-2xl text-lg">
             Choose your modules, see the prices and register online with
             {' '}{SITE.name}.
           </p>
         </div>
       </section>
 
-      <section className="py-12 md:py-16 bg-[#0b1b30]">
-        <div className="container-app">
+      {/* Main Registration Section */}
+      <section className="relative py-12 md:py-16 overflow-hidden bg-slate-50">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('https://images.pexels.com/photos/11329863/pexels-photo-11329863.jpeg?auto=compress&cs=tinysrgb&h=1200&w=1800')",
+          }}
+        />
+        <div className="absolute inset-0 bg-slate-50/93 pointer-events-none" />
+
+        <div className="container-app relative z-10">
           {done ? (
-            <div className="card p-6 sm:p-10 max-w-2xl mx-auto">
+            <div className="card p-6 sm:p-10 max-w-2xl mx-auto bg-white border border-slate-200 shadow-xl rounded-2xl">
               <div className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 mb-5">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 mb-5">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
-                <h2 className="text-2xl font-bold text-white">
+                <h2 className="text-2xl font-bold text-slate-900">
                   Pre-registration recorded
                 </h2>
-                <p className="mt-2 text-slate-300">
+                <p className="mt-2 text-slate-600">
                   It will be finalised once we receive your deposit. Keep your
                   reference:
                 </p>
-                <div className="mt-5 inline-block px-6 py-3 rounded-sm border border-[#e1b936]/50 bg-[#0b1b30] font-mono text-2xl tracking-widest text-[#e1b936]">
+                <div className="mt-5 inline-block px-6 py-3 rounded-lg border-2 border-amber-300 bg-amber-50/60 font-mono text-2xl tracking-widest text-amber-800 font-bold shadow-sm">
                   {done.receipt.reference}
                 </div>
               </div>
 
               {done.position && (
-                <p className="mt-6 text-center text-sm text-slate-300">
-                  Role on board: <span className="text-white">{done.position}</span>
+                <p className="mt-6 text-center text-sm text-slate-600">
+                  Role on board: <span className="font-semibold text-slate-900">{done.position}</span>
                 </p>
               )}
 
-              <ul className="mt-6 divide-y divide-[#294769] border-y border-[#294769]">
+              <ul className="mt-6 divide-y divide-slate-100 border-y border-slate-200">
                 {done.chosen.map((c) => (
                   <li key={c.id} className="flex items-center justify-between gap-4 py-3 text-sm">
-                    <span className="text-slate-200">{c.name}</span>
+                    <span className="text-slate-800 font-medium">{c.name}</span>
                     <PriceTag course={c} />
                   </li>
                 ))}
@@ -343,43 +361,43 @@ export default function RegistrationPage() {
               {done.receipt.quote.total != null ? (
                 <dl className="mt-5 space-y-2 text-sm">
                   {done.receipt.quote.discount > 0 && (
-                    <div className="flex justify-between text-emerald-300">
+                    <div className="flex justify-between text-emerald-700 font-medium">
                       <dt>{BST_PACK.label} discount</dt>
                       <dd>−{formatUsd(done.receipt.quote.discount)}</dd>
                     </div>
                   )}
-                  <div className="flex justify-between text-slate-300">
+                  <div className="flex justify-between text-slate-600">
                     <dt>Total</dt>
-                    <dd>{formatUsd(done.receipt.quote.total)}</dd>
+                    <dd className="font-semibold text-slate-900">{formatUsd(done.receipt.quote.total)}</dd>
                   </div>
-                  <div className="flex justify-between text-white font-semibold text-base">
+                  <div className="flex justify-between text-slate-900 font-bold text-base border-t border-slate-100 pt-2">
                     <dt>Deposit to pay ({depositLabel})</dt>
-                    <dd className="text-[#e1b936]">
+                    <dd className="text-amber-700">
                       {formatUsd(done.receipt.quote.deposit ?? 0)}
                     </dd>
                   </div>
-                  <div className="flex justify-between text-slate-300">
+                  <div className="flex justify-between text-slate-600">
                     <dt>Balance after the course</dt>
                     <dd>{formatUsd(done.receipt.quote.balance ?? 0)}</dd>
                   </div>
                 </dl>
               ) : (
-                <p className="mt-5 text-sm text-slate-300">
+                <p className="mt-5 text-sm text-slate-600">
                   The exact amount of your deposit will be confirmed by our team.
                 </p>
               )}
 
-              <div className="mt-6 rounded-sm border border-[#294769] bg-[#0b1b30] p-4 text-sm text-slate-300">
-                <p className="font-semibold text-white mb-1">Next step: the deposit</p>
+              <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-700">
+                <p className="font-bold text-slate-900 mb-1">Next step: the deposit</p>
                 {SITE.paymentInstructions ? (
                   <p>{SITE.paymentInstructions}</p>
                 ) : (
                   <p>
                     Our team will send the deposit payment instructions to
-                    {' '}{done.email}. Quote your reference when you pay.
+                    {' '}<strong className="text-slate-900">{done.email}</strong>. Quote your reference when you pay.
                   </p>
                 )}
-                <p className="mt-2 text-slate-400">
+                <p className="mt-2 text-slate-500">
                   The balance is payable at the end of your course, before your
                   documents are issued.
                 </p>
@@ -396,18 +414,19 @@ export default function RegistrationPage() {
             </div>
           ) : (
             <>
+              {/* Steps Progress */}
               <ol className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
                 {STEPS.map((s, i) => (
-                  <li key={s.title} className="card p-5 flex items-start gap-4">
-                    <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-[#e1b936]/10 text-[#e1b936] shrink-0">
+                  <li key={s.title} className="card p-5 flex items-start gap-4 bg-white border border-slate-200 shadow-sm rounded-xl">
+                    <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-amber-50 text-amber-600 shrink-0">
                       <s.icon className="w-5 h-5" />
                     </div>
                     <div>
-                      <div className="text-xs text-slate-400 uppercase tracking-wider">
+                      <div className="text-xs text-amber-700 uppercase tracking-wider font-bold">
                         Step {i + 1}
                       </div>
-                      <h3 className="font-semibold text-white">{s.title}</h3>
-                      <p className="mt-0.5 text-sm text-slate-300">{s.desc}</p>
+                      <h3 className="font-bold text-slate-900">{s.title}</h3>
+                      <p className="mt-0.5 text-sm text-slate-600">{s.desc}</p>
                     </div>
                   </li>
                 ))}
@@ -419,7 +438,7 @@ export default function RegistrationPage() {
               >
                 <div className="lg:col-span-2 space-y-8">
                   {/* 1. Identité */}
-                  <div className="card p-6 sm:p-8">
+                  <div className="card p-6 sm:p-8 bg-white border border-slate-200 shadow-sm rounded-2xl">
                     <SectionTitle n={1} title="Your details" />
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <Field label="Last name *" htmlFor="last_name" icon={User}>
@@ -492,7 +511,7 @@ export default function RegistrationPage() {
                   </div>
 
                   {/* 2. Pièce d'identité et photo */}
-                  <div className="card p-6 sm:p-8">
+                  <div className="card p-6 sm:p-8 bg-white border border-slate-200 shadow-sm rounded-2xl">
                     <SectionTitle n={2} title="ID document and photo" />
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <Field label="Document type *" htmlFor="id_type">
@@ -530,11 +549,11 @@ export default function RegistrationPage() {
                     </div>
 
                     <div className="mt-6">
-                      <span className="block text-sm font-medium text-slate-200 mb-1.5">
+                      <span className="block text-sm font-semibold text-slate-800 mb-1.5">
                         ID photo *
                       </span>
                       <div className="flex flex-col sm:flex-row gap-5 items-start">
-                        <div className="w-28 shrink-0 aspect-[7/9] rounded-sm border border-dashed border-[#385371] bg-[#0b1b30] flex items-center justify-center overflow-hidden">
+                        <div className="w-28 shrink-0 aspect-[7/9] rounded-xl border-2 border-dashed border-slate-300 bg-slate-100 flex items-center justify-center overflow-hidden shadow-inner">
                           {photo ? (
                             <img
                               src={photo}
@@ -542,10 +561,10 @@ export default function RegistrationPage() {
                               className="w-full h-full object-cover"
                             />
                           ) : (
-                            <Camera className="w-7 h-7 text-slate-500" />
+                            <Camera className="w-7 h-7 text-slate-400" />
                           )}
                         </div>
-                        <div className="text-sm text-slate-300">
+                        <div className="text-sm text-slate-600">
                           <label className="btn-secondary cursor-pointer">
                             <Camera className="w-4 h-4" />
                             {photo ? 'Change photo' : 'Choose a photo'}
@@ -556,23 +575,23 @@ export default function RegistrationPage() {
                               className="sr-only"
                             />
                           </label>
-                          <p className="mt-3 text-slate-400">
+                          <p className="mt-3 text-slate-500">
                             Recent photo, face forward and centred, plain light background,
                             no sunglasses or headwear. It is cropped automatically to
                             35 × 45 mm. JPG, PNG or WebP, 8 MB maximum.
                           </p>
                           {photoError && (
-                            <p className="mt-2 text-red-300">{photoError}</p>
+                            <p className="mt-2 text-red-600 font-medium">{photoError}</p>
                           )}
                         </div>
                       </div>
                     </div>
 
                     <div className="mt-6">
-                      <span className="block text-sm font-medium text-slate-200 mb-1.5">
+                      <span className="block text-sm font-semibold text-slate-800 mb-1.5">
                         Copy of your {form.id_type === 'passport' ? 'passport' : 'ID card'} (optional)
                       </span>
-                      <div className="text-sm text-slate-300">
+                      <div className="text-sm text-slate-600">
                         <label className="btn-secondary cursor-pointer">
                           <FileText className="w-4 h-4" />
                           {idDoc ? 'Change file' : 'Choose a file'}
@@ -584,31 +603,31 @@ export default function RegistrationPage() {
                           />
                         </label>
                         {idDoc && (
-                          <span className="ml-3 inline-flex items-center gap-2 text-slate-200">
+                          <span className="ml-3 inline-flex items-center gap-2 text-slate-800 font-medium bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
                             {idDoc.name}
                             <button
                               type="button"
                               onClick={() => setIdDoc(null)}
-                              className="text-slate-400 hover:text-white"
+                              className="text-slate-400 hover:text-red-600"
                               aria-label="Remove the file"
                             >
                               <X className="w-4 h-4" />
                             </button>
                           </span>
                         )}
-                        <p className="mt-3 text-slate-400">
+                        <p className="mt-3 text-slate-500">
                           PDF up to 500 KB, or a JPG, PNG or WebP scan or photo (reduced automatically).
                         </p>
-                        {idDocError && <p className="mt-2 text-red-300">{idDocError}</p>}
+                        {idDocError && <p className="mt-2 text-red-600 font-medium">{idDocError}</p>}
                       </div>
                     </div>
                   </div>
 
                   {/* 3. Formations */}
-                  <div className="card p-6 sm:p-8">
+                  <div className="card p-6 sm:p-8 bg-white border border-slate-200 shadow-sm rounded-2xl">
                     <SectionTitle n={3} title="Choose your courses" />
 
-                    <div className="mb-5 rounded-sm border border-[#294769] bg-[#0b1b30] p-4">
+                    <div className="mb-5 rounded-xl border border-slate-200 bg-slate-50 p-4">
                       <Field label="Your role on board (optional)" htmlFor="position" icon={Briefcase}>
                         <select
                           id="position"
@@ -621,23 +640,23 @@ export default function RegistrationPage() {
                             <optgroup key={g.label} label={g.label}>
                               {g.positions.map((p) => (
                                 <option key={p.id} value={p.id}>
-                                  {p.label}
+                                   {p.label}
                                 </option>
                               ))}
                             </optgroup>
                           ))}
                         </select>
                       </Field>
-                      <p className="mt-2 text-xs text-slate-400">
+                      <p className="mt-2 text-xs text-slate-500">
                         Not sure which courses to choose? Tell us your role and we will tick
                         the matching ones. You can then remove some or add others.
                       </p>
 
                       {position && (
                         <div className="mt-4 space-y-3 text-sm">
-                          <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-slate-200">
+                          <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-slate-700">
                             <span>
-                              <strong className="text-[#e1b936]">
+                              <strong className="text-amber-700 font-bold">
                                 {recommended.length} {recommended.length === 1 ? 'course' : 'courses'}
                               </strong>{' '}
                               suggested for this role, ticked below.
@@ -645,7 +664,7 @@ export default function RegistrationPage() {
                             <button
                               type="button"
                               onClick={() => choosePosition(position.id)}
-                              className="text-xs underline text-slate-300 hover:text-white"
+                              className="text-xs underline text-amber-700 font-semibold hover:text-amber-900"
                             >
                               Re-tick this role’s courses
                             </button>
@@ -653,7 +672,7 @@ export default function RegistrationPage() {
 
                           {optionalCourses.length > 0 && (
                             <div>
-                              <p className="text-xs uppercase tracking-wider text-slate-400 mb-1.5">
+                              <p className="text-xs uppercase tracking-wider text-slate-500 font-bold mb-1.5">
                                 Depending on your situation
                               </p>
                               <ul className="space-y-1.5">
@@ -665,16 +684,16 @@ export default function RegistrationPage() {
                                         type="button"
                                         onClick={() => toggle(course.id)}
                                         aria-pressed={on}
-                                        className="inline-flex items-start gap-2 text-left text-slate-200 hover:text-white"
+                                        className="inline-flex items-start gap-2 text-left text-slate-700 hover:text-slate-900"
                                       >
                                         {on ? (
-                                          <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0 text-emerald-300" />
+                                          <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0 text-emerald-600" />
                                         ) : (
-                                          <Plus className="w-4 h-4 mt-0.5 shrink-0 text-[#e1b936]" />
+                                          <Plus className="w-4 h-4 mt-0.5 shrink-0 text-amber-600" />
                                         )}
                                         <span>
                                           {course.name}{' '}
-                                          <span className="text-slate-400">({note})</span>
+                                          <span className="text-slate-500">({note})</span>
                                         </span>
                                       </button>
                                     </li>
@@ -685,8 +704,8 @@ export default function RegistrationPage() {
                           )}
 
                           {position.prerequisites && (
-                            <p className="text-xs text-slate-400 leading-relaxed">
-                              <span className="text-slate-300">
+                            <p className="text-xs text-slate-500 leading-relaxed">
+                              <span className="text-slate-700 font-medium">
                                 Also required for this role, but issued outside our
                                 courses:
                               </span>{' '}
@@ -698,15 +717,15 @@ export default function RegistrationPage() {
                     </div>
 
                     {pack && (
-                      <div className="mb-4 flex flex-col sm:flex-row sm:items-center gap-3 justify-between rounded-sm border border-[#e1b936]/40 bg-[#e1b936]/5 p-4">
-                        <p className="text-sm text-slate-200">
-                          <strong className="text-[#e1b936]">{BST_PACK.label}</strong> :
+                      <div className="mb-4 flex flex-col sm:flex-row sm:items-center gap-3 justify-between rounded-xl border border-amber-300 bg-amber-50/70 p-4">
+                        <p className="text-sm text-slate-800">
+                          <strong className="text-amber-800 font-bold">{BST_PACK.label}</strong> :
                           courses {BST_PACK.imoNumbers.join(', ')} for{' '}
-                          <strong>{formatUsd(BST_PACK.price)}</strong> instead of{' '}
+                          <strong className="text-amber-800 font-bold">{formatUsd(BST_PACK.price)}</strong> instead of{' '}
                           {formatUsd(pack.regular)}.
                         </p>
                         {packOn ? (
-                          <span className="inline-flex items-center gap-2 text-sm font-medium text-emerald-300 whitespace-nowrap">
+                          <span className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 whitespace-nowrap bg-emerald-50 px-3 py-1 rounded-md border border-emerald-200">
                             <CheckCircle2 className="w-4 h-4" /> Pack applied
                           </span>
                         ) : (
@@ -731,14 +750,14 @@ export default function RegistrationPage() {
                         aria-label="Search for a course"
                       />
                     </div>
-                    <ul className="max-h-[28rem] overflow-y-auto rounded-sm border border-[#294769] divide-y divide-[#294769]">
+                    <ul className="max-h-[28rem] overflow-y-auto rounded-xl border border-slate-200 divide-y divide-slate-100 bg-white shadow-inner">
                       {visible.map((c) => {
                         const on = selected.includes(c.id);
                         return (
                           <li key={c.id}>
                             <label
-                              className={`flex items-start gap-3 p-3 cursor-pointer transition-colors ${
-                                on ? 'bg-[#e1b936]/10' : 'hover:bg-[#172f4e]'
+                              className={`flex items-start gap-3 p-3.5 cursor-pointer transition-colors ${
+                                on ? 'bg-amber-50/70' : 'hover:bg-slate-50'
                               }`}
                             >
                               <input
@@ -748,15 +767,15 @@ export default function RegistrationPage() {
                                 className="mt-1 h-4 w-4 shrink-0 accent-[#e1b936]"
                               />
                               <span className="flex-1 min-w-0">
-                                <span className="block text-sm font-medium text-white">
+                                <span className="block text-sm font-semibold text-slate-900">
                                   {c.name}
                                 </span>
-                                <span className="block text-xs text-slate-400">
+                                <span className="block text-xs text-slate-500 mt-0.5">
                                   {c.category}
                                   {c.duration_days != null &&
                                     ` · ${formatDays(c.duration_days)}`}
                                   {recommendedIds.has(c.id) && (
-                                    <span className="text-[#e1b936]">
+                                    <span className="text-amber-700 font-semibold">
                                       {' '}
                                       · Recommended for your role
                                     </span>
@@ -769,7 +788,7 @@ export default function RegistrationPage() {
                         );
                       })}
                       {visible.length === 0 && (
-                        <li className="p-4 text-sm text-slate-400">
+                        <li className="p-4 text-sm text-slate-500 text-center">
                           No course matches your search.
                         </li>
                       )}
@@ -778,24 +797,24 @@ export default function RegistrationPage() {
                 </div>
 
                 {/* Récapitulatif */}
-                <aside className="card p-6 sm:p-8 lg:sticky lg:top-28">
-                  <h2 className="text-lg font-semibold text-white mb-4">Summary</h2>
+                <aside className="card p-6 sm:p-8 lg:sticky lg:top-28 bg-white border border-slate-200 shadow-lg rounded-2xl">
+                  <h2 className="text-lg font-bold text-slate-900 mb-4 pb-2 border-b border-slate-100">Summary</h2>
 
                   {chosen.length === 0 ? (
-                    <p className="text-sm text-slate-400">
+                    <p className="text-sm text-slate-500">
                       No course selected. Tick your courses to see the prices.
                     </p>
                   ) : (
                     <ul className="space-y-3">
                       {chosen.map((c) => (
                         <li key={c.id} className="flex items-start gap-2 text-sm">
-                          <span className="flex-1 text-slate-200">{c.name}</span>
+                          <span className="flex-1 text-slate-800 font-medium">{c.name}</span>
                           <PriceTag course={c} />
                           <button
                             type="button"
                             onClick={() => toggle(c.id)}
                             aria-label={`Remove ${c.name}`}
-                            className="text-slate-400 hover:text-white shrink-0"
+                            className="text-slate-400 hover:text-red-600 shrink-0"
                           >
                             <X className="w-4 h-4" />
                           </button>
@@ -805,32 +824,32 @@ export default function RegistrationPage() {
                   )}
 
                   {chosen.length > 0 && (
-                    <div className="mt-5 pt-5 border-t border-[#294769] space-y-2 text-sm">
+                    <div className="mt-5 pt-5 border-t border-slate-200 space-y-2 text-sm">
                       {quote.total != null ? (
                         <>
                           {quote.discount > 0 && (
-                            <div className="flex justify-between text-emerald-300">
+                            <div className="flex justify-between text-emerald-700 font-medium">
                               <span>{BST_PACK.label} discount</span>
                               <span>−{formatUsd(quote.discount)}</span>
                             </div>
                           )}
-                          <div className="flex justify-between text-slate-300">
+                          <div className="flex justify-between text-slate-600">
                             <span>Total</span>
-                            <span>{formatUsd(quote.total)}</span>
+                            <span className="font-semibold text-slate-900">{formatUsd(quote.total)}</span>
                           </div>
-                          <div className="flex justify-between text-white font-semibold text-base">
+                          <div className="flex justify-between text-slate-900 font-bold text-base border-t border-slate-100 pt-2">
                             <span>Deposit on registration ({depositLabel})</span>
-                            <span className="text-[#e1b936]">
+                            <span className="text-amber-700">
                               {formatUsd(quote.deposit ?? 0)}
                             </span>
                           </div>
-                          <div className="flex justify-between text-slate-300">
+                          <div className="flex justify-between text-slate-600">
                             <span>Balance after the course</span>
                             <span>{formatUsd(quote.balance ?? 0)}</span>
                           </div>
                         </>
                       ) : (
-                        <p className="text-slate-400">
+                        <p className="text-slate-500">
                           The price of some courses will be confirmed by our team, as will
                           the amount of the deposit.
                         </p>
@@ -838,13 +857,13 @@ export default function RegistrationPage() {
                     </div>
                   )}
 
-                  <p className="mt-5 text-xs text-slate-400 leading-relaxed">
+                  <p className="mt-5 text-xs text-slate-500 leading-relaxed">
                     A deposit of {depositLabel} of the total price is payable to finalise
                     your registration. The balance is payable at the end of the course, to
                     receive your documents.
                   </p>
 
-                  <label className="mt-5 flex items-start gap-3 text-xs text-slate-300 cursor-pointer">
+                  <label className="mt-5 flex items-start gap-3 text-xs text-slate-600 cursor-pointer">
                     <input
                       type="checkbox"
                       required
@@ -861,7 +880,7 @@ export default function RegistrationPage() {
                   </label>
 
                   {error && (
-                    <p className="mt-4 text-sm text-red-300 bg-red-500/10 px-4 py-3 rounded-lg">
+                    <p className="mt-4 text-sm text-red-800 bg-red-50 border border-red-200 px-4 py-3 rounded-xl font-medium">
                       {error}
                     </p>
                   )}
@@ -869,7 +888,7 @@ export default function RegistrationPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="btn-primary w-full mt-5 disabled:opacity-60"
+                    className="btn-primary w-full mt-5 disabled:opacity-60 shadow-md"
                   >
                     {loading ? (
                       <>

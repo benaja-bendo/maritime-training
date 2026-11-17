@@ -141,8 +141,8 @@ function SectionHead({
   return (
     <div className="max-w-2xl mb-12">
       <span className="section-label">{label}</span>
-      <h2 className="mt-2 text-3xl sm:text-4xl font-semibold text-white">{title}</h2>
-      {children && <p className="mt-4 text-slate-300 leading-relaxed">{children}</p>}
+      <h2 className="mt-2 text-3xl sm:text-4xl font-semibold text-slate-900">{title}</h2>
+      {children && <p className="mt-4 text-slate-600 leading-relaxed text-lg">{children}</p>}
     </div>
   );
 }
@@ -150,15 +150,23 @@ function SectionHead({
 export default function AboutPage() {
   return (
     <div className="pt-16 md:pt-20">
-      <section className="bg-[#172f4e] py-16 md:py-24 border-b border-[#294769]">
-        <div className="container-app">
-          <span className="text-[#e1b936] text-sm font-semibold uppercase tracking-wider">
-            Our story
-          </span>
-          <h1 className="mt-2 text-3xl sm:text-5xl font-semibold text-white max-w-3xl">
+      {/* Page Header Banner */}
+      <section className="relative py-16 md:py-24 overflow-hidden bg-white border-b border-slate-200">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-15 pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('https://images.pexels.com/photos/7971328/pexels-photo-7971328.jpeg?auto=compress&cs=tinysrgb&h=900&w=1600')",
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-sky-50/80 pointer-events-none" />
+
+        <div className="container-app relative z-10">
+          <span className="section-label">Our story</span>
+          <h1 className="mt-2 text-4xl sm:text-5xl font-semibold text-slate-900 max-w-3xl">
             About {SITE.name}
           </h1>
-          <p className="mt-5 text-slate-300 max-w-3xl text-lg leading-relaxed">
+          <p className="mt-5 text-slate-600 max-w-3xl text-lg leading-relaxed">
             A dedicated maritime training centre built by seafarers, for seafarers,
             combining decades of experience at sea with modern blended learning technology.
           </p>
@@ -166,14 +174,23 @@ export default function AboutPage() {
       </section>
 
       {/* Mission et valeurs */}
-      <section className="py-16 md:py-24 bg-[#0b1b30]">
-        <div className="container-app grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
+      <section className="relative py-16 md:py-24 overflow-hidden bg-slate-50">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('https://images.pexels.com/photos/14664519/pexels-photo-14664519.jpeg?auto=compress&cs=tinysrgb&h=1000&w=1600')",
+          }}
+        />
+        <div className="absolute inset-0 bg-slate-50/90 pointer-events-none" />
+
+        <div className="container-app relative z-10 grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
           <div className="lg:col-span-2 lg:sticky lg:top-28">
             <span className="section-label">Our mission</span>
-            <h2 className="mt-2 text-3xl sm:text-4xl font-semibold text-white">
+            <h2 className="mt-2 text-3xl sm:text-4xl font-semibold text-slate-900">
               World-class training, anywhere
             </h2>
-            <p className="mt-5 text-slate-300 leading-relaxed">
+            <p className="mt-5 text-slate-600 leading-relaxed text-base">
               {SITE.name} was founded with a single purpose: to make world-class maritime
               education accessible to every seafarer, wherever they are in the world. We
               believe rigorous, internationally recognised training should not require
@@ -185,12 +202,12 @@ export default function AboutPage() {
 
           <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-5">
             {VALUES.map((v) => (
-              <div key={v.title} className="card p-6">
-                <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-[#e1b936]/10 text-[#e1b936] mb-4">
+              <div key={v.title} className="card p-6 bg-white border border-slate-200 shadow-sm hover:shadow-md">
+                <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-amber-50 text-amber-600 mb-4">
                   <v.icon className="w-6 h-6" />
                 </div>
-                <h3 className="text-lg font-semibold text-white">{v.title}</h3>
-                <p className="mt-2 text-sm text-slate-300 leading-relaxed">{v.text}</p>
+                <h3 className="text-lg font-semibold text-slate-900">{v.title}</h3>
+                <p className="mt-2 text-sm text-slate-600 leading-relaxed">{v.text}</p>
               </div>
             ))}
           </div>
@@ -198,14 +215,23 @@ export default function AboutPage() {
       </section>
 
       {/* Histoire et frise */}
-      <section className="py-16 md:py-24 bg-[#172f4e] border-y border-[#294769]">
-        <div className="container-app grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+      <section className="relative py-16 md:py-24 overflow-hidden bg-white border-y border-slate-200">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('https://images.pexels.com/photos/28703860/pexels-photo-28703860.jpeg?auto=compress&cs=tinysrgb&h=1000&w=1600')",
+          }}
+        />
+        <div className="absolute inset-0 bg-white/92 pointer-events-none" />
+
+        <div className="container-app relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           <div>
             <span className="section-label">Our story</span>
-            <h2 className="mt-2 text-3xl sm:text-4xl font-semibold text-white">
+            <h2 className="mt-2 text-3xl sm:text-4xl font-semibold text-slate-900">
               Born from the reality of life at sea
             </h2>
-            <p className="mt-5 text-slate-300 leading-relaxed">
+            <p className="mt-5 text-slate-600 leading-relaxed">
               {SITE.name} was born from the recognition that the maritime industry needed a
               training provider that truly understood the realities of life at sea. Our
               founders – experienced deck and engineering officers – saw first-hand how hard
@@ -213,7 +239,7 @@ export default function AboutPage() {
               without sacrificing their contracts or their families. We set out to change
               that.
             </p>
-            <p className="mt-4 text-slate-300 leading-relaxed">
+            <p className="mt-4 text-slate-600 leading-relaxed">
               Starting with a small portfolio of STCW safety courses, we have grown into a
               full training centre offering more than 50 IMO-certified programmes across all
               the major maritime disciplines. Today our graduates serve on vessels around the
@@ -222,12 +248,12 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <ol className="relative border-l border-[#385371] ml-3 space-y-8">
+          <ol className="relative border-l-2 border-slate-200 ml-3 space-y-8">
             {TIMELINE.map((t) => (
               <li key={t.year} className="pl-8 relative">
-                <span className="absolute -left-[7px] top-2 w-3 h-3 rounded-full bg-[#e1b936] ring-4 ring-[#172f4e]" />
-                <div className="text-xl font-semibold text-[#e1b936] tabular-nums">{t.year}</div>
-                <p className="mt-1 text-slate-200 leading-relaxed">{t.text}</p>
+                <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-[#e1b936] ring-4 ring-white shadow-sm" />
+                <div className="text-xl font-bold text-amber-700 tabular-nums">{t.year}</div>
+                <p className="mt-1 text-slate-700 leading-relaxed font-medium">{t.text}</p>
               </li>
             ))}
           </ol>
@@ -235,28 +261,37 @@ export default function AboutPage() {
       </section>
 
       {/* Instructeurs */}
-      <section className="py-16 md:py-24 bg-[#0b1b30]">
-        <div className="container-app">
+      <section className="relative py-16 md:py-24 overflow-hidden bg-slate-50">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('https://images.pexels.com/photos/35860170/pexels-photo-35860170.jpeg?auto=compress&cs=tinysrgb&h=1000&w=1600')",
+          }}
+        />
+        <div className="absolute inset-0 bg-slate-50/93 pointer-events-none" />
+
+        <div className="container-app relative z-10">
           <SectionHead label="Our team" title="Our instructors">
             Every PMTS instructor is a qualified maritime professional with real experience
             at sea. We don’t use classroom theorists.
           </SectionHead>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {INSTRUCTORS.map((p) => (
-              <article key={p.name} className="card p-6 sm:p-7 flex gap-5">
+              <article key={p.name} className="card p-6 sm:p-7 flex gap-5 bg-white border border-slate-200 shadow-sm hover:shadow-md">
                 <div
                   aria-hidden="true"
-                  className="flex items-center justify-center w-14 h-14 rounded-full bg-[#e1b936] text-[#08182d] font-bold text-lg shrink-0"
+                  className="flex items-center justify-center w-14 h-14 rounded-full bg-amber-100 text-amber-800 font-bold text-lg shrink-0 shadow-inner"
                 >
                   {p.initials}
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-white">{p.name}</h3>
-                  <p className="text-sm text-[#e1b936] mt-0.5">{p.role}</p>
-                  <p className="mt-2 inline-block text-xs text-slate-200 bg-[#0b1b30] border border-[#294769] rounded-sm px-2.5 py-1">
+                  <h3 className="text-lg font-semibold text-slate-900">{p.name}</h3>
+                  <p className="text-sm text-amber-700 font-medium mt-0.5">{p.role}</p>
+                  <p className="mt-2 inline-block text-xs font-medium text-slate-700 bg-slate-100 border border-slate-200 rounded-md px-2.5 py-1">
                     {p.credentials}
                   </p>
-                  <p className="mt-3 text-sm text-slate-300 leading-relaxed">{p.bio}</p>
+                  <p className="mt-3 text-sm text-slate-600 leading-relaxed">{p.bio}</p>
                 </div>
               </article>
             ))}
@@ -265,20 +300,29 @@ export default function AboutPage() {
       </section>
 
       {/* Installations */}
-      <section className="py-16 md:py-24 bg-[#172f4e] border-y border-[#294769]">
-        <div className="container-app">
+      <section className="relative py-16 md:py-24 overflow-hidden bg-white border-y border-slate-200">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('https://images.pexels.com/photos/36563588/pexels-photo-36563588.jpeg?auto=compress&cs=tinysrgb&h=1000&w=1600')",
+          }}
+        />
+        <div className="absolute inset-0 bg-white/92 pointer-events-none" />
+
+        <div className="container-app relative z-10">
           <SectionHead label="Panama City" title="Our facilities">
             Our training centre in Panama City is equipped with professional-grade
             simulators and hands-on training areas.
           </SectionHead>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {FACILITIES.map((f) => (
-              <div key={f.title} className="card p-6">
-                <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-[#0b1b30] text-[#e1b936] mb-4">
+              <div key={f.title} className="card p-6 bg-white border border-slate-200 shadow-sm hover:shadow-md">
+                <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-amber-50 text-amber-600 mb-4">
                   <f.icon className="w-6 h-6" />
                 </div>
-                <h3 className="text-lg font-semibold text-white">{f.title}</h3>
-                <p className="mt-2 text-sm text-slate-300 leading-relaxed">{f.text}</p>
+                <h3 className="text-lg font-semibold text-slate-900">{f.title}</h3>
+                <p className="mt-2 text-sm text-slate-600 leading-relaxed">{f.text}</p>
               </div>
             ))}
           </div>
@@ -286,15 +330,24 @@ export default function AboutPage() {
       </section>
 
       {/* Accréditations */}
-      <section className="py-14 bg-[#08182d]">
-        <div className="container-app">
+      <section className="relative py-14 overflow-hidden bg-slate-50">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('https://images.pexels.com/photos/37596892/pexels-photo-37596892.jpeg?auto=compress&cs=tinysrgb&h=800&w=1600')",
+          }}
+        />
+        <div className="absolute inset-0 bg-slate-50/90 pointer-events-none" />
+
+        <div className="container-app relative z-10">
           <h2 className="text-center section-label">Accreditations and references</h2>
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {ACCREDITATIONS.map((a) => (
-              <div key={a.code} className="text-center px-4 py-5 border border-[#294769] rounded-sm">
-                <div className="text-2xl font-bold tracking-widest text-[#e1b936]">{a.code}</div>
-                <div className="mt-2 text-sm font-medium text-white">{a.name}</div>
-                <div className="mt-1 text-xs text-slate-400">{a.desc}</div>
+              <div key={a.code} className="text-center px-4 py-5 bg-white border border-slate-200 rounded-xl shadow-sm">
+                <div className="text-2xl font-bold tracking-widest text-amber-600">{a.code}</div>
+                <div className="mt-2 text-sm font-semibold text-slate-900">{a.name}</div>
+                <div className="mt-1 text-xs text-slate-500">{a.desc}</div>
               </div>
             ))}
           </div>
@@ -302,12 +355,21 @@ export default function AboutPage() {
       </section>
 
       {/* Appel à l'action */}
-      <section className="py-16 md:py-20 bg-[#0b1b30] border-t border-[#294769]">
-        <div className="container-app text-center max-w-2xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-semibold text-white">
+      <section className="relative py-16 md:py-20 overflow-hidden bg-white border-t border-slate-200">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('https://images.pexels.com/photos/11763854/pexels-photo-11763854.jpeg?auto=compress&cs=tinysrgb&h=800&w=1600')",
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-50/90 via-white/85 to-amber-50/90 pointer-events-none" />
+
+        <div className="container-app relative z-10 text-center max-w-2xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-semibold text-slate-900">
             Ready to advance your career?
           </h2>
-          <p className="mt-4 text-slate-300">
+          <p className="mt-4 text-slate-600 text-lg">
             Choose your courses and register online, or write to us with any questions.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">

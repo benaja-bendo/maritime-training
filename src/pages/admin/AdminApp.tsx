@@ -86,7 +86,7 @@ export default function AdminApp() {
 
   if (access.state !== 'ok') {
     return (
-      <div className="min-h-screen bg-[#0b1b30] flex items-center justify-center px-4">
+      <div className="admin-root min-h-screen bg-[#0b1b30] flex items-center justify-center px-4">
         <div className="card p-8 max-w-md w-full text-center">
           {access.state === 'denied' ? (
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-full border border-[#e1b936] text-[#e1b936] mb-4">
@@ -124,7 +124,7 @@ export default function AdminApp() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0b1b30] text-slate-100">
+    <div className="admin-root min-h-screen bg-[#0b1b30] text-slate-100">
       <header className="bg-[#08182d] border-b border-[#294769]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
           <Link to="/admin" className="flex items-center gap-2 text-white font-semibold text-sm">

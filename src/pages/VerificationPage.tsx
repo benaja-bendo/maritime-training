@@ -127,34 +127,52 @@ export default function VerificationPage() {
 
   return (
     <div className="pt-16 md:pt-20">
-      <section className="bg-[#172f4e] py-16 md:py-20 border-b border-[#294769]">
-        <div className="container-app">
-          <span className="text-[#e1b936] text-sm font-semibold uppercase tracking-wider">
-            Official portal
-          </span>
-          <h1 className="mt-2 text-3xl sm:text-5xl font-semibold text-white">
+      {/* Page Header Banner */}
+      <section className="relative py-16 md:py-20 overflow-hidden bg-white border-b border-slate-200">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-15 pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('https://images.pexels.com/photos/18442732/pexels-photo-18442732.jpeg?auto=compress&cs=tinysrgb&h=800&w=1600')",
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-sky-50/80 pointer-events-none" />
+
+        <div className="container-app relative z-10">
+          <span className="section-label">Official portal</span>
+          <h1 className="mt-2 text-3xl sm:text-5xl font-semibold text-slate-900">
             Document Verification
           </h1>
-          <p className="mt-4 text-slate-300 max-w-2xl text-lg">
+          <p className="mt-4 text-slate-600 max-w-2xl text-lg">
             Check the authenticity of a student’s certificates using their certificate number,
             ID card number or passport number.
           </p>
         </div>
       </section>
 
-      <section className="py-12 md:py-16 bg-[#0b1b30]">
-        <div className="container-app max-w-2xl">
+      {/* Verification Form Section */}
+      <section className="relative py-12 md:py-16 overflow-hidden bg-slate-50">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('https://images.pexels.com/photos/5161816/pexels-photo-5161816.jpeg?auto=compress&cs=tinysrgb&h=1200&w=1800')",
+          }}
+        />
+        <div className="absolute inset-0 bg-slate-50/93 pointer-events-none" />
+
+        <div className="container-app relative z-10 max-w-2xl">
           {open === false && (
-            <div className="card p-6 sm:p-8 flex items-start gap-4">
-              <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-[#e1b936]/10 text-[#e1b936] shrink-0">
+            <div className="card p-6 sm:p-8 flex items-start gap-4 bg-white border border-slate-200 shadow-md">
+              <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-amber-50 text-amber-600 shrink-0">
                 <Clock className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="font-semibold text-white">Opening soon</h2>
-                <p className="mt-1 text-sm text-slate-300 leading-relaxed">
+                <h2 className="font-semibold text-slate-900">Opening soon</h2>
+                <p className="mt-1 text-sm text-slate-600 leading-relaxed">
                   The online verification service opens soon: certificates are currently
                   being recorded. In the meantime, to verify a document,{' '}
-                  <Link to="/contact" className="text-[#e1b936] hover:underline">
+                  <Link to="/contact" className="text-amber-600 font-semibold hover:underline">
                     contact us
                   </Link>
                   .
@@ -164,87 +182,87 @@ export default function VerificationPage() {
           )}
 
           {open !== false && (
-          <form onSubmit={handleSearch} className="card p-6 sm:p-8">
-            <div
-              role="radiogroup"
-              aria-label="Verification method"
-              className="grid grid-cols-3 gap-2 mb-5"
-            >
-              {METHODS.map((m) => {
-                const on = m.id === method;
-                return (
-                  <button
-                    key={m.id}
-                    type="button"
-                    role="radio"
-                    aria-checked={on}
-                    onClick={() => {
-                      setMethod(m.id);
-                      setValue('');
-                      clear();
-                    }}
-                    className={`px-2 py-2.5 rounded-sm border text-xs sm:text-sm font-semibold transition-colors ${
-                      on
-                        ? 'bg-[#e1b936] border-[#e1b936] text-[#08182d]'
-                        : 'border-[#385371] text-slate-300 hover:border-[#e1b936] hover:text-white'
-                    }`}
-                  >
-                    {m.label}
-                  </button>
-                );
-              })}
-            </div>
-
-            <label htmlFor="v_value" className="block text-sm font-medium text-slate-200 mb-1.5">
-              {current.field}
-            </label>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <div className="relative flex-1">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
-                <input
-                  id="v_value"
-                  type="text"
-                  required
-                  maxLength={40}
-                  autoComplete="off"
-                  placeholder={current.placeholder}
-                  value={value}
-                  onChange={(e) => setValue(e.target.value)}
-                  className="input-field pl-11 font-mono"
-                />
+            <form onSubmit={handleSearch} className="card p-6 sm:p-8 bg-white border border-slate-200 shadow-lg rounded-2xl">
+              <div
+                role="radiogroup"
+                aria-label="Verification method"
+                className="grid grid-cols-3 gap-2 mb-5"
+              >
+                {METHODS.map((m) => {
+                  const on = m.id === method;
+                  return (
+                    <button
+                      key={m.id}
+                      type="button"
+                      role="radio"
+                      aria-checked={on}
+                      onClick={() => {
+                        setMethod(m.id);
+                        setValue('');
+                        clear();
+                      }}
+                      className={`px-2 py-2.5 rounded-lg border text-xs sm:text-sm font-semibold transition-all ${
+                        on
+                          ? 'bg-[#e1b936] border-[#e1b936] text-[#08182d] shadow-sm'
+                          : 'bg-slate-50 border-slate-300 text-slate-700 hover:border-amber-400 hover:text-slate-900 hover:bg-white'
+                      }`}
+                    >
+                      {m.label}
+                    </button>
+                  );
+                })}
               </div>
-              <button type="submit" disabled={loading} className="btn-primary sm:w-auto disabled:opacity-60">
-                <ShieldCheck className="w-4 h-4" />
-                {loading ? 'Verifying…' : 'Verify'}
-              </button>
-            </div>
 
-            <p className="mt-4 flex items-start gap-2 text-xs text-slate-400">
-              <Lock className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-              Only the name, photo, courses taken and their status are shown. The number you
-              enter is not stored by this site.
-            </p>
-          </form>
+              <label htmlFor="v_value" className="block text-sm font-semibold text-slate-800 mb-1.5">
+                {current.field}
+              </label>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+                  <input
+                    id="v_value"
+                    type="text"
+                    required
+                    maxLength={40}
+                    autoComplete="off"
+                    placeholder={current.placeholder}
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    className="input-field pl-11 font-mono shadow-sm"
+                  />
+                </div>
+                <button type="submit" disabled={loading} className="btn-primary sm:w-auto disabled:opacity-60 shadow-sm">
+                  <ShieldCheck className="w-4 h-4" />
+                  {loading ? 'Verifying…' : 'Verify'}
+                </button>
+              </div>
+
+              <p className="mt-4 flex items-start gap-2 text-xs text-slate-500">
+                <Lock className="w-3.5 h-3.5 mt-0.5 shrink-0 text-slate-400" />
+                Only the name, photo, courses taken and their status are shown. The number you
+                enter is not stored by this site.
+              </p>
+            </form>
           )}
 
           {(error || notFound) && (
             <div
               role="alert"
-              className="mt-6 card p-6 border-red-400/30 bg-red-500/10 flex items-start gap-4"
+              className="mt-6 card p-6 border-red-200 bg-red-50 flex items-start gap-4 rounded-xl shadow-sm"
             >
-              <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-red-500/15 text-red-300 shrink-0">
+              <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-red-100 text-red-600 shrink-0">
                 <XCircle className="w-5 h-5" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-red-200">
+                <h3 className="font-semibold text-red-900">
                   {notFound ? 'No record found' : 'Verification failed'}
                 </h3>
-                <p className="mt-1 text-sm text-red-200/90">
+                <p className="mt-1 text-sm text-red-800 leading-relaxed">
                   {notFound ? (
                     <>
                       No certificate is linked to this number. Check what you entered or
                       choose another method. If in doubt,{' '}
-                      <Link to="/contact" className="underline hover:text-white">
+                      <Link to="/contact" className="underline font-semibold hover:text-red-950">
                         contact us
                       </Link>
                       .
@@ -259,46 +277,48 @@ export default function VerificationPage() {
 
           {result && (
             <div className="mt-6 space-y-6">
-              <div className="card p-6 sm:p-8 bg-gradient-to-br from-[#08182d] to-[#172f4e]">
+              {/* Official Credential Badge Card */}
+              <div className="card p-6 sm:p-8 bg-slate-900 text-white rounded-2xl border border-slate-800 shadow-xl">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
                   {result.student.photo_data_url ? (
                     <img
                       src={result.student.photo_data_url}
                       alt={`Photo of ${result.student.full_name}`}
-                      className="w-28 aspect-[7/9] rounded-lg object-cover border border-[#385371] shrink-0"
+                      className="w-28 aspect-[7/9] rounded-xl object-cover border-2 border-white/20 shrink-0 shadow-md"
                     />
                   ) : (
-                    <div className="flex items-center justify-center w-20 h-20 rounded-2xl bg-white/10 text-[#e1b936] shrink-0">
+                    <div className="flex items-center justify-center w-20 h-20 rounded-2xl bg-white/10 text-[#e1b936] shrink-0 border border-white/15">
                       <User className="w-9 h-9" />
                     </div>
                   )}
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 text-[#e1b936] text-sm font-medium">
+                    <div className="flex items-center gap-2 text-[#e1b936] text-sm font-semibold">
                       <BadgeCheck className="w-4 h-4" />
                       Student identified
                     </div>
-                    <h2 className="mt-1 text-2xl font-bold text-white">
+                    <h2 className="mt-1 text-2xl font-bold text-white tracking-tight">
                       {result.student.full_name}
                     </h2>
                     <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm text-slate-300">
-                      <span className="font-mono">ID: {result.student.student_code}</span>
+                      <span className="font-mono bg-white/10 px-2.5 py-1 rounded-md">ID: {result.student.student_code}</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="card p-6 sm:p-8">
-                <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
-                  <h3 className="font-semibold text-white flex items-center gap-2">
-                    <FileText className="w-5 h-5 text-[#e1b936]" />
+              {/* Courses List */}
+              <div className="card p-6 sm:p-8 bg-white border border-slate-200 rounded-2xl shadow-md">
+                <div className="flex flex-wrap items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-100">
+                  <h3 className="font-semibold text-slate-900 flex items-center gap-2 text-lg">
+                    <FileText className="w-5 h-5 text-amber-600" />
                     Courses taken
                   </h3>
                   <div className="flex flex-wrap gap-2 text-sm font-semibold">
-                    <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300">
+                    <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
                       {validCount} valid
                     </span>
                     {expiredCount > 0 && (
-                      <span className="px-3 py-1 rounded-full bg-red-500/10 text-red-300">
+                      <span className="px-3 py-1 rounded-full bg-red-100 text-red-800 border border-red-200">
                         {expiredCount} expired
                       </span>
                     )}
@@ -306,7 +326,7 @@ export default function VerificationPage() {
                 </div>
 
                 {certificates.length === 0 ? (
-                  <p className="text-slate-400 text-sm py-4">
+                  <p className="text-slate-500 text-sm py-4">
                     No course recorded for this student.
                   </p>
                 ) : (
@@ -320,34 +340,34 @@ export default function VerificationPage() {
                             return (
                               <li
                                 key={`${c.certificate_number ?? c.course_name}-${c.course_name}-${i}`}
-                                className={`flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-xl border transition-colors ${
+                                className={`flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-xl border transition-all ${
                                   expired
-                                    ? 'border-red-400/30 bg-red-500/5'
-                                    : 'border-[#294769] hover:border-[#e1b936]/50 hover:bg-[#172f4e]'
+                                    ? 'border-red-200 bg-red-50/50'
+                                    : 'border-slate-200 bg-white hover:border-amber-400/60 hover:bg-slate-50 shadow-sm'
                                 }`}
                               >
                                 <div className="flex-1">
                                   <div className="flex items-center gap-2 flex-wrap">
-                                    <span className="font-semibold text-white">{c.course_name}</span>
+                                    <span className="font-semibold text-slate-900">{c.course_name}</span>
                                     {c.imo_number && (
-                                      <span className="px-2 py-0.5 rounded-md bg-white/10 text-slate-200 text-xs font-mono">
+                                      <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-mono font-medium border border-slate-200">
                                         IMO {c.imo_number}
                                       </span>
                                     )}
                                   </div>
-                                  <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-400">
+                                  <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-500">
                                     <span className="inline-flex items-center gap-1">
-                                      <Calendar className="w-3.5 h-3.5" />
+                                      <Calendar className="w-3.5 h-3.5 text-slate-400" />
                                       Completed on {formatDate(c.completed_on)}
                                     </span>
                                     {c.certificate_number && (
-                                      <span className="inline-flex items-center gap-1 font-mono">
-                                        <Hash className="w-3.5 h-3.5" />
+                                      <span className="inline-flex items-center gap-1 font-mono text-slate-700">
+                                        <Hash className="w-3.5 h-3.5 text-slate-400" />
                                         {c.certificate_number}
                                       </span>
                                     )}
                                   </div>
-                                  <p className={`mt-1.5 text-sm ${expired ? 'text-red-300' : 'text-emerald-300/90'}`}>
+                                  <p className={`mt-1.5 text-sm font-medium ${expired ? 'text-red-700' : 'text-emerald-700'}`}>
                                     {c.valid_until
                                       ? expired
                                         ? `Expired on ${formatDate(c.valid_until)}`
@@ -356,16 +376,16 @@ export default function VerificationPage() {
                                   </p>
                                 </div>
                                 <span
-                                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold w-fit ${
+                                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold w-fit border ${
                                     expired
-                                      ? 'bg-red-500/10 text-red-300'
-                                      : 'bg-emerald-500/10 text-emerald-300'
+                                      ? 'bg-red-100 text-red-800 border-red-200'
+                                      : 'bg-emerald-100 text-emerald-800 border-emerald-200'
                                   }`}
                                 >
                                   {expired ? (
-                                    <XCircle className="w-4 h-4" />
+                                    <XCircle className="w-4 h-4 text-red-600" />
                                   ) : (
-                                    <CheckCircle2 className="w-4 h-4" />
+                                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                                   )}
                                   {status === 'expired' ? 'Expired' : 'Valid'}
                                 </span>
@@ -375,10 +395,10 @@ export default function VerificationPage() {
                         </ul>
                       );
                       return g.title ? (
-                        <div key={`g-${gi}`} className="rounded-xl border border-[#e1b936]/40 p-4">
-                          <p className="font-semibold text-white">{g.title}</p>
-                          <p className="mb-3 text-sm text-slate-400">
-                            Certificate No. <span className="font-mono">{g.number}</span> · {g.items.length} modules
+                        <div key={`g-${gi}`} className="rounded-xl border-2 border-amber-300/80 bg-amber-50/40 p-4">
+                          <p className="font-bold text-slate-900">{g.title}</p>
+                          <p className="mb-3 text-sm text-slate-600">
+                            Certificate No. <span className="font-mono font-semibold text-slate-900">{g.number}</span> · {g.items.length} modules
                           </p>
                           {items}
                         </div>
@@ -390,7 +410,7 @@ export default function VerificationPage() {
                 )}
               </div>
 
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-500">
                 Status as of {formatDate(result.checkedOn)}. A certificate remains valid through the
                 end of its expiry date.
               </p>

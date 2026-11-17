@@ -1,5 +1,16 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ShieldCheck, Award, Users, Waves, Globe, Search, HeartHandshake, BookOpen, GraduationCap } from 'lucide-react';
+import {
+  ArrowRight,
+  ShieldCheck,
+  Award,
+  Users,
+  Waves,
+  Globe,
+  Search,
+  HeartHandshake,
+  BookOpen,
+  GraduationCap,
+} from 'lucide-react';
 import Hero from '@/components/Hero';
 
 export default function HomePage() {
@@ -7,15 +18,25 @@ export default function HomePage() {
     <>
       <Hero />
 
-      {/* Features / quick access */}
-      <section className="py-20 md:py-28 bg-[#172f4e]">
-        <div className="container-app">
+      {/* Features / quick access with light nautical background */}
+      <section className="relative py-20 md:py-28 overflow-hidden bg-slate-50">
+        {/* Maritime background image with light overlay */}
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-15 pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('https://images.pexels.com/photos/14844017/pexels-photo-14844017.jpeg?auto=compress&cs=tinysrgb&h=1000&w=1600')",
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-50/95 via-white/85 to-slate-50/95 pointer-events-none" />
+
+        <div className="container-app relative z-10">
           <div className="text-center max-w-2xl mx-auto mb-14">
             <span className="section-label">Our services</span>
-            <h2 className="mt-2 text-3xl sm:text-4xl font-semibold text-white">
+            <h2 className="mt-2 text-3xl sm:text-4xl font-semibold text-slate-900">
               Your whole maritime journey in one place
             </h2>
-            <p className="mt-4 text-slate-300">
+            <p className="mt-4 text-slate-600 text-lg">
               Browse the catalogue, register online, verify your documents
               and join our network of volunteers.
             </p>
@@ -55,14 +76,14 @@ export default function HomePage() {
               <Link
                 key={card.to}
                 to={card.to}
-                className="card p-8 flex flex-col group hover:-translate-y-1"
+                className="card p-8 flex flex-col group hover:-translate-y-1 bg-white/95 backdrop-blur-sm border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-[#e1b936]/60 transition-all"
               >
-                <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-[#0b1b30] text-[#e1b936] mb-5 group-hover:bg-[#e1b936] group-hover:text-[#08182d] transition-colors">
+                <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 mb-5 group-hover:bg-[#e1b936] group-hover:text-[#08182d] transition-all">
                   <card.icon className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-2">{card.title}</h3>
-                <p className="text-slate-300 text-sm leading-relaxed flex-1">{card.desc}</p>
-                <span className="mt-5 inline-flex items-center gap-1.5 text-[#e1b936] font-semibold text-sm group-hover:gap-2.5 transition-all">
+                <h3 className="text-xl font-semibold text-slate-900 mb-2">{card.title}</h3>
+                <p className="text-slate-600 text-sm leading-relaxed flex-1">{card.desc}</p>
+                <span className="mt-5 inline-flex items-center gap-1.5 text-amber-600 font-semibold text-sm group-hover:gap-2.5 transition-all">
                   {card.cta}
                   <ArrowRight className="w-4 h-4" />
                 </span>
@@ -72,9 +93,18 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Stats band */}
-      <section className="py-16 bg-[#08182d] border-y border-[#294769]">
-        <div className="container-app">
+      {/* Stats band with maritime backdrop */}
+      <section className="relative py-16 overflow-hidden bg-slate-900 text-white border-y border-slate-800">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-25 pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('https://images.pexels.com/photos/209717/pexels-photo-209717.jpeg?auto=compress&cs=tinysrgb&h=800&w=1600')",
+          }}
+        />
+        <div className="absolute inset-0 bg-slate-950/75 backdrop-blur-[1px] pointer-events-none" />
+
+        <div className="container-app relative z-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
               { icon: Award, value: '50+', label: 'Courses' },
@@ -84,22 +114,31 @@ export default function HomePage() {
             ].map((stat) => (
               <div key={stat.label} className="text-center">
                 <stat.icon className="w-6 h-6 text-[#e1b936] mb-3 mx-auto" />
-                <div className="text-3xl font-bold text-white">{stat.value}</div>
-                <div className="text-sm text-slate-400 mt-1">{stat.label}</div>
+                <div className="text-3xl md:text-4xl font-bold text-white drop-shadow">{stat.value}</div>
+                <div className="text-sm text-slate-300 font-medium mt-1">{stat.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 md:py-28 bg-[#0b1b30] border-t border-[#294769]">
-        <div className="container-app text-center max-w-2xl mx-auto">
+      {/* Verification CTA section with nautical background */}
+      <section className="relative py-20 md:py-28 overflow-hidden bg-slate-50 border-t border-slate-200">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-15 pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('https://images.pexels.com/photos/8989470/pexels-photo-8989470.jpeg?auto=compress&cs=tinysrgb&h=900&w=1600')",
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-50/90 via-white/90 to-sky-50/90 pointer-events-none" />
+
+        <div className="container-app relative z-10 text-center max-w-2xl mx-auto">
           <span className="section-label">Official portal</span>
-          <h2 className="mt-2 text-3xl sm:text-4xl font-semibold text-white">
+          <h2 className="mt-2 text-3xl sm:text-4xl font-semibold text-slate-900">
             Verify a certificate online
           </h2>
-          <p className="mt-4 text-slate-300">
+          <p className="mt-4 text-slate-600 text-lg leading-relaxed">
             Look up a student’s courses and the status of their certificates
             (valid or expired) using their certificate number, ID card or passport.
           </p>
