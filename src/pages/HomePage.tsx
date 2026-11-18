@@ -1,44 +1,203 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
   ShieldCheck,
-  Award,
-  Users,
-  Waves,
-  Globe,
   Search,
-  HeartHandshake,
   BookOpen,
   GraduationCap,
+  ChevronDown,
+  CheckCircle2,
+  Anchor,
+  Globe2,
 } from 'lucide-react';
 import Hero from '@/components/Hero';
 
 export default function HomePage() {
+  const [activeFaq, setActiveFaq] = useState<number | null>(null);
+
+  const toggleFaq = (index: number) => {
+    setActiveFaq(activeFaq === index ? null : index);
+  };
+
+  const advantages = [
+    {
+      title: 'Plusieurs lieux à travers le monde',
+      desc: 'Des sessions en présentiel à Panama City et un réseau de centres partenaires internationaux pour faciliter vos formations pratiques et vos certifications.',
+    },
+    {
+      title: 'Entraînement personnel à votre convenance',
+      desc: 'Formations adaptées aux plannings d’embarquement et de relève des marins. Possibilité de suivre la théorie en ligne à votre propre rythme.',
+    },
+    {
+      title: 'Disponibilité immédiate du cours',
+      desc: 'Inscriptions ouvertes en continu avec accès direct aux modules e-learning dès la validation de votre pré-inscription.',
+    },
+    {
+      title: 'Accès à vie au matériel en ligne',
+      desc: 'Tous nos diplômés conservent un accès permanent aux supports de cours mis à jour selon les dernières réglementations maritimes.',
+    },
+    {
+      title: 'Approuvé par l’Autorité maritime du Panama',
+      desc: 'Nos cours et certifications sont officiellement approuvés par la Dirección General de la Gente de Mar (AMP) et respectent scrupuleusement la convention STCW.',
+    },
+  ];
+
   return (
     <>
       <Hero />
 
-      {/* Features / quick access with light nautical background */}
-      <section className="relative py-20 md:py-28 overflow-hidden bg-slate-50">
-        {/* Maritime background image with light overlay */}
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-15 pointer-events-none"
-          style={{
-            backgroundImage:
-              "url('https://images.pexels.com/photos/14844017/pexels-photo-14844017.jpeg?auto=compress&cs=tinysrgb&h=1000&w=1600')",
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-50/95 via-white/85 to-slate-50/95 pointer-events-none" />
+      {/* SECTION 1 : Les 3 piliers officiels (exactement comme dans l'image 2) */}
+      <section className="relative py-16 md:py-24 bg-white dark:bg-[#0a192f] transition-colors duration-200">
+        <div className="container-app">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Pilier 1 : STCW Manila Amendments */}
+            <div className="card p-6 flex flex-col bg-white dark:bg-[#112240] border border-sky-100 dark:border-sky-950 shadow-sm hover:shadow-md transition-all rounded-xl">
+              <div className="relative h-56 rounded-lg overflow-hidden mb-6 bg-slate-900">
+                <img
+                  src="https://images.pexels.com/photos/14844017/pexels-photo-14844017.jpeg?auto=compress&cs=tinysrgb&h=800&w=1200"
+                  alt="STCW Manila Amendments"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#4a154b]/80 via-transparent to-transparent flex items-end p-4">
+                  <span className="px-3 py-1 rounded bg-fuchsia-900 text-white text-xs font-bold uppercase tracking-wider">
+                    STCW 2010 Manila Amendments
+                  </span>
+                </div>
+              </div>
+              <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed flex-1">
+                <strong className="text-slate-900 dark:text-white block font-bold mb-1">
+                  Panama Maritime Training
+                </strong>
+                offre tous les cours de STCW tels que modifiés par l'OMI à Manille, afin d'assurer
+                aux gens de mer les connaissances les plus récentes en matière de meilleures pratiques
+                et techniques maritimes.
+              </p>
+            </div>
 
-        <div className="container-app relative z-10">
+            {/* Pilier 2 : En classe & En ligne */}
+            <div className="card p-6 flex flex-col bg-white dark:bg-[#112240] border border-sky-100 dark:border-sky-950 shadow-sm hover:shadow-md transition-all rounded-xl">
+              <div className="relative h-56 rounded-lg overflow-hidden mb-6 bg-slate-900">
+                <img
+                  src="https://images.pexels.com/photos/16420237/pexels-photo-16420237.jpeg?auto=compress&cs=tinysrgb&h=800&w=1200"
+                  alt="Plateforme maritime"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1b64b8]/80 via-transparent to-transparent flex items-end p-4">
+                  <span className="px-3 py-1 rounded bg-[#1b64b8] text-white text-xs font-bold uppercase tracking-wider">
+                    Environnement mixte & e-learning
+                  </span>
+                </div>
+              </div>
+              <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed flex-1">
+                <strong className="text-slate-900 dark:text-white block font-bold mb-1">
+                  Accès à vie au matériel
+                </strong>
+                Panama Maritime Training offre tous les cours dans un environnement de classe moderne,
+                ainsi que l'accès à vie à la plate-forme de formation en ligne, afin que les gens de mer
+                puissent accéder à leurs cours n'importe où et à tout moment.
+              </p>
+            </div>
+
+            {/* Pilier 3 : Certification ISO 9001 & Accréditation AMP */}
+            <div className="card p-6 flex flex-col bg-white dark:bg-[#112240] border border-sky-100 dark:border-sky-950 shadow-sm hover:shadow-md transition-all rounded-xl">
+              <div className="h-56 rounded-lg border-2 border-sky-200 dark:border-sky-900 bg-sky-50/50 dark:bg-sky-950/30 flex flex-col items-center justify-center p-6 mb-6 text-center">
+                <div className="font-extrabold text-2xl tracking-widest text-[#1b64b8] dark:text-sky-400">
+                  GCL INTERNATIONAL
+                </div>
+                <div className="font-bold text-sm tracking-wide text-slate-800 dark:text-slate-200 mt-1">
+                  ISO 9001:2015 · UKAS 5965
+                </div>
+                <div className="text-xs font-mono text-slate-500 mt-2 bg-white dark:bg-[#0a192f] px-2.5 py-1 rounded border border-sky-100 dark:border-sky-900">
+                  Certificat n° 82Q17841
+                </div>
+              </div>
+              <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed flex-1">
+                <strong className="text-slate-900 dark:text-white block font-bold mb-1">
+                  Agrément officiel & Qualité garantie
+                </strong>
+                La formation maritime de Panama est certifiée par Global Group selon la norme
+                ISO 9001-2015 et est soutenue par l'Autorité maritime du Panama (AMP) et d'autres
+                administrations pour la formation maritime.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 2 : Avantages clés & Accordéon (comme dans l'image 2 & 3) */}
+      <section className="relative py-16 md:py-20 bg-slate-50 dark:bg-[#0c1f38] border-y border-sky-100 dark:border-sky-950 transition-colors duration-200">
+        <div className="container-app">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div className="lg:col-span-8">
+              <span className="section-label">Pourquoi choisir PMTS</span>
+              <h2 className="text-3xl font-bold text-slate-900 dark:text-white mt-1 mb-8">
+                Des formations flexibles conçues pour les gens de mer
+              </h2>
+
+              <div className="space-y-3">
+                {advantages.map((item, idx) => {
+                  const isOpen = activeFaq === idx;
+                  return (
+                    <div
+                      key={item.title}
+                      className="border border-sky-200/80 dark:border-sky-900/80 rounded-xl bg-white dark:bg-[#112240] overflow-hidden shadow-xs"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => toggleFaq(idx)}
+                        className="w-full flex items-center justify-between p-4.5 text-left font-bold text-slate-900 dark:text-white hover:text-[#1b64b8] transition-colors"
+                      >
+                        <span className="flex items-center gap-3">
+                          <CheckCircle2 className="w-5 h-5 text-[#1b64b8] shrink-0" />
+                          {item.title}
+                        </span>
+                        <ChevronDown
+                          className={`w-5 h-5 text-[#1b64b8] transition-transform duration-200 ${
+                            isOpen ? 'rotate-180' : ''
+                          }`}
+                        />
+                      </button>
+                      {isOpen && (
+                        <div className="px-5 pb-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed border-t border-sky-50 dark:border-sky-950 pt-3">
+                          {item.desc}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Logo officiel Authorized Training Center (comme dans l'image 2 & 3) */}
+            <div className="lg:col-span-4 flex flex-col items-center justify-center text-center p-8 bg-white dark:bg-[#112240] rounded-2xl border border-sky-200 dark:border-sky-900 shadow-sm">
+              <div className="w-24 h-24 rounded-full bg-sky-50 dark:bg-sky-950/80 border-2 border-sky-200 dark:border-sky-800 flex items-center justify-center text-[#1b64b8] dark:text-sky-300 mb-4 shadow-inner">
+                <Anchor className="w-12 h-12" />
+              </div>
+              <span className="text-xs uppercase tracking-widest text-[#1b64b8] dark:text-sky-400 font-bold block mb-1">
+                Autoridad Marítima de Panamá
+              </span>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                Authorized Training Center
+              </h3>
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed max-w-xs">
+                Centre de formation maritime officiel certifié STCW et approuvé pour la délivrance des certificats maritimes internationaux.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 3 : Services rapides & Catalogue */}
+      <section className="relative py-16 md:py-24 bg-white dark:bg-[#0a192f] transition-colors duration-200">
+        <div className="container-app">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <span className="section-label">Our services</span>
-            <h2 className="mt-2 text-3xl sm:text-4xl font-semibold text-slate-900">
-              Your whole maritime journey in one place
+            <span className="section-label">Nos modules</span>
+            <h2 className="mt-2 text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white">
+              Catalogue de cours & Inscriptions en ligne
             </h2>
-            <p className="mt-4 text-slate-600 text-lg">
-              Browse the catalogue, register online, verify your documents
-              and join our network of volunteers.
+            <p className="mt-4 text-slate-600 dark:text-slate-300 text-lg">
+              Explorez plus de 50 formations conformes aux exigences OMI / STCW.
             </p>
           </div>
 
@@ -47,43 +206,43 @@ export default function HomePage() {
               {
                 icon: BookOpen,
                 to: '/courses',
-                title: 'Course catalogue',
-                desc: 'Over 50 STCW and MLC certified courses, from basic safety to officer grade.',
-                cta: 'View courses',
+                title: 'Catalogue des cours',
+                desc: 'Plus de 50 formations STCW et MLC, de la sécurité de base aux grades d’officiers.',
+                cta: 'Voir les cours',
               },
               {
                 icon: GraduationCap,
                 to: '/register',
-                title: 'Online registration',
-                desc: 'Choose your modules, see the prices and pay a deposit to complete your registration.',
-                cta: 'Register',
+                title: 'Inscription en ligne',
+                desc: 'Choisissez vos modules, consultez les tarifs officiels et finalisez votre inscription.',
+                cta: 'S’inscrire',
               },
               {
                 icon: ShieldCheck,
                 to: '/verification',
-                title: 'Document verification',
-                desc: 'Enter the certificate number, ID card number or passport number to look up certificates and their status.',
-                cta: 'Verify a document',
+                title: 'Vérification de documents',
+                desc: 'Vérifiez l’authenticité d’un certificat officiel par son numéro ou document d’identité.',
+                cta: 'Vérifier un certificat',
               },
               {
-                icon: HeartHandshake,
+                icon: Globe2,
                 to: '/volunteers',
-                title: 'Volunteer registration',
-                desc: 'Share your maritime experience by becoming a volunteer instructor.',
-                cta: 'Become a volunteer',
+                title: 'Devenir instructeur',
+                desc: 'Partagez votre expertise maritime en rejoignant notre équipe d’instructeurs qualifiés.',
+                cta: 'Postuler',
               },
             ].map((card) => (
               <Link
                 key={card.to}
                 to={card.to}
-                className="card p-8 flex flex-col group hover:-translate-y-1 bg-white/95 backdrop-blur-sm border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-[#e1b936]/60 transition-all"
+                className="card p-7 flex flex-col group hover:-translate-y-1 bg-white dark:bg-[#112240] border border-sky-200 dark:border-sky-900/70 hover:border-[#1b64b8] shadow-sm hover:shadow-md transition-all rounded-xl"
               >
-                <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 mb-5 group-hover:bg-[#e1b936] group-hover:text-[#08182d] transition-all">
+                <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-sky-50 dark:bg-sky-950/70 text-[#1b64b8] dark:text-sky-300 mb-5 group-hover:bg-[#1b64b8] group-hover:text-white transition-all">
                   <card.icon className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-semibold text-slate-900 mb-2">{card.title}</h3>
-                <p className="text-slate-600 text-sm leading-relaxed flex-1">{card.desc}</p>
-                <span className="mt-5 inline-flex items-center gap-1.5 text-amber-600 font-semibold text-sm group-hover:gap-2.5 transition-all">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{card.title}</h3>
+                <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed flex-1">{card.desc}</p>
+                <span className="mt-5 inline-flex items-center gap-1.5 text-[#1b64b8] dark:text-sky-400 font-bold text-sm group-hover:gap-2.5 transition-all">
                   {card.cta}
                   <ArrowRight className="w-4 h-4" />
                 </span>
@@ -93,63 +252,25 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Stats band with maritime backdrop */}
-      <section className="relative py-16 overflow-hidden bg-slate-900 text-white border-y border-slate-800">
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-25 pointer-events-none"
-          style={{
-            backgroundImage:
-              "url('https://images.pexels.com/photos/209717/pexels-photo-209717.jpeg?auto=compress&cs=tinysrgb&h=800&w=1600')",
-          }}
-        />
-        <div className="absolute inset-0 bg-slate-950/75 backdrop-blur-[1px] pointer-events-none" />
-
-        <div className="container-app relative z-10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              { icon: Award, value: '50+', label: 'Courses' },
-              { icon: Users, value: '2,000', label: 'Graduates' },
-              { icon: Globe, value: '40+', label: 'Nationalities' },
-              { icon: Waves, value: '2014', label: 'Year founded' },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center">
-                <stat.icon className="w-6 h-6 text-[#e1b936] mb-3 mx-auto" />
-                <div className="text-3xl md:text-4xl font-bold text-white drop-shadow">{stat.value}</div>
-                <div className="text-sm text-slate-300 font-medium mt-1">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Verification CTA section with nautical background */}
-      <section className="relative py-20 md:py-28 overflow-hidden bg-slate-50 border-t border-slate-200">
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-15 pointer-events-none"
-          style={{
-            backgroundImage:
-              "url('https://images.pexels.com/photos/8989470/pexels-photo-8989470.jpeg?auto=compress&cs=tinysrgb&h=900&w=1600')",
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-amber-50/90 via-white/90 to-sky-50/90 pointer-events-none" />
-
-        <div className="container-app relative z-10 text-center max-w-2xl mx-auto">
-          <span className="section-label">Official portal</span>
-          <h2 className="mt-2 text-3xl sm:text-4xl font-semibold text-slate-900">
-            Verify a certificate online
+      {/* SECTION 4 : Portail de vérification officiel (CTA) */}
+      <section className="relative py-16 md:py-24 bg-gradient-to-r from-sky-50 via-white to-sky-50 dark:from-[#0c1f38] dark:via-[#0a192f] dark:to-[#0c1f38] border-t border-sky-100 dark:border-sky-950 transition-colors duration-200">
+        <div className="container-app text-center max-w-2xl mx-auto">
+          <span className="section-label">Portail Officiel</span>
+          <h2 className="mt-2 text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white">
+            Vérifiez l’authenticité d’un certificat en ligne
           </h2>
-          <p className="mt-4 text-slate-600 text-lg leading-relaxed">
-            Look up a student’s courses and the status of their certificates
-            (valid or expired) using their certificate number, ID card or passport.
+          <p className="mt-4 text-slate-600 dark:text-slate-300 text-lg leading-relaxed">
+            Consultez instantanément les formations suivies par un étudiant et le statut de ses certificats
+            (valide ou expiré) grâce à son numéro de certificat, carte d’identité ou passeport.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <Link to="/verification" className="btn-primary">
+            <Link to="/verification" className="btn-royal">
               <Search className="w-4 h-4" />
-              Go to the portal
+              Accéder au portail de vérification
             </Link>
             <Link to="/courses" className="btn-secondary">
               <BookOpen className="w-4 h-4" />
-              Browse the catalogue
+              Consulter les cours
             </Link>
           </div>
         </div>

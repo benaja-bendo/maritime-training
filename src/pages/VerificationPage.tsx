@@ -17,6 +17,7 @@ import {
   CheckCircle2,
   Lock,
   Clock,
+  Anchor,
 } from 'lucide-react';
 
 const METHODS: {
@@ -27,30 +28,28 @@ const METHODS: {
 }[] = [
   {
     id: 'certificate_number',
-    label: 'Certificate No',
-    field: 'Certificate number',
-    placeholder: 'e.g. PMTS-2026-11-43289',
+    label: 'Numéro de certificat',
+    field: 'Numéro de certificat',
+    placeholder: 'ex. PMTS-2026-11-43289',
   },
   {
     id: 'national_id',
-    label: 'ID card',
-    field: 'ID card number',
-    placeholder: 'e.g. 8-123-456',
+    label: 'Pièce d’identité',
+    field: 'Numéro de carte d’identité',
+    placeholder: 'ex. 8-123-456',
   },
   {
     id: 'passport',
-    label: 'Passport',
-    field: 'Passport number',
-    placeholder: 'e.g. PA1234567',
+    label: 'Passeport',
+    field: 'Numéro de passeport',
+    placeholder: 'ex. PA1234567',
   },
 ];
 
-// Les dates sont stockées au format AAAA-MM-JJ : on évite tout décalage de fuseau horaire.
-// Affichage « 1 November 2026 » : sans ambiguïté jour/mois pour un public international.
 function formatDate(iso: string): string {
   const [y, m, d] = iso.split('-').map(Number);
   if (!y || !m || !d) return iso;
-  const month = new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('en-GB', {
+  const month = new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('fr-FR', {
     month: 'long',
     timeZone: 'UTC',
   });
@@ -66,8 +65,6 @@ export default function VerificationPage() {
   );
   const [notFound, setNotFound] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // null = en cours de vérification. En cas d'échec de lecture, on laisse la recherche
-  // ouverte : elle affichera elle-même une erreur de connexion si besoin.
   const [open, setOpen] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -86,7 +83,7 @@ export default function VerificationPage() {
     e.preventDefault();
     clear();
     if (normalizeIdentifier(value).length < 4) {
-      setError('Enter the full number (4 characters minimum).');
+      setError('Veuillez saisir le numéro complet (4 caractères minimum).');
       return;
     }
     setLoading(true);
@@ -98,7 +95,7 @@ export default function VerificationPage() {
       setError(
         err instanceof ServiceUnavailableError
           ? err.message
-          : 'Something went wrong. Check your connection and try again.',
+          : 'Une erreur est survenue lors de la vérification. Vérifiez votre connexion et réessayez.',
       );
     }
     setLoading(false);
@@ -112,7 +109,6 @@ export default function VerificationPage() {
   const certificates = result?.student.certificates ?? [];
   const today = result?.checkedOn ?? todayInPanama();
   const statusOf = (c: Certificate) => certificateStatus(c.valid_until, today, c.revoked);
-  // Les modules d'une formation groupée (BST) partagent un numéro : ils s'affichent ensemble.
   const groups: { title: string | null; number: string | null; items: { c: Certificate; i: number }[] }[] = [];
   certificates.forEach((c, i) => {
     const g = c.bundle && c.certificate_number
@@ -127,8 +123,8 @@ export default function VerificationPage() {
 
   return (
     <div className="pt-16 md:pt-20">
-      {/* Page Header Banner */}
-      <section className="relative py-16 md:py-20 overflow-hidden bg-white border-b border-slate-200">
+      {/* Header Banner Bleu Royal */}
+      <section className="relative py-16 md:py-24 overflow-hidden bg-[#1b64b8] text-white">
         <div
           className="absolute inset-0 bg-cover bg-center opacity-15 pointer-events-none"
           style={{
@@ -136,44 +132,37 @@ export default function VerificationPage() {
               "url('https://images.pexels.com/photos/18442732/pexels-photo-18442732.jpeg?auto=compress&cs=tinysrgb&h=800&w=1600')",
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-sky-50/80 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#124b8f] via-[#1b64b8] to-[#206fcc] pointer-events-none" />
 
         <div className="container-app relative z-10">
-          <span className="section-label">Official portal</span>
-          <h1 className="mt-2 text-3xl sm:text-5xl font-semibold text-slate-900">
-            Document Verification
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-white text-xs font-bold uppercase tracking-wider mb-4">
+            <Anchor className="w-3.5 h-3.5 text-amber-300" />
+            Portail Officiel de Vérification des Certificats
+          </div>
+          <h1 className="text-3xl sm:text-5xl font-bold text-white">
+            Vérification de Documents
           </h1>
-          <p className="mt-4 text-slate-600 max-w-2xl text-lg">
-            Check the authenticity of a student’s certificates using their certificate number,
-            ID card number or passport number.
+          <p className="mt-4 text-sky-100 max-w-2xl text-lg font-normal">
+            Contrôlez l'authenticité d'un certificat officiel délivré par Panama Maritime Training Services
+            à l'aide du numéro de certificat, du numéro de pièce d'identité ou du passeport.
           </p>
         </div>
       </section>
 
-      {/* Verification Form Section */}
-      <section className="relative py-12 md:py-16 overflow-hidden bg-slate-50">
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none"
-          style={{
-            backgroundImage:
-              "url('https://images.pexels.com/photos/5161816/pexels-photo-5161816.jpeg?auto=compress&cs=tinysrgb&h=1200&w=1800')",
-          }}
-        />
-        <div className="absolute inset-0 bg-slate-50/93 pointer-events-none" />
-
+      {/* Formulaire de recherche */}
+      <section className="relative py-12 md:py-16 overflow-hidden bg-slate-50 dark:bg-[#0a192f] transition-colors duration-200">
         <div className="container-app relative z-10 max-w-2xl">
           {open === false && (
-            <div className="card p-6 sm:p-8 flex items-start gap-4 bg-white border border-slate-200 shadow-md">
-              <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-amber-50 text-amber-600 shrink-0">
+            <div className="card p-6 sm:p-8 flex items-start gap-4 bg-white dark:bg-[#112240] border border-sky-100 dark:border-sky-950 shadow-sm">
+              <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-sky-50 dark:bg-sky-950 text-[#1b64b8] dark:text-sky-300 shrink-0">
                 <Clock className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="font-semibold text-slate-900">Opening soon</h2>
-                <p className="mt-1 text-sm text-slate-600 leading-relaxed">
-                  The online verification service opens soon: certificates are currently
-                  being recorded. In the meantime, to verify a document,{' '}
-                  <Link to="/contact" className="text-amber-600 font-semibold hover:underline">
-                    contact us
+                <h2 className="font-bold text-slate-900 dark:text-white">Ouverture imminente</h2>
+                <p className="mt-1 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                  Le service de vérification en ligne est en cours de synchronisation. En attendant, pour vérifier un document,{' '}
+                  <Link to="/contact" className="text-[#1b64b8] font-bold hover:underline">
+                    contactez notre secrétariat
                   </Link>
                   .
                 </p>
@@ -182,11 +171,11 @@ export default function VerificationPage() {
           )}
 
           {open !== false && (
-            <form onSubmit={handleSearch} className="card p-6 sm:p-8 bg-white border border-slate-200 shadow-lg rounded-2xl">
+            <form onSubmit={handleSearch} className="card p-6 sm:p-8 bg-white dark:bg-[#112240] border border-sky-100 dark:border-sky-950 shadow-md rounded-2xl">
               <div
                 role="radiogroup"
-                aria-label="Verification method"
-                className="grid grid-cols-3 gap-2 mb-5"
+                aria-label="Méthode de vérification"
+                className="grid grid-cols-3 gap-2 mb-6"
               >
                 {METHODS.map((m) => {
                   const on = m.id === method;
@@ -201,10 +190,10 @@ export default function VerificationPage() {
                         setValue('');
                         clear();
                       }}
-                      className={`px-2 py-2.5 rounded-lg border text-xs sm:text-sm font-semibold transition-all ${
+                      className={`px-2 py-2.5 rounded-lg border text-xs sm:text-sm font-bold transition-all ${
                         on
-                          ? 'bg-[#e1b936] border-[#e1b936] text-[#08182d] shadow-sm'
-                          : 'bg-slate-50 border-slate-300 text-slate-700 hover:border-amber-400 hover:text-slate-900 hover:bg-white'
+                          ? 'bg-[#1b64b8] border-[#1b64b8] text-white shadow-xs'
+                          : 'bg-slate-50 dark:bg-[#0c1f38] border-sky-200 dark:border-sky-900 text-slate-700 dark:text-slate-300 hover:border-[#1b64b8] hover:text-[#1b64b8]'
                       }`}
                     >
                       {m.label}
@@ -213,7 +202,7 @@ export default function VerificationPage() {
                 })}
               </div>
 
-              <label htmlFor="v_value" className="block text-sm font-semibold text-slate-800 mb-1.5">
+              <label htmlFor="v_value" className="block text-sm font-bold text-slate-800 dark:text-slate-200 mb-1.5">
                 {current.field}
               </label>
               <div className="flex flex-col sm:flex-row gap-3">
@@ -228,19 +217,19 @@ export default function VerificationPage() {
                     placeholder={current.placeholder}
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
-                    className="input-field pl-11 font-mono shadow-sm"
+                    className="input-field pl-11 font-mono shadow-xs"
                   />
                 </div>
-                <button type="submit" disabled={loading} className="btn-primary sm:w-auto disabled:opacity-60 shadow-sm">
+                <button type="submit" disabled={loading} className="btn-royal sm:w-auto disabled:opacity-60 shadow-xs">
                   <ShieldCheck className="w-4 h-4" />
-                  {loading ? 'Verifying…' : 'Verify'}
+                  {loading ? 'Vérification...' : 'Vérifier'}
                 </button>
               </div>
 
-              <p className="mt-4 flex items-start gap-2 text-xs text-slate-500">
+              <p className="mt-4 flex items-start gap-2 text-xs text-slate-500 dark:text-slate-400">
                 <Lock className="w-3.5 h-3.5 mt-0.5 shrink-0 text-slate-400" />
-                Only the name, photo, courses taken and their status are shown. The number you
-                enter is not stored by this site.
+                Seuls le nom de l'étudiant, sa photo et la liste de ses certificats officiels sont affichés.
+                Le numéro saisi n'est pas stocké par ce site.
               </p>
             </form>
           )}
@@ -248,22 +237,22 @@ export default function VerificationPage() {
           {(error || notFound) && (
             <div
               role="alert"
-              className="mt-6 card p-6 border-red-200 bg-red-50 flex items-start gap-4 rounded-xl shadow-sm"
+              className="mt-6 card p-6 border-red-200 bg-red-50 dark:bg-red-950/30 dark:border-red-900 flex items-start gap-4 rounded-xl shadow-xs"
             >
-              <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-red-100 text-red-600 shrink-0">
+              <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-red-100 dark:bg-red-900/60 text-red-600 dark:text-red-300 shrink-0">
                 <XCircle className="w-5 h-5" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-red-900">
-                  {notFound ? 'No record found' : 'Verification failed'}
+                <h3 className="font-bold text-red-900 dark:text-red-200">
+                  {notFound ? 'Aucun certificat trouvé' : 'Échec de la vérification'}
                 </h3>
-                <p className="mt-1 text-sm text-red-800 leading-relaxed">
+                <p className="mt-1 text-sm text-red-800 dark:text-red-300 leading-relaxed">
                   {notFound ? (
                     <>
-                      No certificate is linked to this number. Check what you entered or
-                      choose another method. If in doubt,{' '}
-                      <Link to="/contact" className="underline font-semibold hover:text-red-950">
-                        contact us
+                      Aucun certificat officiel n'est associé à ce numéro. Vérifiez la saisie ou utilisez
+                      une autre méthode. En cas de doute,{' '}
+                      <Link to="/contact" className="underline font-bold hover:text-red-950 dark:hover:text-white">
+                        contactez notre secrétariat
                       </Link>
                       .
                     </>
@@ -277,60 +266,62 @@ export default function VerificationPage() {
 
           {result && (
             <div className="mt-6 space-y-6">
-              {/* Official Credential Badge Card */}
-              <div className="card p-6 sm:p-8 bg-slate-900 text-white rounded-2xl border border-slate-800 shadow-xl">
+              {/* Carte d'identité de l'étudiant vérifié */}
+              <div className="card p-6 sm:p-8 bg-[#124077] text-white rounded-2xl border border-sky-400/30 shadow-lg">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
                   {result.student.photo_data_url ? (
                     <img
                       src={result.student.photo_data_url}
-                      alt={`Photo of ${result.student.full_name}`}
+                      alt={`Photo de ${result.student.full_name}`}
                       className="w-28 aspect-[7/9] rounded-xl object-cover border-2 border-white/20 shrink-0 shadow-md"
                     />
                   ) : (
-                    <div className="flex items-center justify-center w-20 h-20 rounded-2xl bg-white/10 text-[#e1b936] shrink-0 border border-white/15">
+                    <div className="flex items-center justify-center w-20 h-20 rounded-2xl bg-white/10 text-amber-300 shrink-0 border border-white/15">
                       <User className="w-9 h-9" />
                     </div>
                   )}
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 text-[#e1b936] text-sm font-semibold">
+                    <div className="flex items-center gap-2 text-amber-300 text-sm font-bold">
                       <BadgeCheck className="w-4 h-4" />
-                      Student identified
+                      Étudiant identifié & enregistré
                     </div>
                     <h2 className="mt-1 text-2xl font-bold text-white tracking-tight">
                       {result.student.full_name}
                     </h2>
-                    <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm text-slate-300">
-                      <span className="font-mono bg-white/10 px-2.5 py-1 rounded-md">ID: {result.student.student_code}</span>
+                    <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm text-sky-100">
+                      <span className="font-mono bg-white/10 px-2.5 py-1 rounded-md">
+                        ID Étudiant : {result.student.student_code}
+                      </span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Courses List */}
-              <div className="card p-6 sm:p-8 bg-white border border-slate-200 rounded-2xl shadow-md">
-                <div className="flex flex-wrap items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-100">
-                  <h3 className="font-semibold text-slate-900 flex items-center gap-2 text-lg">
-                    <FileText className="w-5 h-5 text-amber-600" />
-                    Courses taken
+              {/* Liste des certificats */}
+              <div className="card p-6 sm:p-8 bg-white dark:bg-[#112240] border border-sky-100 dark:border-sky-950 rounded-2xl shadow-sm">
+                <div className="flex flex-wrap items-center justify-between gap-3 mb-5 pb-4 border-b border-sky-50 dark:border-slate-800">
+                  <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2 text-lg">
+                    <FileText className="w-5 h-5 text-[#1b64b8] dark:text-sky-400" />
+                    Formations & Certificats
                   </h3>
-                  <div className="flex flex-wrap gap-2 text-sm font-semibold">
+                  <div className="flex flex-wrap gap-2 text-sm font-bold">
                     <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-                      {validCount} valid
+                      {validCount} valide{validCount > 1 ? 's' : ''}
                     </span>
                     {expiredCount > 0 && (
                       <span className="px-3 py-1 rounded-full bg-red-100 text-red-800 border border-red-200">
-                        {expiredCount} expired
+                        {expiredCount} expiré{expiredCount > 1 ? 's' : ''}
                       </span>
                     )}
                   </div>
                 </div>
 
                 {certificates.length === 0 ? (
-                  <p className="text-slate-500 text-sm py-4">
-                    No course recorded for this student.
+                  <p className="text-slate-500 dark:text-slate-400 text-sm py-4">
+                    Aucune formation enregistrée pour cet étudiant.
                   </p>
                 ) : (
-                  <div className="space-y-5">
+                  <div className="space-y-4">
                     {groups.map((g, gi) => {
                       const items = (
                         <ul className="space-y-3">
@@ -342,44 +333,44 @@ export default function VerificationPage() {
                                 key={`${c.certificate_number ?? c.course_name}-${c.course_name}-${i}`}
                                 className={`flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-xl border transition-all ${
                                   expired
-                                    ? 'border-red-200 bg-red-50/50'
-                                    : 'border-slate-200 bg-white hover:border-amber-400/60 hover:bg-slate-50 shadow-sm'
+                                    ? 'border-red-200 bg-red-50/50 dark:bg-red-950/20 dark:border-red-900'
+                                    : 'border-sky-100 dark:border-sky-950 bg-white dark:bg-[#0c1f38] hover:border-[#1b64b8] shadow-xs'
                                 }`}
                               >
                                 <div className="flex-1">
                                   <div className="flex items-center gap-2 flex-wrap">
-                                    <span className="font-semibold text-slate-900">{c.course_name}</span>
+                                    <span className="font-bold text-slate-900 dark:text-white">{c.course_name}</span>
                                     {c.imo_number && (
-                                      <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-mono font-medium border border-slate-200">
+                                      <span className="px-2 py-0.5 rounded-md bg-sky-50 dark:bg-sky-950 text-[#1b64b8] dark:text-sky-300 text-xs font-mono font-bold border border-sky-100 dark:border-sky-800">
                                         IMO {c.imo_number}
                                       </span>
                                     )}
                                   </div>
-                                  <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-500">
+                                  <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-500 dark:text-slate-400">
                                     <span className="inline-flex items-center gap-1">
-                                      <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                                      Completed on {formatDate(c.completed_on)}
+                                      <Calendar className="w-3.5 h-3.5 text-[#1b64b8] dark:text-sky-400" />
+                                      Délivré le {formatDate(c.completed_on)}
                                     </span>
                                     {c.certificate_number && (
-                                      <span className="inline-flex items-center gap-1 font-mono text-slate-700">
+                                      <span className="inline-flex items-center gap-1 font-mono text-slate-700 dark:text-slate-300 font-bold">
                                         <Hash className="w-3.5 h-3.5 text-slate-400" />
                                         {c.certificate_number}
                                       </span>
                                     )}
                                   </div>
-                                  <p className={`mt-1.5 text-sm font-medium ${expired ? 'text-red-700' : 'text-emerald-700'}`}>
+                                  <p className={`mt-1.5 text-sm font-semibold ${expired ? 'text-red-700 dark:text-red-300' : 'text-emerald-700 dark:text-emerald-300'}`}>
                                     {c.valid_until
                                       ? expired
-                                        ? `Expired on ${formatDate(c.valid_until)}`
-                                        : `Valid until ${formatDate(c.valid_until)}`
-                                      : 'Valid, no expiry date'}
+                                        ? `Expiré le ${formatDate(c.valid_until)}`
+                                        : `Valide jusqu'au ${formatDate(c.valid_until)}`
+                                      : 'Valide permanent, sans date d’expiration'}
                                   </p>
                                 </div>
                                 <span
-                                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold w-fit border ${
+                                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-bold w-fit border ${
                                     expired
-                                      ? 'bg-red-100 text-red-800 border-red-200'
-                                      : 'bg-emerald-100 text-emerald-800 border-emerald-200'
+                                      ? 'bg-red-100 text-red-800 border-red-200 dark:bg-red-950 dark:text-red-300'
+                                      : 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300'
                                   }`}
                                 >
                                   {expired ? (
@@ -387,7 +378,7 @@ export default function VerificationPage() {
                                   ) : (
                                     <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                                   )}
-                                  {status === 'expired' ? 'Expired' : 'Valid'}
+                                  {status === 'expired' ? 'Expiré' : 'Valide'}
                                 </span>
                               </li>
                             );
@@ -395,10 +386,10 @@ export default function VerificationPage() {
                         </ul>
                       );
                       return g.title ? (
-                        <div key={`g-${gi}`} className="rounded-xl border-2 border-amber-300/80 bg-amber-50/40 p-4">
-                          <p className="font-bold text-slate-900">{g.title}</p>
-                          <p className="mb-3 text-sm text-slate-600">
-                            Certificate No. <span className="font-mono font-semibold text-slate-900">{g.number}</span> · {g.items.length} modules
+                        <div key={`g-${gi}`} className="rounded-xl border border-sky-200 dark:border-sky-900 bg-sky-50/40 dark:bg-sky-950/20 p-4">
+                          <p className="font-bold text-slate-900 dark:text-white">{g.title}</p>
+                          <p className="mb-3 text-sm text-slate-600 dark:text-slate-300">
+                            Certificat n° <span className="font-mono font-bold text-[#1b64b8] dark:text-sky-300">{g.number}</span> · {g.items.length} modules inclus
                           </p>
                           {items}
                         </div>
@@ -410,13 +401,12 @@ export default function VerificationPage() {
                 )}
               </div>
 
-              <p className="text-xs text-slate-500">
-                Status as of {formatDate(result.checkedOn)}. A certificate remains valid through the
-                end of its expiry date.
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Statut officiel à la date du {formatDate(result.checkedOn)}. Un certificat reste valide jusqu'à la fin de sa date d'expiration.
               </p>
 
               <button onClick={reset} className="btn-secondary w-full sm:w-auto">
-                New verification
+                Effectuer une nouvelle vérification
               </button>
             </div>
           )}

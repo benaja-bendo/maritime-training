@@ -11,9 +11,9 @@ import {
   Filter,
   BookOpen,
   ArrowRight,
+  ShieldCheck,
 } from 'lucide-react';
 
-// Ordre habituel des catégories ; celles que l'administration crée viennent ensuite.
 const CATEGORY_ORDER = [
   'Basic Safety',
   'Medical',
@@ -75,8 +75,8 @@ export default function CoursesPage() {
 
   return (
     <div className="pt-16 md:pt-20">
-      {/* Page header with background banner */}
-      <section className="relative py-16 md:py-20 overflow-hidden bg-white border-b border-slate-200">
+      {/* Header Banner Bleu Royal */}
+      <section className="relative py-16 md:py-24 overflow-hidden bg-[#1b64b8] text-white">
         <div
           className="absolute inset-0 bg-cover bg-center opacity-15 pointer-events-none"
           style={{
@@ -84,68 +84,62 @@ export default function CoursesPage() {
               "url('https://images.pexels.com/photos/14367433/pexels-photo-14367433.jpeg?auto=compress&cs=tinysrgb&h=800&w=1600')",
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-sky-50/80 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#124b8f] via-[#1b64b8] to-[#206fcc] pointer-events-none" />
 
         <div className="container-app relative z-10">
-          <span className="section-label">Catalogue</span>
-          <h1 className="mt-2 text-3xl sm:text-5xl font-semibold text-slate-900">
-            Our Maritime Courses
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-white text-xs font-bold uppercase tracking-wider mb-4">
+            <ShieldCheck className="w-3.5 h-3.5 text-amber-300" />
+            STCW Manila Amendments · Cours Certifiés OMI / AMP
+          </div>
+          <h1 className="text-3xl sm:text-5xl font-bold text-white">
+            Catalogue des Cours Maritimes
           </h1>
-          <p className="mt-4 text-slate-600 max-w-2xl text-lg">
-            Over 50 courses: STCW and MLC training, from the basic certificate to
-            chief officer level, plus offshore and specialised courses.
+          <p className="mt-4 text-sky-100 max-w-2xl text-lg font-normal">
+            Plus de 50 formations STCW et MLC : de la sécurité de base aux compétences d'officiers supérieurs,
+            disponibles en présentiel et sur notre plateforme e-learning 24/7.
           </p>
         </div>
       </section>
 
-      {/* Course list with subtle maritime texture */}
-      <section className="relative py-12 md:py-16 overflow-hidden bg-slate-50">
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none"
-          style={{
-            backgroundImage:
-              "url('https://images.pexels.com/photos/35757999/pexels-photo-35757999.jpeg?auto=compress&cs=tinysrgb&h=1200&w=1800')",
-          }}
-        />
-        <div className="absolute inset-0 bg-slate-50/93 pointer-events-none" />
-
+      {/* Liste des cours */}
+      <section className="relative py-12 md:py-16 overflow-hidden bg-slate-50 dark:bg-[#0a192f] transition-colors duration-200">
         <div className="container-app relative z-10">
-          {/* Search + filter */}
+          {/* Recherche & Filtres */}
           <div className="mb-8 flex flex-col md:flex-row gap-4 items-stretch md:items-center">
             <div className="relative flex-1">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
               <input
                 type="text"
-                placeholder="Search by name or IMO number…"
+                placeholder="Rechercher par intitulé ou numéro OMI..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="input-field pl-11 shadow-sm"
+                className="input-field pl-11 shadow-xs"
               />
             </div>
             <div className="flex items-center gap-2">
-              <Filter className="w-5 h-5 text-slate-500 shrink-0" />
+              <Filter className="w-5 h-5 text-[#1b64b8] dark:text-sky-400 shrink-0" />
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="input-field md:w-60 shadow-sm"
+                className="input-field md:w-64 shadow-xs"
               >
                 {categories.map((cat) => (
                   <option key={cat} value={cat}>
-                    {cat === 'All' ? 'All categories' : cat}
+                    {cat === 'All' ? 'Toutes les catégories' : cat}
                   </option>
                 ))}
               </select>
             </div>
           </div>
 
-          <div className="mb-6 text-sm text-slate-600 font-medium">
-            {loading ? 'Loading…' : `${filtered.length} ${filtered.length === 1 ? 'course' : 'courses'} found`}
+          <div className="mb-6 text-sm text-slate-600 dark:text-slate-300 font-semibold">
+            {loading ? 'Chargement...' : `${filtered.length} ${filtered.length === 1 ? 'formation trouvée' : 'formations trouvées'}`}
           </div>
 
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="h-64 rounded-xl bg-slate-200 animate-pulse" />
+                <div key={i} className="h-64 rounded-xl bg-slate-200 dark:bg-slate-800 animate-pulse" />
               ))}
             </div>
           ) : (
@@ -154,9 +148,9 @@ export default function CoursesPage() {
                 <Link
                   key={course.id}
                   to={`/courses/${course.id}`}
-                  className="card overflow-hidden flex flex-col group bg-white border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-amber-400/60 transition-all rounded-xl"
+                  className="card overflow-hidden flex flex-col group bg-white dark:bg-[#112240] border border-sky-100 dark:border-sky-950 hover:border-[#1b64b8] shadow-sm hover:shadow-md transition-all rounded-xl"
                 >
-                  <div className="relative h-44 overflow-hidden bg-slate-100">
+                  <div className="relative h-44 overflow-hidden bg-slate-100 dark:bg-slate-900">
                     {course.image_url && (
                       <img
                         src={course.image_url}
@@ -165,42 +159,42 @@ export default function CoursesPage() {
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 to-transparent" />
                     <div className="absolute top-3 left-3 flex flex-wrap gap-2">
                       {course.imo_number && (
-                        <span className="px-2.5 py-1 rounded-md bg-slate-900/80 backdrop-blur text-white text-xs font-mono font-semibold">
+                        <span className="px-2.5 py-1 rounded-md bg-slate-950/80 backdrop-blur text-white text-xs font-mono font-semibold">
                           IMO {course.imo_number}
                         </span>
                       )}
-                      <span className="px-2.5 py-1 rounded-md bg-[#e1b936] text-[#08182d] text-xs font-bold shadow-sm">
+                      <span className="px-2.5 py-1 rounded-md bg-[#1b64b8] text-white text-xs font-bold shadow-xs">
                         {course.category}
                       </span>
                     </div>
                   </div>
 
                   <div className="p-5 flex flex-col flex-1">
-                    <h3 className="font-semibold text-slate-900 leading-snug mb-3 group-hover:text-amber-600 transition-colors text-base">
+                    <h3 className="font-bold text-slate-900 dark:text-white leading-snug mb-3 group-hover:text-[#1b64b8] dark:group-hover:text-sky-300 transition-colors text-base">
                       {course.name}
                     </h3>
 
-                    <div className="mt-auto pt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-500 border-t border-slate-100">
+                    <div className="mt-auto pt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-500 dark:text-slate-400 border-t border-sky-50 dark:border-slate-800">
                       <span className="inline-flex items-center gap-1.5">
-                        <Calendar className="w-4 h-4 text-slate-400" />
+                        <Calendar className="w-4 h-4 text-[#1b64b8] dark:text-sky-400" />
                         {course.duration_days != null ? formatDays(course.duration_days) : '—'}
                       </span>
                       <span className="inline-flex items-center gap-1.5">
-                        <Clock className="w-4 h-4 text-slate-400" />
+                        <Clock className="w-4 h-4 text-[#1b64b8] dark:text-sky-400" />
                         {course.duration_hours != null ? formatHours(course.duration_hours) : '—'}
                       </span>
                       {course.price_usd != null && (
-                        <span className="ml-auto font-bold text-amber-700">
+                        <span className="ml-auto font-bold text-[#1b64b8] dark:text-sky-300">
                           {formatUsd(course.price_usd)}
                         </span>
                       )}
                     </div>
 
-                    <span className="mt-4 inline-flex items-center gap-1.5 text-amber-600 font-semibold text-sm group-hover:gap-2.5 transition-all">
-                      Details
+                    <span className="mt-4 inline-flex items-center gap-1.5 text-[#1b64b8] dark:text-sky-400 font-bold text-sm group-hover:gap-2.5 transition-all">
+                      Détails de la formation
                       <ArrowRight className="w-4 h-4" />
                     </span>
                   </div>
@@ -210,9 +204,9 @@ export default function CoursesPage() {
           )}
 
           {!loading && filtered.length === 0 && (
-            <div className="text-center py-16 text-slate-500 bg-white rounded-xl border border-slate-200">
+            <div className="text-center py-16 text-slate-500 dark:text-slate-400 bg-white dark:bg-[#112240] rounded-xl border border-sky-200 dark:border-sky-900">
               <BookOpen className="w-10 h-10 mx-auto mb-3 opacity-40 text-slate-400" />
-              <p className="text-base font-medium">No course matches your search.</p>
+              <p className="text-base font-medium">Aucun cours ne correspond à votre recherche.</p>
             </div>
           )}
         </div>

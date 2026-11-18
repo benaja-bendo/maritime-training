@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams } from 'react-router-dom';
+import { ThemeProvider } from '@/context/ThemeContext';
 import Layout from '@/components/Layout';
 import HomePage from '@/pages/HomePage';
 import CoursesPage from '@/pages/CoursesPage';
@@ -26,34 +27,36 @@ function RedirectToCourse() {
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/admin/*"
-          element={
-            <Suspense fallback={<div className="min-h-screen bg-[#0b1b30]" />}>
-              <AdminApp />
-            </Suspense>
-          }
-        />
-        <Route element={<Layout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/courses" element={<CoursesPage />} />
-          <Route path="/courses/:id" element={<CourseDetailPage />} />
-          <Route path="/register" element={<RegistrationPage />} />
-          <Route path="/verification" element={<VerificationPage />} />
-          <Route path="/volunteers" element={<VolunteersPage />} />
-          <Route path="/a-propos" element={<RedirectTo to="/about" />} />
-          <Route path="/formations" element={<RedirectTo to="/courses" />} />
-          <Route path="/formations/:id" element={<RedirectToCourse />} />
-          <Route path="/inscription" element={<RedirectTo to="/register" />} />
-          <Route path="/volontaires" element={<RedirectTo to="/volunteers" />} />
-          <Route path="*" element={<HomePage />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/admin/*"
+            element={
+              <Suspense fallback={<div className="min-h-screen bg-[#0b1b30]" />}>
+                <AdminApp />
+              </Suspense>
+            }
+          />
+          <Route element={<Layout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/courses" element={<CoursesPage />} />
+            <Route path="/courses/:id" element={<CourseDetailPage />} />
+            <Route path="/register" element={<RegistrationPage />} />
+            <Route path="/verification" element={<VerificationPage />} />
+            <Route path="/volunteers" element={<VolunteersPage />} />
+            <Route path="/a-propos" element={<RedirectTo to="/about" />} />
+            <Route path="/formations" element={<RedirectTo to="/courses" />} />
+            <Route path="/formations/:id" element={<RedirectToCourse />} />
+            <Route path="/inscription" element={<RedirectTo to="/register" />} />
+            <Route path="/volontaires" element={<RedirectTo to="/volunteers" />} />
+            <Route path="*" element={<HomePage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

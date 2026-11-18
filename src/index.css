@@ -9,11 +9,11 @@
     scroll-behavior: smooth;
   }
   body {
-    @apply bg-slate-50 text-slate-800 antialiased;
+    @apply bg-slate-50 text-slate-800 antialiased dark:bg-[#0a192f] dark:text-slate-100;
     font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   }
   h1, h2, h3, h4 {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   }
 }
 
@@ -22,38 +22,34 @@
     @apply max-w-7xl mx-auto px-5 sm:px-8 lg:px-10;
   }
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-[#e1b936] text-[#08182d] font-bold shadow-sm transition-all hover:bg-[#ebd06c] hover:shadow-md active:scale-[0.98];
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-[#dfa716] text-slate-950 font-bold shadow-sm transition-all hover:bg-[#ebd06c] hover:shadow-md active:scale-[0.98];
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-white text-slate-700 font-semibold border border-slate-300 shadow-sm transition-all hover:border-[#e1b936] hover:text-[#08182d] hover:bg-slate-50 active:scale-[0.98];
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-white text-slate-700 font-semibold border border-sky-300 shadow-sm transition-all hover:border-[#1b64b8] hover:text-[#1b64b8] hover:bg-sky-50/50 active:scale-[0.98] dark:bg-[#112240] dark:border-sky-900 dark:text-slate-200 dark:hover:bg-[#172e54] dark:hover:border-sky-400;
+  }
+  .btn-royal {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-[#1b64b8] text-white font-bold shadow-sm transition-all hover:bg-[#155198] hover:shadow-md active:scale-[0.98];
   }
   .card {
-    @apply bg-white/95 backdrop-blur-sm rounded-xl border border-slate-200/90 shadow-sm transition-all hover:border-[#e1b936]/70 hover:shadow-md text-slate-800;
+    @apply bg-white dark:bg-[#112240] rounded-xl border border-sky-200/90 dark:border-sky-900/70 shadow-sm transition-all hover:border-[#1b64b8]/70 dark:hover:border-sky-400/60 hover:shadow-md text-slate-800 dark:text-slate-100;
   }
   .input-field {
-    @apply w-full px-4 py-3 rounded-lg border border-slate-300 bg-white text-slate-900 placeholder-slate-400 transition-colors focus:border-[#e1b936] focus:ring-2 focus:ring-[#e1b936]/30 outline-none;
+    @apply w-full px-4 py-3 rounded-lg border border-sky-200 bg-white text-slate-900 placeholder-slate-400 transition-colors focus:border-[#1b64b8] focus:ring-2 focus:ring-[#1b64b8]/20 outline-none dark:bg-[#0d1f38] dark:border-sky-900/90 dark:text-white dark:placeholder-slate-500 dark:focus:border-sky-400;
   }
   .section-label {
-    @apply text-amber-600 text-xs font-bold uppercase tracking-[0.18em];
-  }
-  .gold-rule {
-    @apply inline-block w-10 h-px bg-[#e1b936] align-middle;
+    @apply text-[#1b64b8] dark:text-sky-400 text-xs font-bold uppercase tracking-[0.18em];
   }
 }
 
-/* Styles spécifiques pour l'espace d'administration afin de conserver son contraste */
+/* Styles pour l'espace d'administration afin de conserver son contraste sombre */
 .admin-root .card {
-  @apply bg-[#102641] rounded-sm border border-[#294769] shadow-none hover:border-[#e1b936]/60 text-slate-100;
+  @apply bg-[#102641] rounded-sm border border-[#294769] shadow-none hover:border-sky-400/60 text-slate-100;
 }
 .admin-root .input-field {
-  @apply bg-[#102641] text-white border-[#385371] placeholder-slate-400 focus:border-[#e1b936];
+  @apply bg-[#102641] text-white border-[#385371] placeholder-slate-400 focus:border-sky-400;
 }
 .admin-root .btn-secondary {
-  @apply bg-transparent text-white border-slate-500 hover:border-[#e1b936] hover:text-[#e1b936];
-}
-
-.prose h2, .prose h3 {
-  font-family: 'Playfair Display', Georgia, serif;
+  @apply bg-transparent text-white border-slate-500 hover:border-sky-400 hover:text-white;
 }
 
 @keyframes fadeIn {
